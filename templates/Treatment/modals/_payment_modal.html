@@ -1,0 +1,65 @@
+<div class="payment-modal" id="payment-modal">
+    <div class="payment-modal-content">
+        <div class="payment-modal-header">
+            <h3>ثبت پرداخت</h3>
+            <button class="modal-close" id="close-payment-modal">×</button>
+        </div>
+        <div class="payment-modal-body">
+            <form class="payment-form" id="payment-form">
+                <input type="hidden" name="treatment_id" id="payment-treatment-id">
+                
+                <div class="payment-form-group">
+                    <label>مبلغ قابل پرداخت</label>
+                    <input type="text" name="total_amount" id="payment-total-amount" readonly>
+                </div>
+                
+                <div class="payment-form-group">
+                    <label>مبلغ پرداختی</label>
+                    <input type="number" name="amount" id="payment-amount" required>
+                </div>
+                
+                <div class="payment-form-group">
+                    <label>تاریخ پرداخت</label>
+                    <input type="date" name="payment_date" id="payment-date" required value="{{ today|date:'Y-m-d' }}">
+                </div>
+                
+                <div class="payment-form-group">
+                    <label>روش پرداخت</label>
+                    <select name="payment_method" id="payment-method" required>
+                        <option value="cash">نقدی</option>
+                        <option value="card">کارت به کارت</option>
+                        <option value="pos">کارتخوان</option>
+                        <option value="check">چک</option>
+                    </select>
+                </div>
+                
+                <div id="check-fields" class="check-fields">
+                    <div class="payment-form-group">
+                        <label>شماره چک</label>
+                        <input type="text" name="check_number" id="check-number">
+                    </div>
+                    
+                    <div class="payment-form-group">
+                        <label>تاریخ چک</label>
+                        <input type="date" name="check_date" id="check-date">
+                    </div>
+                    
+                    <div class="payment-form-group">
+                        <label>بانک</label>
+                        <input type="text" name="check_bank" id="check-bank">
+                    </div>
+                </div>
+                
+                <div class="payment-form-group">
+                    <label>توضیحات</label>
+                    <textarea name="description" id="payment-description"></textarea>
+                </div>
+                
+                <div class="payment-form-actions">
+                    <button type="submit" class="payment-submit">ثبت پرداخت</button>
+                    <button type="button" class="payment-cancel" id="cancel-payment">انصراف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

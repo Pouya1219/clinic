@@ -1,0 +1,609 @@
+<!-- pation/tabs/__sub_tab_insurance.html -->
+{% load static %}
+
+<div class="insurance-container">
+    <!-- کارت اصلی بیمه‌ها -->
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-shield-alt mr-2"></i> مدیریت بیمه‌های بیمار
+            </h5>
+            <button type="button" class="btn btn-light btn-sm add-insurance-btn" data-toggle="modal" data-target="#add-insurance-modal">
+                <i class="fas fa-plus-circle"></i> افزودن بیمه جدید
+            </button>
+        </div>
+        <!-- اضافه کردن به بالای فرم افزودن بیمه -->
+<div class="alert alert-info">
+    <i class="fas fa-info-circle mr-2"></i>
+    <span>توجه: هر بیمار فقط می‌تواند یک بیمه فعال داشته باشد. با فعال کردن بیمه جدید، بیمه فعال قبلی غیرفعال خواهد شد.</span>
+</div>
+
+        <div class="card-body">
+            <!-- آمار بیمه‌ها -->
+            <div class="insurance-stats mb-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card bg-info text-white rounded p-3">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-id-card fa-2x"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <div class="stat-card-value">{{ total_insurances_count }}</div>
+                                    <div class="stat-card-title">کل بیمه‌ها</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-success text-white rounded p-3">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <div class="stat-card-value">{{ active_insurances_count }}</div>
+                                    <div class="stat-card-title">بیمه‌های فعال</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-warning text-white rounded p-3">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <div class="stat-card-value">{{ expiring_soon_count }}</div>
+                                    <div class="stat-card-title">در حال انقضا</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card bg-danger text-white rounded p-3">
+                            <div class="stat-card-body">
+                                <div class="stat-card-icon">
+                                    <i class="fas fa-times-circle fa-2x"></i>
+                                </div>
+                                <div class="stat-card-info">
+                                    <div class="stat-card-value">{{ inactive_insurances_count }}</div>
+                                    <div class="stat-card-title">بیمه‌های غیرفعال</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- جدول بیمه‌ها -->
+            <div class="table-responsive insurance-table-container">
+                <table class="table table-hover insurance-table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th>نوع بیمه</th>
+                            <th>بیمه‌گر</th>
+                            <th>شماره بیمه</th>
+                            <th>تاریخ انقضا</th>
+                            <th>درصد پوشش</th>
+                            <th>سقف پوشش</th>
+                            <th class="text-center">وضعیت</th>
+                            <th class="text-center">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for insurance in patient.insurances.all %}
+                        <tr class="{% if not insurance.is_active %}table-secondary{% endif %}" data-id="{{ insurance.id }}">
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td>
+                                <span class="d-flex align-items-center">
+                                    <span class="insurance-type-icon mr-2">
+                                        {% if insurance.insurance_provider.insurance_type.name == 'درصدی' %}
+                                            <i class="fas fa-percentage text-primary"></i>
+                                        {% elif insurance.insurance_provider.insurance_type.name == 'تعرفه‌ای' %}
+                                            <i class="fas fa-table text-success"></i>
+                                        {% else %}
+                                            <i class="fas fa-shield-alt text-info"></i>
+                                        {% endif %}
+                                    </span>
+                                    {{ insurance.insurance_provider.insurance_type.name }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="d-flex align-items-center">
+                                    {% if insurance.insurance_provider.logo %}
+                                        <img src="{{ insurance.insurance_provider.logo.url }}" alt="{{ insurance.insurance_provider.name }}" class="insurance-logo mr-2" width="24">
+                                    {% else %}
+                                        <i class="fas fa-building mr-2 text-secondary"></i>
+                                    {% endif %}
+                                    {{ insurance.insurance_provider.name }}
+                                </span>
+                            </td>
+                            <td>{{ insurance.insurance_number }}</td>
+                            <td>
+                                <span class="d-flex align-items-center">
+                                    <i class="far fa-calendar-alt mr-2 {% if insurance.is_expired %}text-danger{% endif %}"></i>
+                                    {{ insurance.expiry_date|date:"Y/m/d" }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ insurance.coverage_percentage }}%;" 
+                                        aria-valuenow="{{ insurance.coverage_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ insurance.coverage_percentage }}%
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if insurance.coverage_ceiling %}
+                                    {{ insurance.coverage_ceiling|floatformat:"0" }} ریال
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if insurance.is_active %}
+                                    <span class="badge badge-pill badge-success">فعال</span>
+                                    {% if insurance.is_primary %}
+                                        <span class="badge badge-pill badge-primary">اصلی</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge badge-pill badge-danger">غیرفعال</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    {% comment %} <button class="btn btn-sm btn-outline-info view-insurance" data-id="{{ insurance.id }}" data-toggle="tooltip" title="مشاهده جزئیات">
+                                        <i class="fas fa-eye"></i>
+                                    </button> {% endcomment %}
+                                    <button class="btn btn-sm btn-outline-warning edit-insurance" data-id="{{ insurance.id }}" data-toggle="tooltip" title="ویرایش">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-insurance" data-id="{{ insurance.id }}" data-toggle="tooltip" title="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="fas fa-shield-alt fa-4x text-muted mb-3"></i>
+                                    <h5>هیچ بیمه‌ای ثبت نشده است</h5>
+                                    <p class="text-muted">برای افزودن بیمه جدید، روی دکمه "افزودن بیمه جدید" کلیک کنید.</p>
+                                    {% comment %} <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#add-insurance-modal">
+                                        <i class="fas fa-plus-circle"></i> افزودن بیمه جدید
+                                    </button> {% endcomment %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">آخرین بروزرسانی: {{ last_update|date:"Y/m/d H:i" }}</small>
+                <div>
+                    {% comment %} <button class="btn btn-sm btn-outline-secondary" id="refresh-insurance-btn">
+                        <i class="fas fa-sync-alt"></i> بروزرسانی
+                    </button> {% endcomment %}
+                    <button class="btn btn-sm btn-outline-primary" id="export-insurance-btn">
+                        <i class="fas fa-file-export"></i> خروجی
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- کارت راهنمای بیمه -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i> راهنمای بیمه</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6><i class="fas fa-percentage text-primary mr-2"></i> بیمه درصدی</h6>
+                        <p class="text-muted small">بیمه‌هایی که درصدی از هزینه‌ها را پوشش می‌دهند.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6><i class="fas fa-table text-success mr-2"></i> بیمه تعرفه‌ای</h6>
+                        <p class="text-muted small">بیمه‌هایی که بر اساس تعرفه مشخص پرداخت می‌کنند.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-item">
+                        <h6><i class="fas fa-shield-alt text-info mr-2"></i> بیمه کلی</h6>
+                        <p class="text-muted small">بیمه‌هایی که کل هزینه‌ها را تا سقف مشخصی پوشش می‌دهند.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- مودال ویرایش بیمه -->
+<div class="modal fade" id="edit-insurance-modal" tabindex="-1" role="dialog" aria-labelledby="edit-insurance-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-warning text-white">
+                <h5 class="modal-title" id="edit-insurance-modal-label">
+                    <i class="fas fa-edit mr-2"></i> ویرایش بیمه
+                </h5>
+                <button type="button" class="close text-white" onclick="PatientUI.closeModal('edit-insurance-modal')" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-insurance-form" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- نوار پیشرفت -->
+                    <div class="progress mb-4" style="height: 5px;">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- اطلاعات اصلی بیمه -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i> اطلاعات اصلی بیمه</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="edit-insurance-type" class="form-label">
+                                            <i class="fas fa-tag mr-1 text-warning"></i> نوع بیمه <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control custom-select" id="edit-insurance-type" name="insurance_type" required>
+                                            <option value="">انتخاب کنید</option>
+                                            <!-- گزینه‌ها با JavaScript پر می‌شوند -->
+                                        </select>
+                                        <div class="invalid-feedback">لطفاً نوع بیمه را انتخاب کنید.</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="edit-insurance-provider" class="form-label">
+                                            <i class="fas fa-building mr-1 text-warning"></i> بیمه‌گر <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control custom-select" id="edit-insurance-provider" name="insurance_provider" required>
+                                            <option value="">ابتدا نوع بیمه را انتخاب کنید</option>
+                                            <!-- گزینه‌ها با JavaScript پر می‌شوند -->
+                                        </select>
+                                        <div class="invalid-feedback">لطفاً بیمه‌گر را انتخاب کنید.</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="edit-insurance-number" class="form-label">
+                                            <i class="fas fa-id-card mr-1 text-warning"></i> شماره بیمه <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="edit-insurance-number" name="insurance_number" required>
+                                        <div class="invalid-feedback">لطفاً شماره بیمه را وارد کنید.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <!-- جزئیات بیمه -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-sliders-h mr-2"></i> جزئیات بیمه</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="edit-insurance-expiry" class="form-label">
+                                            <i class="fas fa-calendar-alt mr-1 text-warning"></i> تاریخ انقضا <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                            </div>
+                                            {% comment %} <input type="text" class="form-control datepicker" id="edit-insurance-expiry" name="expiry_date" required> {% endcomment %}
+                                            <input type="text" class="date-input form-input jalali form-control datepicker" id="edit-insurance-expiry" name="expiry_date" required>
+                                        </div>
+                                        <div class="invalid-feedback">لطفاً تاریخ انقضا را وارد کنید.</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="edit-insurance-coverage" class="form-label">
+                                            <i class="fas fa-percentage mr-1 text-warning"></i> درصد پوشش
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="edit-insurance-coverage" name="coverage_percentage" 
+                                                   min="0" max="100">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edit-insurance-ceiling" class="form-label">
+                                                <i class="fas fa-coins mr-1 text-warning"></i> سقف پوشش (ریال)
+                                        </label>
+                                        <input type="number" class="form-control" id="edit-insurance-ceiling" name="coverage_ceiling">
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="edit-insurance-primary" name="is_primary">
+                                            <label class="custom-control-label" for="edit-insurance-primary">بیمه اصلی</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="edit-insurance-active" name="is_active">
+                                            <label class="custom-control-label" for="edit-insurance-active">فعال</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- توضیحات اضافی -->
+                    <div class="form-group">
+                        <label for="edit-insurance-notes" class="form-label">
+                            <i class="fas fa-sticky-note mr-1 text-warning"></i> توضیحات اضافی
+                        </label>
+                        <textarea class="form-control" id="edit-insurance-notes" name="notes" rows="3"></textarea>
+                    </div>
+                    
+                                        <!-- تاریخچه تغییرات -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="fas fa-history mr-2"></i> تاریخچه تغییرات</h6>
+                            <button type="button" class="btn btn-sm btn-link" id="toggle-history">نمایش</button>
+                        </div>
+                        <div class="card-body p-0" id="history-content" style="display: none;">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-primary">ایجاد</span>
+                                        <span class="ml-2">ایجاد بیمه</span>
+                                    </div>
+                                    <small class="text-muted">1402/03/15</small>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-warning">ویرایش</span>
+                                        <span class="ml-2">تغییر تاریخ انقضا</span>
+                                    </div>
+                                    <small class="text-muted">1402/05/20</small>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge badge-info">بروزرسانی</span>
+                                        <span class="ml-2">تغییر درصد پوشش</span>
+                                    </div>
+                                    <small class="text-muted">1402/06/10</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer border-0 pt-0">
+                        <button type="button" class="btn btn-outline-secondary" onclick="PatientUI.closeModal('edit-insurance-modal')" data-dismiss="modal">
+                            <i class="fas fa-times mr-1"></i> انصراف
+                        </button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save mr-1"></i> ذخیره تغییرات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- مودال افزودن بیمه جدید -->
+<div class="modal fade" id="add-insurance-modal" tabindex="-1" aria-labelledby="add-insurance-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-insurance-modal-label">افزودن بیمه جدید</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">لطفا در وارد کردن اطلاعات دقت فرمایید</p>
+        <form id="add-insurance-form" data-patient-id="{{ patient.id }}" class="needs-validation" novalidate>
+          {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- اطلاعات اصلی بیمه -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i> اطلاعات اصلی بیمه</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="insuranceType" class="form-label">
+                                            <i class="fas fa-tag mr-1 text-primary"></i> نوع بیمه <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control custom-select" id="insuranceType" name="insurance_type" required>
+                                            <option value="">انتخاب کنید</option>
+                                            <!-- گزینه‌ها با JavaScript پر می‌شوند -->
+                                        </select>
+                                        <div class="invalid-feedback">لطفاً نوع بیمه را انتخاب کنید.</div>
+                                        <small class="form-text text-muted">نوع بیمه تعیین کننده نحوه محاسبه هزینه‌ها است.</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="insuranceProvider" class="form-label">
+                                            <i class="fas fa-building mr-1 text-primary"></i> بیمه‌گر <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-control custom-select" id="insuranceProvider" name="insurance_provider" required disabled>
+                                            <option value="">ابتدا نوع بیمه را انتخاب کنید</option>
+                                            <!-- گزینه‌ها با JavaScript پر می‌شوند -->
+                                        </select>
+                                        <div class="invalid-feedback">لطفاً بیمه‌گر را انتخاب کنید.</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="insuranceNumber" class="form-label">
+                                            <i class="fas fa-id-card mr-1 text-primary"></i> شماره بیمه <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="insuranceNumber" name="insurance_number" required
+                                               placeholder="مثال: 123456789">
+                                        <div class="invalid-feedback">لطفاً شماره بیمه را وارد کنید.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <!-- جزئیات بیمه -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-sliders-h mr-2"></i> جزئیات بیمه</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="expiryDate" class="form-label">
+                                            <i class="fas fa-calendar-alt mr-1 text-primary"></i> تاریخ انقضا <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control datepicker" id="expiryDate" name="expiry_date" required
+                                                   placeholder="1402/06/31">
+                                        </div>
+                                        <div class="invalid-feedback">لطفاً تاریخ انقضا را وارد کنید.</div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="coveragePercentage" class="form-label">
+                                            <i class="fas fa-percentage mr-1 text-primary"></i> درصد پوشش
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="coveragePercentage" name="coverage_percentage" 
+                                                   min="0" max="100" value="70">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">درصد پوشش هزینه‌های درمانی توسط بیمه</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="coverageCeiling" class="form-label">
+                                            <i class="fas fa-coins mr-1 text-primary"></i> سقف پوشش (ریال)
+                                        </label>
+                                                <input type="number" class="form-control" id="coverageCeiling" name="coverage_ceiling" placeholder="مثال: 50000000">
+                                                <small class="form-text text-muted">حداکثر مبلغی که بیمه پوشش می‌دهد.</small>
+                                    </div>
+                                    <div class="form-group mt-4">
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="isPrimary" name="is_primary">
+                                            <label class="custom-control-label" for="isPrimary">بیمه اصلی</label>
+                                        </div>
+                                        <small class="form-text text-muted">در صورت انتخاب، این بیمه به عنوان بیمه اصلی بیمار در نظر گرفته می‌شود.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- توضیحات اضافی -->
+                    <div class="form-group">
+                        <label for="insuranceNotes" class="form-label">
+                            <i class="fas fa-sticky-note mr-1 text-primary"></i> توضیحات اضافی
+                        </label>
+                        <textarea class="form-control" id="insuranceNotes" name="notes" rows="3" 
+                                  placeholder="هرگونه توضیح اضافی درباره بیمه را اینجا وارد کنید..."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>پس از افزودن بیمه، می‌توانید از آن در محاسبات هزینه‌های درمانی استفاده کنید.</span>
+                    </div>
+                    
+                    <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+              <i class="fas fa-times mr-1"></i> انصراف
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save mr-1"></i> ذخیره بیمه
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% block extra_head %}
+<style>
+    .insurance-container {
+        padding: 15px;
+    }
+    .stat-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .stat-card-body {
+        display: flex;
+        align-items: center;
+    }
+    .stat-card-icon {
+        margin-right: 15px;
+    }
+    .stat-card-value {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .stat-card-title {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    .insurance-table-container {
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .insurance-table th {
+        font-weight: 600;
+        border-top: none;
+    }
+    .insurance-table td {
+        vertical-align: middle;
+    }
+    .insurance-logo {
+        border-radius: 4px;
+        object-fit: contain;
+    }
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    .info-item {
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+

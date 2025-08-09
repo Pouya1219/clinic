@@ -1,0 +1,233 @@
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+
+{% block title %}جزئیات انبار {{ warehouse.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'inventory/css/warehouses.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- هدر صفحه -->
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">جزئیات انبار {{ warehouse.name }}</h1>
+        <div>
+            <a href="{% url 'inventory:warehouse_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right me-2"></i>بازگشت به لیست انبارها
+            </a>
+            {% comment %} <button type="button" class="btn btn-primary" onclick="editWarehouse('{{ warehouse.id }}')">
+                <i class="fas fa-edit me-2"></i>ویرایش انبار
+            </button> {% endcomment %}
+        </div>
+    </div>
+
+    <!-- اطلاعات انبار -->
+    <div class="row">
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">اطلاعات اصلی</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="fw-bold">نام انبار:</label>
+                    <p>{{ warehouse.name }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">کد انبار:</label>
+                    <p>{{ warehouse.code }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">مدیر انبار:</label>
+                    <p>{{ warehouse.manager.first_name }} {{ warehouse.manager.last_name|default:"تعیین نشده" }}</p>
+                </div>
+                <!-- اطلاعات تماس مدیر انبار -->
+                {% if warehouse.manager %}
+                <div class="mb-3">
+                    <label class="fw-bold">ایمیل مدیر:</label>
+                    <p>{{ warehouse.manager.user.email|default:"-" }}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">تلفن مدیر:</label>
+                    <p>{{ warehouse.manager.phone_number|default:"-" }}</p>
+                </div>
+                {% endif %}
+                <div class="mb-3">
+                    <label class="fw-bold">وضعیت:</label>
+                    <p>
+                        <span class="badge {% if warehouse.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if warehouse.is_active %}فعال{% else %}غیرفعال{% endif %}
+                        </span>
+                    </p>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">آدرس و توضیحات</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="fw-bold">آدرس انبار:</label>
+                        <p>{{ warehouse.location|default:"-" }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="fw-bold">توضیحات:</label>
+                        <p>{{ warehouse.description|default:"-" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">آمار انبار</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">تعداد کالاها</h6>
+                                    <p class="card-text fs-4" id="warehouseItemCount">-</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="card-title">ارزش موجودی</h6>
+                                    <p class="card-text fs-4" id="warehouseValue">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-info w-100" onclick="loadWarehouseStats()">
+                            <i class="fas fa-sync-alt me-2"></i>بارگذاری آمار
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- موجودی انبار -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">موجودی انبار</h6>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" class="form-control" placeholder="جستجو در موجودی..." id="inventorySearch">
+                <button class="btn btn-outline-secondary" type="button" onclick="searchInventory()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="inventoryTable" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>نام کالا</th>
+                            <th>کد کالا</th>
+                            <th>شماره بچ</th>
+                            <th>موجودی</th>
+                            <th>واحد</th>
+                            <th>قیمت متوسط</th>
+                            <th>ارزش کل</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <tr>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">در حال بارگذاری...</span>
+                                </div>
+                                <p class="mt-2">در حال بارگذاری موجودی انبار...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- صفحه‌بندی -->
+            <nav aria-label="صفحه‌بندی" class="mt-4">
+                <ul class="pagination justify-content-center" id="inventoryPagination">
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- مودال ویرایش انبار -->
+<div class="modal fade" id="editWarehouseModal" tabindex="-1" aria-labelledby="editWarehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editWarehouseModalLabel">ویرایش انبار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editWarehouseForm">
+                    <input type="hidden" id="editWarehouseId" name="id" value="{{ warehouse.id }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="editWarehouseName" class="form-label">نام انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editWarehouseName" name="name" value="{{ warehouse.name }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editWarehouseCode" class="form-label">کد انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editWarehouseCode" name="code" value="{{ warehouse.code }}" required>
+                        </div>
+                    </div>
+                  <div class="mb-3">
+                                <label for="warehouseManager" class="form-label">مدیر انبار</label>
+                                <select class="form-select" id="warehouseManager" name="manager">
+                                <option value="">انتخاب مدیر...</option>
+                        {% for profile in warehouse_managers %}
+                                <option value="{{ profile.user.id }}">{{ profile.first_name }} {{ profile.last_name }}</option>
+                        {% endfor %}
+                            </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editWarehouseLocation" class="form-label">آدرس انبار</label>
+                        <textarea class="form-control" id="editWarehouseLocation" name="location" rows="3">{{ warehouse.location }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editWarehouseDescription" class="form-label">توضیحات</label>
+                        <textarea class="form-control" id="editWarehouseDescription" name="description" rows="3">{{ warehouse.description }}</textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="editWarehouseActive" name="is_active" {% if warehouse.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="editWarehouseActive">انبار فعال است</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="updateWarehouse()">به‌روزرسانی</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'inventory/js/warehouses.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // بارگذاری موجودی انبار
+        loadInventory(1);
+        
+        // بارگذاری آمار انبار
+        loadWarehouseStats();
+    });
+</script>
+{% endblock %}

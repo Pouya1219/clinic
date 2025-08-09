@@ -1,0 +1,50 @@
+<!-- templates/settings/tabs/appointments.html -->
+<div class="settings_section">
+    <h2 class="settings_section_title">تنظیمات نوبت‌دهی</h2>
+    
+    <form method="post" class="settings_form">
+        {% csrf_token %}
+        
+        <div class="settings_form_group">
+            <label class="settings_label">مدت زمان ویزیت</label>
+            <select name="visit_duration" class="settings_select">
+                <option value="15" {% if settings.visit_duration == 15 %}selected{% endif %}>15 دقیقه</option>
+                <option value="30" {% if settings.visit_duration == 30 %}selected{% endif %}>30 دقیقه</option>
+                <option value="45" {% if settings.visit_duration == 45 %}selected{% endif %}>45 دقیقه</option>
+                <option value="60" {% if settings.visit_duration == 60 %}selected{% endif %}>60 دقیقه</option>
+            </select>
+        </div>
+
+        <div class="settings_form_group">
+            <label class="settings_label">ساعت کاری</label>
+            <div class="settings_time_range">
+                <input type="time" name="start_time" class="settings_input" value="{{ settings.calendar_start_time|time:'H:i' }}">
+                <span>تا</span>
+                <input type="time" name="end_time" class="settings_input" value="{{ settings.calendar_end_time|time:'H:i' }}">
+            </div>
+        </div>
+
+        <div class="settings_form_group">
+            <label class="settings_switch">
+                <input type="checkbox" name="allow_past_edit" {% if settings.allow_past_edit %}checked{% endif %}>
+                <span class="settings_switch_slider"></span>
+                <span class="settings_switch_label">امکان ویرایش روزهای گذشته</span>
+            </label>
+        </div>
+
+        <div class="settings_form_group">
+            <label class="settings_switch">
+                <input type="checkbox" name="show_patient_info" {% if settings.show_patient_info %}checked{% endif %}>
+                <span class="settings_switch_slider"></span>
+                <span class="settings_switch_label">نمایش اطلاعات بیمار در تقویم</span>
+            </label>
+        </div>
+
+        <div class="settings_form_actions">
+            <button type="submit" class="settings_button settings_button_primary">
+                <i class="fas fa-save"></i>
+                ذخیره تنظیمات
+            </button>
+        </div>
+    </form>
+</div>

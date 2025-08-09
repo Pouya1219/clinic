@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>صفحه ورود</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazir', sans-serif;
+        }
+
+        body {
+            background-image: url('../static/img/back_login.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .input-group label {
+            position: absolute;
+            right: 155px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:valid + label {
+            top: -10px;
+            right: 10px;
+            font-size: 0.8rem;
+            background: white;
+            padding: 0 5px;
+            color: #4CAF50;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            color: #4CAF50;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static '../static/css/login.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>خوش آمدید</h1>
+            <p>لطفا اطلاعات خود را وارد کنید</p>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" id="username" name="username" required>
+                <label for="username">نام کاربری</label>
+            </div>
+            
+            <div class="input-group">
+                <input type="password" id="password" name="password" required>
+                <label for="password">رمز عبور</label>
+            </div>
+            
+            <button type="submit" class="login-button">ورود</button>
+            {% if error %}
+                <p style="color:red">{{ error }}</p>
+            {% endif %}
+            <div class="forgot-password">
+                <a href="#">رمز عبور خود را فراموش کرده‌اید؟</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

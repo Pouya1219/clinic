@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title> </title>
+    <!--icon-->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon.png' %}">
+    <!--alert-->
+    {% comment %} <script src="{% static 'js/alert.js'%}"></script> {% endcomment %}
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/style.css' %}">
+    <!--navbar-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/navbar.css' %}">
+    <!--create_pation_record-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/create_pation_record.css' %}">
+     <!--sidebar-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/sidebar.css' %}">
+    <script src="{% static 'js/sidebar.js' %}"></script>
+    {% comment %} <script src="{% static 'js/search.js' %}"></script> {% endcomment %}
+    <!-- pations-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/pations.css' %}">
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/pation_file.css' %}">
+    <!--create_user-->
+    <script src="{% static 'js/create_user.js'%}"></script>
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/create_user.css' %}">
+    <!--edit_user-->
+    <script src="{% static 'js/edit_user_tabs.js'%}"></script>
+    <script src="{% static 'js/qr-code.js'%}"></script>
+    <script src="{% static 'js/print_personnal_card.js'%}"></script>
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/edit_user_tabs.css' %}">
+    <!-- Persian Date Picker -->
+    {% comment %} <script src="{% static 'js/jquery-3.6.0.min.js'%}"></script> {% endcomment %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/calender.css' %}">
+    <script src="{% static 'js/jalali/p-date1.js'%}"></script>
+    <script src="{% static 'js/jalali/persian-date.js'%}"></script>
+    <script src="{% static 'js/jalali/persian-date.min.js'%}"></script>
+    <script src="{% static 'js/jalali/persianpicker.min.js'%}"></script>
+    <script src="{% static 'js/color-picker.js'%}"></script>
+    {% comment %} <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script> {% endcomment %}
+    {% comment %} <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script> {% endcomment %}
+    {% comment %} <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css"> {% endcomment %}
+    <!-- Font Awesome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{% static 'js/out.js' %}"></script>
+    <script src="{% static 'js/mode-toggle.js' %}"></script>
+    <script src="{% static 'js/todaye.js' %}"></script>
+    <!--schedule-->
+    <!--<script src="{% static 'js/shift_schedule.js' %}"></script>-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/shift_schedule.css' %}">
+    {% comment %} <script src="{% static 'js/shift-switch-tab.js' %}"></script> {% endcomment %}
+    <!--search-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/sr_search.css' %}">
+    <script src="{% static 'js/sr_search.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
+    <!--print_patien-->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+    {% comment %} <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script> {% endcomment %}
+    <!--appointments-->
+    {% comment %} <link rel=stylesheet  type="text/css"  href="{% static 'css/appointment.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fa.js"></script>
+<script src="{% static 'appointments/js/config.js' %}"></script>
+<script src="{% static 'appointments/js/api.js' %}"></script>
+<script src="{% static 'appointments/js/calendar-manager.js' %}"></script>
+<script src="{% static 'appointments/js/ui-manager.js' %}"></script>
+<script src="{% static 'appointments/js/main.js' %}"></script> {% endcomment %}
+<!--settings-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'settings/css/settings.css' %}">
+    <script src="{% static 'settings/js/settings.js' %}"></script>
+    <!--appointment-->
+    
+    {% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/appointment_2.css'%}"> 
+     <script src="https://unpkg.com/persian-date@latest/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@latest/dist/js/persian-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@latest/dist/css/persian-datepicker.min.css">  
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fa.js"></script>
+    <script src="{% static 'appointment/js/config.js' %}"></script>
+    <script src="{% static 'appointment/js/api.js' %}"></script>
+    <script src="{% static 'appointment/js/calendar-manager.js' %}"></script>
+    <script src="{% static 'appointment/js/ui-manager.js' %}"></script>
+    <script src="{% static 'appointment/js/main.js' %}"></script> {% endcomment %}
+    <link rel=stylesheet  type="text/css"  href="{% static 'css/appointment.css' %}">
+    <!--clear-message-->
+    <script src="{% static 'js/clear-message.js' %}"></script>
+    <!--Settings-->
+    <link rel=stylesheet  type="text/css"  href="{% static 'settings_app/css/coding_tree.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+{% include 'components/_header.html' %} 
+{% include 'includes/_sr_navbar.html' %}
+{% include 'components/_sidebar.html' %} 
+{% block content %}
+<section class="main-content">
+
+</section>
+{% block javascript %}
+
+
+{% endblock javascript %}
+{% endblock content %}
+{% block extra_scripts %}{% endblock %}
+
+
+{% include 'components/_footer.html' %}
+</body>
+</html>

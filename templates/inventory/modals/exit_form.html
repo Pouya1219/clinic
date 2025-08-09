@@ -1,0 +1,485 @@
+<!-- templates/inventory/components/exit_form.html -->
+<form id="exitForm" method="post" class="needs-validation" novalidate>
+    {% csrf_token %}
+    
+    <div class="row">
+        <!-- Item Selection -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exitItem" class="form-label required">انتخاب کالا:</label>
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           id="exitItemSearch" 
+                           placeholder="جستجو کالا..." 
+                           autocomplete="off">
+                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#itemSelectModal">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="exitItem" name="item" required>
+                
+                <!-- Selected Item Display -->
+                <div class="selected-item-display mt-2" id="selectedItemDisplay" style="display: none;">
+                    <div class="card bg-light">
+                        <div class="card-body p-2">
+                            <div class="row align-items-center">
+                                <div class="col-2">
+                                    <img id="selectedItemImage" src="" alt="" class="img-fluid rounded" style="max-height: 40px;">
+                                </div>
+                                <div class="col-10">
+                                    <h6 class="mb-1" id="selectedItemName"></h6>
+                                    <small class="text-muted">
+                                        کد: <span id="selectedItemCode"></span> | 
+                                        موجودی: <span id="selectedItemStock" class="fw-bold text-success"></span>
+                                        <span id="selectedItemUnit"></span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="invalid-feedback">
+                    لطفا کالا را انتخاب کنید
+                </div>
+            </div>
+        </div>
+
+        <!-- Warehouse Selection -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exitWarehouse" class="form-label required">انبار:</label>
+                <select class="form-select" id="exitWarehouse" name="warehouse" required>
+                    <option value="">انتخاب انبار...</option>
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">
+                    لطفا انبار را انتخاب کنید
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Quantity -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="exitQuantity" class="form-label required">مقدار خروجی:</label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="exitQuantity" 
+                           name="quantity" 
+                           step="0.01" 
+                           min="0.01" 
+                           required>
+                    <span class="input-group-text" id="exitQuantityUnit">واحد</span>
+                </div>
+                <div class="form-text">
+                    موجودی فعلی: <span id="availableStock" class="fw-bold text-success">0</span>
+                </div>
+                <div class="invalid-feedback">
+                    لطفا مقدار معتبر وارد کنید
+                </div>
+            </div>
+        </div>
+
+        <!-- Exit Type -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="exitType" class="form-label">نوع خروجی:</label>
+                <select class="form-select" id="exitType" name="exit_type">
+                    <option value="sale">فروش</option>
+                    <option value="transfer">انتقال</option>
+                    <option value="return">مرجوعی</option>
+                    <option value="damage">آسیب دیده</option>
+                    <option value="expired">منقضی شده</option>
+                    <option value="adjustment">تعدیل</option>
+                    <option value="other">سایر</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Exit Date -->
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="exitDate" class="form-label">تاریخ خروجی:</label>
+                <input type="date" 
+                       class="form-control" 
+                       id="exitDate" 
+                       name="exit_date" 
+                       value="{{ today|date:'Y-m-d' }}">
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch/Serial Selection (if applicable) -->
+    <div class="row" id="batchSerialSection" style="display: none;">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exitBatch" class="form-label">شماره بچ:</label>
+                <select class="form-select" id="exitBatch" name="batch">
+                    <option value="">انتخاب بچ...</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exitSerial" class="form-label">شماره سریال:</label>
+                <input type="text" class="form-control" id="exitSerial" name="serial_number" placeholder="شماره سریال...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Destination (for transfers) -->
+    <div class="row" id="destinationSection" style="display: none;">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="destinationWarehouse" class="form-label">انبار مقصد:</label>
+                <select class="form-select" id="destinationWarehouse" name="destination_warehouse">
+                    <option value="">انتخاب انبار مقصد...</option>
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="transferReference" class="form-label">شماره مرجع انتقال:</label>
+                <input type="text" class="form-control" id="transferReference" name="transfer_reference" placeholder="شماره مرجع...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer/Recipient Info -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="recipient" class="form-label">گیرنده:</label>
+                <input type="text" class="form-control" id="recipient" name="recipient" placeholder="نام گیرنده...">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="recipientContact" class="form-label">تماس گیرنده:</label>
+                <input type="text" class="form-control" id="recipientContact" name="recipient_contact" placeholder="شماره تماس...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Unit Price and Total Value -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="unitPrice" class="form-label">قیمت واحد:</label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="unitPrice" 
+                           name="unit_price" 
+                           step="0.01" 
+                           min="0">
+                    <span class="input-group-text">ریال</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="totalValue" class="form-label">ارزش کل:</label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="totalValue" 
+                           name="total_value" 
+                           readonly>
+                    <span class="input-group-text">ریال</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label for="discount" class="form-label">تخفیف:</label>
+                <div class="input-group">
+                    <input type="number" 
+                           class="form-control" 
+                           id="discount" 
+                           name="discount" 
+                           step="0.01" 
+                           min="0">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reference and Notes -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="referenceNumber" class="form-label">شماره مرجع:</label>
+                <input type="text" class="form-control" id="referenceNumber" name="reference_number" placeholder="شماره فاکتور، حواله و...">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="exitNotes" class="form-label">توضیحات:</label>
+                <textarea class="form-control" id="exitNotes" name="notes" rows="3" placeholder="توضیحات اضافی..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Attachments -->
+    <div class="row">
+        <div class="col-12">
+            <div class="mb-3">
+                <label for="attachments" class="form-label">پیوست‌ها:</label>
+                <input type="file" class="form-control" id="attachments" name="attachments" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                <div class="form-text">
+                    فرمت‌های مجاز: PDF, JPG, PNG, DOC, DOCX (حداکثر 5 فایل)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    <div class="card bg-light mb-3" id="exitSummary" style="display: none;">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>خلاصه خروجی</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <strong>کالا:</strong><br>
+                    <span id="summaryItemName">-</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>مقدار:</strong><br>
+                    <span id="summaryQuantity">-</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>انبار:</strong><br>
+                    <span id="summaryWarehouse">-</span>
+                </div>
+                <div class="col-md-3">
+                    <strong>ارزش کل:</strong><br>
+                    <span id="summaryTotalValue" class="text-success fw-bold">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" onclick="resetExitForm()">
+            <i class="fas fa-undo me-2"></i>پاک کردن
+        </button>
+        <button type="button" class="btn btn-info" onclick="previewExit()">
+            <i class="fas fa-eye me-2"></i>پیش‌نمایش
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitExitBtn">
+            <i class="fas fa-check me-2"></i>ثبت خروجی
+            <span class="spinner-border spinner-border-sm ms-2" id="exitSubmitSpinner" style="display: none;"></span>
+        </button>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeExitForm();
+});
+
+function initializeExitForm() {
+    // Item search functionality
+    const itemSearch = document.getElementById('exitItemSearch');
+    const itemSearchDebounced = debounce(searchItems, 300);
+    
+    itemSearch.addEventListener('input', function() {
+        itemSearchDebounced(this.value);
+    });
+
+    // Exit type change handler
+    document.getElementById('exitType').addEventListener('change', function() {
+        toggleDestinationSection(this.value === 'transfer');
+    });
+
+    // Quantity and price calculations
+    document.getElementById('exitQuantity').addEventListener('input', calculateTotalValue);
+    document.getElementById('unitPrice').addEventListener('input', calculateTotalValue);
+    document.getElementById('discount').addEventListener('input', calculateTotalValue);
+
+    // Warehouse change handler
+    document.getElementById('exitWarehouse').addEventListener('change', function() {
+        updateAvailableStock();
+        updateSummary();
+    });
+
+    // Form submission
+    document.getElementById('exitForm').addEventListener('submit', handleExitSubmit);
+}
+
+function searchItems(query) {
+    if (query.length < 2) return;
+    
+    // Implementation will be in main JS file
+    console.log('Searching items:', query);
+}
+
+function selectItem(item) {
+    document.getElementById('exitItem').value = item.id;
+    document.getElementById('exitItemSearch').value = item.name;
+    
+    // Update selected item display
+    const display = document.getElementById('selectedItemDisplay');
+    document.getElementById('selectedItemName').textContent = item.name;
+    document.getElementById('selectedItemCode').textContent = item.code;
+    document.getElementById('selectedItemStock').textContent = item.current_stock;
+    document.getElementById('selectedItemUnit').textContent = item.unit;
+    document.getElementById('exitQuantityUnit').textContent = item.unit;
+    
+    if (item.image) {
+        document.getElementById('selectedItemImage').src = item.image;
+    }
+    
+    display.style.display = 'block';
+    
+    // Update available stock
+    updateAvailableStock();
+    
+    // Show batch/serial section if needed
+    if (item.track_batches || item.track_serials) {
+        document.getElementById('batchSerialSection').style.display = 'block';
+        loadBatches(item.id);
+    }
+    
+    updateSummary();
+}
+
+function updateAvailableStock() {
+    const itemId = document.getElementById('exitItem').value;
+    const warehouseId = document.getElementById('exitWarehouse').value;
+    
+    if (itemId && warehouseId) {
+        // Fetch available stock for selected item and warehouse
+        // Implementation will be in main JS file
+        console.log('Updating available stock for item:', itemId, 'warehouse:', warehouseId);
+    }
+}
+
+function calculateTotalValue() {
+    const quantity = parseFloat(document.getElementById('exitQuantity').value) || 0;
+    const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 0;
+    const discount = parseFloat(document.getElementById('discount').value) || 0;
+    
+    let totalValue = quantity * unitPrice;
+    
+    if (discount > 0) {
+        totalValue = totalValue * (1 - discount / 100);
+    }
+    
+    document.getElementById('totalValue').value = totalValue.toFixed(2);
+    updateSummary();
+}
+
+function toggleDestinationSection(show) {
+    document.getElementById('destinationSection').style.display = show ? 'block' : 'none';
+}
+
+function updateSummary() {
+    const itemName = document.getElementById('exitItemSearch').value;
+    const quantity = document.getElementById('exitQuantity').value;
+    const warehouse = document.getElementById('exitWarehouse').selectedOptions[0]?.text;
+    const totalValue = document.getElementById('totalValue').value;
+    
+    if (itemName && quantity && warehouse) {
+        document.getElementById('summaryItemName').textContent = itemName;
+        document.getElementById('summaryQuantity').textContent = quantity + ' ' + document.getElementById('exitQuantityUnit').textContent;
+        document.getElementById('summaryWarehouse').textContent = warehouse;
+        document.getElementById('summaryTotalValue').textContent = totalValue ? formatCurrency(totalValue) : '-';
+        
+        document.getElementById('exitSummary').style.display = 'block';
+    } else {
+        document.getElementById('exitSummary').style.display = 'none';
+    }
+}
+
+function loadBatches(itemId) {
+    // Load available batches for the selected item
+    // Implementation will be in main JS file
+    console.log('Loading batches for item:', itemId);
+}
+
+function resetExitForm() {
+    document.getElementById('exitForm').reset();
+    document.getElementById('selectedItemDisplay').style.display = 'none';
+    document.getElementById('batchSerialSection').style.display = 'none';
+    document.getElementById('destinationSection').style.display = 'none';
+    document.getElementById('exitSummary').style.display = 'none';
+}
+
+function previewExit() {
+    // Show preview modal
+    console.log('Preview exit');
+}
+
+async function handleExitSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const submitBtn = document.getElementById('submitExitBtn');
+    const spinner = document.getElementById('exitSubmitSpinner');
+    
+    // Validate form
+    if (!form.checkValidity()) {
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    spinner.style.display = 'inline-block';
+    
+    try {
+        const formData = new FormData(form);
+        
+        // Submit via API
+        const response = await inventoryAPI.createExit(formData);
+        
+        if (response.success) {
+            showToast('خروجی با موفقیت ثبت شد', 'success');
+            resetExitForm();
+            
+            // Close modal if in modal
+            const modal = document.querySelector('.modal.show');
+            if (modal) {
+                bootstrap.Modal.getInstance(modal).hide();
+            }
+            
+            // Refresh data
+            if (typeof refreshExitsList === 'function') {
+                refreshExitsList();
+            }
+        }
+    } catch (error) {
+        console.error('Exit submission error:', error);
+        showToast('خطا در ثبت خروجی', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+    }
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
+}
+</script>

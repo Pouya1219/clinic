@@ -1,0 +1,266 @@
+<!-- templates/inventory/components/confirm_delete.html -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    تأیید حذف
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-trash-alt fa-3x text-danger"></i>
+                    </div>
+                    
+                    <h5 class="mb-3" id="deleteTitle">آیا از حذف این آیتم اطمینان دارید؟</h5>
+                    
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>هشدار:</strong> این عمل قابل بازگشت نیست!
+                    </div>
+                    
+                    <!-- Item Details -->
+                    <div class="card bg-light" id="deleteItemDetails" style="display: none;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    <img id="deleteItemImage" src="" alt="" class="img-fluid rounded" style="max-height: 80px;">
+                                </div>
+                                <div class="col-8 text-start">
+                                    <h6 id="deleteItemName" class="mb-1"></h6>
+                                    <p class="mb-1"><strong>کد:</strong> <span id="deleteItemCode"></span></p>
+                                    <p class="mb-1"><strong>موجودی:</strong> <span id="deleteItemStock"></span></p>
+                                    <p class="mb-0"><strong>دسته‌بندی:</strong> <span id="deleteItemCategory"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bulk Delete Info -->
+                    <div class="alert alert-info" id="bulkDeleteInfo" style="display: none;">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span id="bulkDeleteCount">0</span> آیتم انتخاب شده برای حذف
+                    </div>
+                    
+                    <!-- Related Data Warning -->
+                    <div class="alert alert-danger" id="relatedDataWarning" style="display: none;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>توجه:</strong> حذف این آیتم باعث حذف اطلاعات مرتبط زیر خواهد شد:
+                        <ul class="mt-2 mb-0 text-start" id="relatedDataList">
+                            <!-- Related data will be populated here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>انصراف
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn" onclick="executeDelete()">
+                    <i class="fas fa-trash me-2"></i>
+                    <span id="deleteButtonText">حذف</span>
+                    <span id="deleteSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alternative Confirmation Dialog (SweetAlert Style) -->
+<script>
+class ConfirmDelete {
+    constructor() {
+        this.currentItem = null;
+        this.currentItems = [];
+        this.deleteCallback = null;
+    }
+
+    // Single item delete
+    showSingle(item, callback) {
+        this.currentItem = item;
+        this.deleteCallback = callback;
+        
+        // Update modal content
+        document.getElementById('deleteTitle').textContent = `آیا از حذف "${item.name}" اطمینان دارید؟`;
+        document.getElementById('bulkDeleteInfo').style.display = 'none';
+        
+        // Show item details
+        const detailsCard = document.getElementById('deleteItemDetails');
+        if (item.image) {
+            document.getElementById('deleteItemImage').src = item.image;
+            document.getElementById('deleteItemImage').style.display = 'block';
+        } else {
+            document.getElementById('deleteItemImage').style.display = 'none';
+        }
+        
+        document.getElementById('deleteItemName').textContent = item.name;
+        document.getElementById('deleteItemCode').textContent = item.code;
+        document.getElementById('deleteItemStock').textContent = `${item.current_stock} ${item.unit}`;
+        document.getElementById('deleteItemCategory').textContent = item.category;
+        
+        detailsCard.style.display = 'block';
+        
+        // Check for related data
+        this.checkRelatedData(item.id);
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        modal.show();
+    }
+
+    // Bulk delete
+    showBulk(items, callback) {
+        this.currentItems = items;
+        this.deleteCallback = callback;
+        
+        // Update modal content
+        document.getElementById('deleteTitle').textContent = 'آیا از حذف آیتم‌های انتخاب شده اطمینان دارید؟';
+        document.getElementById('deleteItemDetails').style.display = 'none';
+        
+        // Show bulk info
+        const bulkInfo = document.getElementById('bulkDeleteInfo');
+        document.getElementById('bulkDeleteCount').textContent = items.length;
+        bulkInfo.style.display = 'block';
+        
+        // Update button text
+        document.getElementById('deleteButtonText').textContent = `حذف ${items.length} آیتم`;
+        
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        modal.show();
+    }
+
+    // Check for related data
+    async checkRelatedData(itemId) {
+        try {
+            const response = await fetch(`/inventory/api/items/${itemId}/related-data/`);
+            const data = await response.json();
+            
+            if (data.has_related_data) {
+                const warningDiv = document.getElementById('relatedDataWarning');
+                const relatedList = document.getElementById('relatedDataList');
+                
+                let listHTML = '';
+                if (data.entries_count > 0) {
+                    listHTML += `<li>${data.entries_count} ورودی انبار</li>`;
+                }
+                if (data.exits_count > 0) {
+                    listHTML += `<li>${data.exits_count} خروجی انبار</li>`;
+                }
+                if (data.adjustments_count > 0) {
+                    listHTML += `<li>${data.adjustments_count} تعدیل موجودی</li>`;
+                }
+                
+                relatedList.innerHTML = listHTML;
+                warningDiv.style.display = 'block';
+            } else {
+                document.getElementById('relatedDataWarning').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error checking related data:', error);
+        }
+    }
+
+    // Execute delete
+    async executeDelete() {
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteSpinner = document.getElementById('deleteSpinner');
+        
+        // Show loading state
+        deleteBtn.disabled = true;
+        deleteSpinner.style.display = 'inline-block';
+        
+        try {
+            if (this.deleteCallback) {
+                await this.deleteCallback(this.currentItem || this.currentItems);
+            }
+            
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+            modal.hide();
+            
+            // Show success message
+            showToast('حذف با موفقیت انجام شد', 'success');
+            
+        } catch (error) {
+            console.error('Delete error:', error);
+            showToast('خطا در حذف آیتم', 'error');
+        } finally {
+            // Reset button state
+            deleteBtn.disabled = false;
+            deleteSpinner.style.display = 'none';
+        }
+    }
+
+    // SweetAlert alternative
+    static async showSweetAlert(title, text, confirmText = 'حذف', cancelText = 'انصراف') {
+        const result = await Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: confirmText,
+            cancelButtonText: cancelText,
+            reverseButtons: true,
+            customClass: {
+                popup: 'text-right'
+            }
+        });
+
+        return result.isConfirmed;
+    }
+
+    // Quick delete confirmation
+    static async quickConfirm(itemName) {
+        return await this.showSweetAlert(
+            'تأیید حذف',
+            `آیا از حذف "${itemName}" اطمینان دارید؟\nاین عمل قابل بازگشت نیست!`
+        );
+    }
+}
+
+// Global instance
+const confirmDelete = new ConfirmDelete();
+
+// Global functions for backward compatibility
+function executeDelete() {
+    confirmDelete.executeDelete();
+}
+
+// Usage examples:
+/*
+// Single item delete
+confirmDelete.showSingle({
+    id: 1,
+    name: 'کالای نمونه',
+    code: 'ITEM001',
+    current_stock: 10,
+    unit: 'عدد',
+    category: 'دسته اول',
+    image: '/path/to/image.jpg'
+}, async (item) => {
+    await inventoryAPI.deleteItem(item.id);
+    // Refresh table or remove item from UI
+});
+
+// Bulk delete
+confirmDelete.showBulk([item1, item2, item3], async (items) => {
+    for (const item of items) {
+        await inventoryAPI.deleteItem(item.id);
+    }
+    // Refresh table
+});
+
+// Quick SweetAlert confirmation
+if (await ConfirmDelete.quickConfirm('کالای نمونه')) {
+    // Delete item
+}
+*/
+</script>

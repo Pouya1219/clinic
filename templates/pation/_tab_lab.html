@@ -1,0 +1,272 @@
+{% load static %}
+<div class="lab-form-container">
+        <!-- جدول نمایش اطلاعات -->
+    <div class="lab-table-container">
+        <div class="dental-chart-container">
+            <!-- دکمه‌های انتخاب فک -->
+<div class="jaw-selection-buttons">
+    <button class="btn select-jaw-btn" onclick="selectAllTeeth()">
+        <i class="fas fa-teeth"></i>
+        انتخاب تمام دندان‌ها
+    </button>
+    <button class="btn select-jaw-btn" onclick="selectUpperJaw()">
+        <i class="fas fa-tooth"></i>
+        انتخاب فک بالا
+    </button>
+    <button class="btn select-jaw-btn" onclick="selectLowerJaw()">
+        <i class="fas fa-tooth"></i>
+        انتخاب فک پایین
+    </button>
+</div>
+    <div class="dental-chart">
+      {% include 'pation/_chart_lab.html'%}
+</div>
+<hr>
+        <form class="lab-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="tooth-name-display">
+            
+        <div class="input-group">
+            <label>شماره دندان‌ها:</label>
+            <input type="text" id="selected-teeth" readonly placeholder="دندان‌های انتخاب شده">
+        </div>
+        <div class="input-group">
+            <label>نام علمی دندان‌ها:</label>
+            <input type="text" id="teeth-names" readonly placeholder="نام علمی دندان‌ها">
+        </div>
+        <div class="input-group">
+            <label>تعداد دندان‌ها:</label>
+            <input type="text" id="teeth-count" readonly placeholder="تعداد">
+        </div>
+    </div>
+    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>لابراتوار</label>
+                    <select class="lab-select">
+                        <option value="">انتخاب کنید</option>
+                        <option value="lab1">لابراتوار 1</option>
+                        <option value="lab2">لابراتوار 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>تلفن</label>
+                    <input type="tel" class="lab-phone">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>تاریخ ارسال</label>
+                    <input type="date" class="send-date">
+                </div>
+
+                <div class="form-group">
+                    <label>تاریخ دریافت</label>
+                    <input type="date" class="receive-date">
+                </div>
+
+                <div class="form-group">
+                    <label>تاریخ یادآوری</label>
+                    <input type="date" class="reminder-date">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>مبلغ (تومان)</label>
+                    <input type="number" class="lab-cost">
+                </div>
+
+                <div class="form-group">
+                    <label>طرف حساب</label>
+                    <select class="payment-party">
+                        <option value="patient">بیمار</option>
+                        <option value="clinic">کلینیک</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row status-row">
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="sent-status">
+                    <label for="sent-status">ارسال شده</label>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="received-status">
+                    <label for="received-status">دریافت شده</label>
+                </div>
+            </div>
+
+            <button type="submit" class="save-lab-btn">ذخیره</button>
+        </form>
+    </div>
+
+<!--pardakht labratoar-->
+<div class="payment-table-container">
+    <table class="payment-table">
+    <thead>
+        <tr>
+            <th>ردیف</th>
+            <th>شماره دندان</th>
+            <th>نام دندان</th>
+            <th>تاریخ</th>
+            <th>بدهکار</th>
+            <th>بستانکار</th>
+            <th>مانده</th>
+            <th>وضعیت</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>14, 15</td>
+            <td>First Premolar, Second Premolar</td>
+            <td>1402/08/25</td>
+            <td>2,500,000</td>
+            <td>1,500,000</td>
+            <td>1,000,000</td>
+            <td>در انتظار پرداخت</td>
+            <td class="action-buttons">
+                <button class="btn pay-btn" onclick="showPaymentModal()">
+                    <i class="fas fa-money-bill"></i>
+                    پرداخت
+                </button>
+                <button class="btn print-btn" onclick="printBill()">
+                    <i class="fas fa-print"></i>
+                    پرینت
+                </button>
+                <button class="btn invoice-btn" onclick="showInvoiceModal()">
+                    <i class="fas fa-file-invoice"></i>
+                    صدور فاکتور
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+        <table class="lab-table">
+            <thead>
+                <tr>
+                    <th>ردیف</th>
+                    <th>شماره دندان</th>
+                    <th>لابراتوار</th>
+                    <th>تلفن</th>
+                    <th>تاریخ ارسال</th>
+                    <th>تاریخ دریافت</th>
+                    <th>تاریخ یادآوری</th>
+                    <th>مبلغ</th>
+                    <th>طرف حساب</th>
+                    <th>وضعیت ارسال</th>
+                    <th>وضعیت دریافت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>14, 15</td>
+                    <td>لابراتوار 1</td>
+                    <td>09123456789</td>
+                    <td>1402/08/25</td>
+                    <td>1402/09/05</td>
+                    <td>1402/09/01</td>
+                    <td>2,500,000</td>
+                    <td>بیمار</td>
+                    <td><i class="fas fa-check text-success"></i></td>
+                    <td><i class="fas fa-times text-danger"></i></td>
+                    <td>
+                        <button class="delete-btn" title="حذف">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<hr>
+<div id="invoice-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>فاکتور رسمی</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="invoice-content">
+            <div class="invoice-printable" id="printable-invoice">
+                <div class="invoice-header">
+                    <div class="clinic-info">
+                        <h2>کلینیک دندانپزشکی</h2>
+                        <p>تاریخ: <span id="invoice-date"></span></p>
+                    </div>
+                </div>
+                
+                <div class="customer-info">
+                    <p>نام بیمار: <span id="customer-name"></span></p>
+                    <p>کد ملی: <span id="customer-id"></span></p>
+                </div>
+
+                <div class="invoice-details">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>ش فاکتور</th>
+                                <th>ش کل</th>
+                                <th>ردیف</th>
+                                <th>نوع حساب</th>
+                                <th>بدهکار</th>
+                                <th>بستانکار</th>
+                                <th>مانده</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="debit-row">
+                                <td rowspan="3" id="invoice-number"></td>
+                                <td rowspan="3" id="total-number"></td>
+                                <td>1</td>
+                                <td>درمان دندان</td>
+                                <td id="debit-amount">2,500,000</td>
+                                <td>0</td>
+                                <td>2,500,000</td>
+                            </tr>
+                            <tr class="credit-row">
+                                <td>2</td>
+                                <td>پرداخت نقدی</td>
+                                <td>0</td>
+                                <td id="credit-amount">1,500,000</td>
+                                <td>1,000,000</td>
+                            </tr>
+                            <tr class="remaining-row">
+                                <td>3</td>
+                                <td>مانده</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td id="remaining-amount">1,000,000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="invoice-footer">
+                    <div class="signatures">
+                        <div class="signature-box">
+                            <p>مهر و امضای مسئول</p>
+                            <div class="signature-line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn print-invoice" onclick="printInvoice()">پرینت فاکتور</button>
+            <button class="btn close-btn" onclick="closeInvoiceModal()">بستن</button>
+        </div>
+    </div>
+</div>

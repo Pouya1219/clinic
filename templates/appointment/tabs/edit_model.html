@@ -1,0 +1,86 @@
+<h3>ویرایش نوبت</h3>
+
+  <form class="appointment_edit-form">
+
+    <div class="appointment_edit-row">
+      <label>از ساعت:</label>
+      <input type="text" class="appointment_edit-input" value="09:00" readonly />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>تا ساعت:</label>
+      <input type="text" class="appointment_edit-input" value="09:30" readonly />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>شماره پرونده:</label>
+      <input type="text" class="appointment_edit-input" value="P1234" readonly />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>پزشک معالج:</label>
+      <input type="text" class="appointment_edit-input" value="دکتر رضایی" readonly />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>تاریخ ثبت:</label>
+      <input type="text" class="appointment_edit-input" value="۱۴۰۴/۰۳/۲۳" readonly />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>تاریخ مراجعه:</label>
+      <input type="text" class="appointment_edit-input" value="۱۴۰۴/۰۳/۲۵" readonly />
+    </div>
+
+    <!-- فیلدهای قابل ویرایش -->
+    <div class="appointment_edit-row">
+      <label>نام:</label>
+      <input type="text" class="appointment_edit-input" value="علی" />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>نام خانوادگی:</label>
+      <input type="text" class="appointment_edit-input" value="احمدی" />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>شماره تماس:</label>
+      <input type="text" class="appointment_edit-input" value="09123456789" />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>نوع درمان:</label>
+      <input type="text" class="appointment_edit-input" value="ترمیمی" />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>شرح درمان:</label>
+      <textarea class="appointment_edit-textarea">پر کردن دندان شماره ۵</textarea>
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>معرف:</label>
+      <input type="text" class="appointment_edit-input" value="کلینیک سلامت نوین" />
+    </div>
+
+    <div class="appointment_edit-row">
+      <label>وضعیت:</label>
+      <select class="appointment_edit-select">
+        <option value="در انتظار">در انتظار</option>
+        <option value="تایید شده" selected>تایید شده</option>
+        <option value="لغو شده">لغو شده</option>
+      </select>
+    </div>
+
+    <div class="appointment_edit-actions">
+      <button class="appointment_button appointment_button-success">
+        <i class="fas fa-save"></i> ذخیره تغییرات
+      </button>
+      <button id="deleteAppointmentBtn" class="appointment_button appointment_button-danger" style="display:none;">
+    <i class="fas fa-trash-alt"></i> حذف نوبت
+      </button>
+      <button class="appointment_button appointment_button-secondary" onclick="closeModal()">
+        <i class="fas fa-times"></i> انصراف
+      </button>
+    </div>
+  </form>

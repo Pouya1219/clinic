@@ -1,0 +1,308 @@
+<!-- templates/inventory/inventory_list.html -->
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="page-title mb-1">
+                        <i class="fas fa-clipboard-list me-2 text-primary"></i>
+                        {{ page_title }}
+                    </h2>
+                    <p class="text-muted mb-0">مشاهده و مدیریت موجودی کالاها در انبارها</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-success" onclick="refreshInventory()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        بروزرسانی موجودی
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فیلترها -->
+    <div class="filter-card mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="form-label">انبار:</label>
+                <select id="warehouseFilter" class="form-select">
+                    <option value="">همه انبارها</option>
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">دسته‌بندی:</label>
+                <select id="categoryFilter" class="form-select">
+                    <option value="">همه دسته‌ها</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">جستجو:</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="نام کالا یا کد...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"> </label>
+                <button class="btn btn-primary w-100" onclick="applyFilters()">
+                    <i class="fas fa-filter me-1"></i>
+                    اعمال فیلتر
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول موجودی -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="table table-hover" id="inventoryTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th>کد کالا</th>
+                        <th>نام کالا</th>
+                        <th>دسته‌بندی</th>
+                        <th>انبار</th>
+                        <th>موجودی فعلی</th>
+                        <th>واحد</th>
+                        <th>حداقل موجودی</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2 text-muted">در حال بارگذاری...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="text-muted">
+            نمایش <span id="showingFrom">0</span> تا <span id="showingTo">0</span> از <span id="totalRecords">0</span> رکورد
+        </div>
+        <nav>
+            <ul class="pagination mb-0" id="pagination">
+                <!-- صفحه‌بندی اینجا اضافه میشه -->
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Modal جزئیات موجودی -->
+<div class="modal fade" id="inventoryDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">جزئیات موجودی</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="inventoryDetailContent">
+                <!-- محتوا اینجا بارگذاری میشه -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.filter-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.table-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-normal {
+    background: #d1edff;
+    color: #0969da;
+}
+
+.status-low {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-critical {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    loadInventoryData();
+});
+
+function loadInventoryData() {
+    // داده‌های نمونه
+    const sampleData = [
+        {
+            code: 'ITM001',
+            name: 'دستکش لاتکس',
+            category: 'تجهیزات پزشکی',
+            warehouse: 'انبار اصلی',
+            current_stock: 500,
+            unit: 'جفت',
+            min_stock: 100,
+            status: 'normal'
+        },
+        {
+            code: 'ITM002',
+            name: 'ماسک سه لایه',
+            category: 'تجهیزات پزشکی',
+            warehouse: 'انبار اصلی',
+            current_stock: 50,
+            unit: 'عدد',
+            min_stock: 200,
+            status: 'low'
+        },
+        {
+            code: 'ITM003',
+            name: 'آلکل طبی',
+            category: 'مواد ضدعفونی',
+            warehouse: 'انبار دارو',
+            current_stock: 10,
+            unit: 'لیتر',
+            min_stock: 50,
+            status: 'critical'
+        }
+    ];
+    
+    let tableBody = '';
+    sampleData.forEach(item => {
+        const statusClass = item.status === 'normal' ? 'status-normal' : 
+                           item.status === 'low' ? 'status-low' : 'status-critical';
+        const statusText = item.status === 'normal' ? 'عادی' : 
+                          item.status === 'low' ? 'کم' : 'بحرانی';
+        
+        tableBody += `
+            <tr>
+                <td>${item.code}</td>
+                <td>${item.name}</td>
+                <td>${item.category}</td>
+                <td>${item.warehouse}</td>
+                <td><strong>${item.current_stock.toLocaleString()}</strong></td>
+                <td>${item.unit}</td>
+                <td>${item.min_stock.toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-1" onclick="viewDetails('${item.code}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" onclick="adjustStock('${item.code}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    $('#inventoryTableBody').html(tableBody);
+    
+    // آپدیت اطلاعات صفحه‌بندی
+    $('#showingFrom').text('1');
+    $('#showingTo').text(sampleData.length);
+    $('#totalRecords').text(sampleData.length);
+}
+
+function refreshInventory() {
+    loadInventoryData();
+    showSuccess('موجودی بروزرسانی شد');
+}
+
+function applyFilters() {
+    loadInventoryData();
+    showSuccess('فیلترها اعمال شد');
+}
+
+function viewDetails(code) {
+    $('#inventoryDetailModal').modal('show');
+    $('#inventoryDetailContent').html(`
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary"></div>
+            <p class="mt-2">در حال بارگذاری جزئیات...</p>
+        </div>
+    `);
+    
+    setTimeout(() => {
+        $('#inventoryDetailContent').html(`
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>اطلاعات کالا</h6>
+                    <p><strong>کد:</strong> ${code}</p>
+                    <p><strong>نام:</strong> دستکش لاتکس</p>
+                    <p><strong>دسته‌بندی:</strong> تجهیزات پزشکی</p>
+                </div>
+                <div class="col-md-6">
+                    <h6>وضعیت موجودی</h6>
+                    <p><strong>موجودی فعلی:</strong> 500 جفت</p>
+                    <p><strong>حداقل موجودی:</strong> 100 جفت</p>
+                    <p><strong>وضعیت:</strong> <span class="status-badge status-normal">عادی</span></p>
+                </div>
+            </div>
+        `);
+    }, 1000);
+}
+
+function adjustStock(code) {
+    showSuccess('تنظیم موجودی در حال توسعه است');
+}
+
+function showSuccess(message) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'موفق!',
+            text: message,
+            timer: 2000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false
+        });
+    } else {
+        alert(message);
+    }
+}
+</script>
+{% endblock %}

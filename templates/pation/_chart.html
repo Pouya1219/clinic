@@ -1,0 +1,438 @@
+{% load static %}
+
+<div class="dental-charts-container">
+    <!-- انتخاب نوع چارت -->
+    <div class="chart-type-selector">
+        <button class="chart-type-btn active" data-chart="adult_teeth">
+            <i class="fas fa-tooth"></i>
+            دندان بزرگسال
+        </button>
+        <button class="chart-type-btn" data-chart="child_teeth">
+            <i class="fas fa-baby"></i>
+            دندان کودک
+        </button>
+        <button class="chart-type-btn" data-chart="face">
+            <i class="fas fa-smile"></i>
+            زیبایی صورت
+        </button>
+        <button class="chart-type-btn" data-chart="body">
+            <i class="fas fa-user"></i>
+            اعضای بدن
+        </button>
+    </div>
+    
+    <!-- چارت دندان بزرگسال -->
+    <div class="dental-chart" data-type="adult_teeth">
+        {% include 'treatment/_adult_teeth_chart.html' %}
+    </div>
+    
+    <!-- چارت دندان کودک -->
+    <div class="dental-chart" data-type="child_teeth" style="display: none;">
+        {% include 'treatment/_child_teeth_chart.html' %}
+    </div>
+    
+    <!-- چارت زیبایی صورت -->
+    <div class="dental-chart" data-type="face" style="display: none;">
+        {% include 'treatment/_face_chart.html' %}
+    </div>
+    
+    <!-- چارت اعضای بدن -->
+    <div class="dental-chart" data-type="body" style="display: none;">
+        {% include 'treatment/_body_chart.html' %}
+    </div>
+</div>
+
+<!-- Tooth Icon Modal -->
+<div class="dental-icon-modal" id="toothIconModal">
+    <div class="dental-modal-content">
+        <div class="dental-modal-header">
+            <h3>انتخاب وضعیت دندان</h3>
+            <button class="dental-modal-close">&times;</button>
+        </div>
+        <div class="dental-modal-body">
+            <div class="dental-icon-grid">
+                <div class="dental-icon-option" data-icon="tooth">
+                    <i class="fas fa-tooth"></i>
+                    <span>دندان سالم</span>
+                </div>
+                <div class="dental-icon-option" data-icon="implant">
+                    <i class="fas fa-teeth"></i>
+                    <span>ایمپلنت</span>
+                </div>
+                <div class="dental-icon-option" data-icon="missing">
+                    <i class="fas fa-times"></i>
+                    <span>دندان از دست رفته</span>
+                </div>
+                <div class="dental-icon-option" data-icon="crown">
+                    <i class="fas fa-crown"></i>
+                    <span>روکش</span>
+                </div>
+                <div class="dental-icon-option" data-icon="bridge">
+                    <i class="fas fa-grip-lines"></i>
+                    <span>بریج</span>
+                </div>
+                <div class="dental-icon-option" data-icon="decay">
+                    <i class="fas fa-bug"></i>
+                    <span>پوسیدگی</span>
+                </div>
+                <div class="dental-icon-option" data-icon="filling">
+                    <i class="fas fa-fill"></i>
+                    <span>پر شده</span>
+                </div>
+                <div class="dental-icon-option" data-icon="root-canal">
+                    <i class="fas fa-wave-square"></i>
+                    <span>عصب کشی شده</span>
+                </div>
+                <div class="dental-icon-option" data-icon="extraction">
+                    <i class="fas fa-minus-circle"></i>
+                    <span>نیاز به کشیدن</span>
+                </div>
+                <div class="dental-icon-option" data-icon="done">
+                    <i class="fas fa-check-circle"></i>
+                    <span>درمان تکمیل</span>
+                </div>
+            </div>
+            <div class="dental-tooth-notes">
+                <label>یادداشت برای این دندان:</label>
+                <textarea class="dental-tooth-note"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- Teeth Chart -->
+<div class="dental-chart-wrapper">
+    <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">1</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+         </div>
+            <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">2</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+         </div>
+            <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">3</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->  
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">4</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">5</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->  
+        </div>
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">6</span>
+        </div>
+        <!-- Repeat for teeth 2-16 --> 
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">7</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->  
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">8</span>
+        </div>
+        <!-- Repeat for teeth 2-16 --> 
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">9</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->  
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">10</span>
+        </div>
+        <!-- Repeat for teeth 2-16 --> 
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">11</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->  
+        </div>
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">12</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->   
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">13</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+        </div> 
+        <!-- Upper Teeth -->
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">14</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+         
+    </div>
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">15</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+         
+    </div>
+    <div class="dental-upper-row">
+        <div class="dental-single-tooth" data-tooth="1">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">16</span>
+        </div>
+        <!-- Repeat for teeth 2-16 -->
+         
+    </div>
+
+
+</div>
+<br>
+<hr>
+<div class="dental-chart-wrapper">
+    <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">1</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>
+       <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">2</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">3</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">4</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">5</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">6</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">7</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">8</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">9</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">10</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">11</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">12</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">13</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">14</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>   <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">15</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>
+       <!-- Lower Teeth -->
+    <div class="dental-lower-row">
+        <div class="dental-single-tooth" data-tooth="32">
+            <div class="dental-tooth-icon">
+                <i class="fas fa-tooth"></i>
+            </div>
+            <span class="dental-tooth-number">16</span>
+        </div>
+        <!-- Repeat for teeth 31-17 -->
+    </div>
+</div>
+
+{% block javascript %}
+<script>
+// رویداد تغییر نوع چارت
+document.querySelectorAll('.chart-type-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+        // فعال کردن دکمه انتخاب شده
+        document.querySelectorAll('.chart-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+        
+        // تغییر چارت
+        const chartType = button.dataset.chart;
+        this.handleChartTypeChange(chartType);
+    });
+});
+</script>
+{% endblock %}

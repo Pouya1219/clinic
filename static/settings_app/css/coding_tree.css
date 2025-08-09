@@ -1,0 +1,395 @@
+/* استایل‌های اصلی درختواره */
+.coding_container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: 'Vazir', 'Tahoma', sans-serif;
+}
+
+.coding_row {
+    display: flex;
+    flex: 1;
+}
+
+/* سایدبار */
+.coding_sidebar {
+    border-radius: 7px;
+    width: 300px;
+    background-color: #f8f9fa;
+    border-left: 1px solid #e9ecef;
+    padding: 20px 0;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    position: sticky;
+    top: 60px;
+}
+
+.coding_sidebar-title {
+    padding: 0 20px 15px;
+    margin: 0;
+    font-size: 18px;
+    border-bottom: 1px solid #e9ecef;
+    color: #343a40;
+}
+
+/* محتوای اصلی */
+.coding_main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* استایل‌های درختواره */
+.coding_tree {
+    padding: 15px 0;
+}
+
+.coding_tree-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.coding_tree-item {
+    position: relative;
+}
+/* اصلاح استایل درختواره */
+.coding_tree-toggle {
+    cursor: pointer !important;
+    user-select: none !important;
+}
+
+.coding_tree-toggle:before {
+    content: "▶" !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    transition: transform 0.2s !important;
+}
+
+.coding_tree-toggle.open:before {
+    transform: rotate(90deg) !important;
+}
+
+.coding_tree-children {
+    display: none !important;
+    padding-right: 20px !important;
+}
+
+.coding_tree-toggle.open + .coding_tree-children,
+.coding_tree-item:has(.coding_tree-toggle.open) > .coding_tree-children {
+    display: block !important;
+}
+
+.coding_tree-toggle,
+.coding_tree-content {
+    display: flex;
+    align-items: center;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.coding_tree-toggle:hover,
+.coding_tree-content:hover {
+    background-color: #e9ecef;
+}
+
+.coding_tree-toggle.active {
+    background-color: #e2e6ea;
+}
+
+.coding_tree-content.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.coding_tree-toggle .coding_icon,
+.coding_tree-content .coding_icon {
+    margin-left: 8px;
+    font-size: 14px;
+    transition: transform 0.2s;
+}
+
+.coding_tree-toggle.open .coding_icon-chevron-left {
+    transform: rotate(-90deg);
+}
+
+.coding_tree-children {
+    list-style: none;
+    padding-right: 20px;
+    margin: 0;
+    display: none;
+}
+
+.coding_tree-toggle.open + .coding_tree-children {
+    display: block;
+}
+
+.coding_add-new {
+    color: #007bff;
+    font-style: italic;
+}
+
+.coding_add-new:hover {
+    background-color: #e1f5fe;
+}
+
+/* کارت‌ها */
+.coding_card {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.coding_card-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.coding_card-header h4 {
+    margin: 0;
+    font-size: 18px;
+    color: #343a40;
+}
+
+.coding_card-body {
+    padding: 20px;
+}
+
+/* فرم‌ها */
+.coding_form-group {
+    margin-bottom: 15px;
+}
+
+.coding_form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #495057;
+}
+
+.coding_form-control {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.coding_form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.coding_form-control-file {
+    display: block;
+    width: 100%;
+}
+
+.coding_current-file {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.coding_thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-left: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.coding_checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.coding_checkbox input {
+    margin-left: 8px;
+}
+
+.coding_form-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+/* دکمه‌ها */
+.coding_btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 10px;
+}
+
+.coding_btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.coding_btn-primary:hover {
+    background-color: #0069d9;
+}
+
+.coding_btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.coding_btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.coding_btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.coding_btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* پلیس‌هولدر */
+.coding_placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.coding_placeholder-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.coding_placeholder-text {
+    font-size: 16px;
+}
+
+/* مودال */
+.coding_modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.coding_modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 0;
+    border-radius: 5px;
+    width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: coding_modal-appear 0.3s;
+}
+
+@keyframes coding_modal-appear {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.coding_modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coding_modal-header h5 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.coding_modal-close {
+    font-size: 24px;
+    cursor: pointer;
+    color: #adb5bd;
+}
+
+.coding_modal-close:hover {
+    color: #212529;
+}
+
+.coding_modal-body {
+    padding: 20px;
+}
+
+.coding_modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.coding_text-danger {
+    color: #dc3545;
+}
+
+/* آیکون‌ها */
+.coding_icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    fill: currentColor;
+}
+
+/* راست‌چین کردن */
+.coding_tree-list, .coding_form {
+    direction: rtl;
+    text-align: right;
+}
+/* آیکون‌ها */
+.coding_icon-chevron-left:before {
+    content: "\f053";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.coding_icon-building:before {
+    content: "\f1ad";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.coding_icon-file-medical:before {
+    content: "\f477";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.coding_icon-plus:before {
+    content: "\f067";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.coding_icon-info-circle:before {
+    content: "\f05a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+.container-main-test{
+    display: flex;
+    padding: 20px;
+    border-radius: 10px;
+}

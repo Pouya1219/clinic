@@ -1,0 +1,2342 @@
+/* استایل‌های کلی */
+.treatment-container {
+    font-family: 'IRANSans', Tahoma, Arial, sans-serif;
+    direction: rtl;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* کارت اطلاعات بیمار */
+.patient-info-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.patient-info-header {
+    background-color: #4e73df;
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.patient-info-body {
+    padding: 15px;
+}
+
+.patient-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.patient-info-item {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 5px;
+}
+
+.info-label {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/* انتخاب نوع چارت */
+.chart-type-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.chart-type-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.chart-type-btn:hover {
+    background-color: #e9ecef;
+}
+
+.chart-type-btn.active {
+    background-color: #4e73df;
+    color: white;
+    border-color: #4e73df;
+}
+
+/* چارت‌های دندان */
+.charts-container {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: white;
+}
+
+.dental-chart {
+    display: none;
+    min-height: 200px;
+}
+
+.dental-chart[data-type="adult_teeth"] {
+    display: block;
+}
+
+/* سیستم شماره‌گذاری دندان */
+.dental-numbering-system {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.dental-radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* دکمه‌های انتخاب سریع */
+.dental-quick-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.dental-select-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dental-select-btn:hover {
+    background-color: #e9ecef;
+}
+
+.dental-select-btn.active {
+    background-color: #4e73df;
+    color: white;
+    border-color: #4e73df;
+}
+
+/* انواع درمان */
+.dental-treatment-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.dental-type-button {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dental-type-button:hover {
+    background-color: #e9ecef;
+}
+
+.dental-type-button.active {
+    background-color: #4e73df;
+    color: white;
+    border-color: #4e73df;
+}
+
+/* بخش شرح درمان */
+.dental-description-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.dental-search-box {
+    position: relative;
+}
+
+.dental-description-select {
+    width: 100%;
+    padding: 10px;
+    padding-left: 30px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.dental-description-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.dental-description-dropdown.active {
+    display: block;
+}
+
+.dental-description-group {
+    display: none;
+}
+
+.dental-description-group.active {
+    display: block;
+}
+
+.dental-description-item {
+    padding: 8px 10px;
+    cursor: pointer;
+}
+
+.dental-description-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* جزئیات درمان */
+.dental-treatment-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.dental-form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.dental-code-input,
+.dental-fee-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* فرم درمان */
+.treatment-form {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.treatment-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.treatment-group.full-width {
+    flex-basis: 100%;
+}
+
+.treatment-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.treatment-input,
+.treatment-select,
+.treatment-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.treatment-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.highlight-input {
+    background-color: #e8f0fe;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.treatment-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.checkmark {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-left: 8px;
+    position: relative;
+}
+
+.treatment-checkbox input {
+    display: none;
+}
+
+.treatment-checkbox input:checked + .checkmark:after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #4e73df;
+    font-weight: bold;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.treatment-submit,
+.treatment-payment,
+.treatment-installment,
+.treatment-reset {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.treatment-submit {
+    background-color: #4e73df;
+    color: white;
+}
+
+.treatment-payment {
+    background-color: #1cc88a;
+    color: white;
+}
+
+.treatment-installment {
+    background-color: #f6c23e;
+    color: white;
+}
+
+.treatment-reset {
+    background-color: #e74a3b;
+    color: white;
+}
+
+.treatment-submit:hover,
+.treatment-payment:hover,
+.treatment-installment:hover,
+.treatment-reset:hover {
+    opacity: 0.9;
+}
+
+/* تنظیمات جدول */
+.table-settings {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.settings-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.settings-btn:hover {
+    background-color: #e9ecef;
+}
+
+/* جدول درمان‌ها */
+.treatment-table-container {
+    overflow-x: auto;
+}
+
+.treatment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.treatment-table th,
+.treatment-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: right;
+}
+
+.treatment-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.treatment-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.treatment-table tr:hover {
+    background-color: #e9ecef;
+}
+
+.empty-table {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+/* دکمه‌های عملیات */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.action-btn:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.action-btn.edit {
+    color: #4e73df;
+}
+
+.action-btn.delete {
+    color: #e74a3b;
+}
+
+.action-btn.print {
+    color: #1cc88a;
+}
+
+.action-btn.payment {
+    color: #f6c23e;
+}
+
+.action-btn.invoice {
+    color: #36b9cc;
+}
+
+/* وضعیت‌ها */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.status-badge.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.primary {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+/* مودال‌ها */
+.settings-modal,
+.payment-modal,
+.installment-modal,
+.dental-icon-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.settings-modal-content,
+.payment-modal-content,
+.installment-modal-content,
+.dental-modal-content {
+    background-color: white;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 50px auto;
+    overflow: hidden;
+}
+
+.settings-modal-header,
+.payment-modal-header,
+.installment-modal-header,
+.dental-modal-header {
+    background-color: #4e73df;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.settings-modal-body,
+.payment-modal-body,
+.installment-modal-body,
+.dental-modal-body {
+    padding: 20px;
+}
+
+.settings-modal-footer {
+    padding: 15px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+.save-settings {
+    background-color: #4e73df;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+/* مودال تغییر وضعیت دندان */
+.dental-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.dental-icon-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dental-icon-option:hover {
+    background-color: #f8f9fa;
+}
+
+.dental-icon-option.selected {
+    background-color: #cfe2ff;
+    border-color: #4e73df;
+}
+
+.dental-icon-option i {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.dental-tooth-notes {
+    margin-bottom: 20px;
+}
+
+.dental-tooth-note {
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.dental-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.dental-modal-save,
+.dental-modal-cancel {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dental-modal-save {
+    background-color: #4e73df;
+    color: white;
+}
+
+.dental-modal-cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* استایل‌های چارت دندان */
+.dental-upper-jaw,
+.dental-lower-jaw {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.dental-jaw-separator {
+    height: 20px;
+    border-top: 1px dashed #ddd;
+    margin: 10px 0;
+}
+
+.dental-tooth {
+    width: 50px;
+    height: 70px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.dental-tooth:hover {
+    background-color: #f8f9fa;
+}
+
+.dental-tooth.selected {
+    background-color: #cfe2ff;
+    border-color: #4e73df;
+}
+
+.dental-tooth-number {
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 2px 0;
+    width: 100%;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.dental-tooth-icon {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.dental-tooth-icon i {
+    font-size: 1.5em;
+    color: #6c757d;
+}
+
+/* استایل‌های وضعیت دندان */
+.tooth-state-implant i {
+    color: #4e73df;
+}
+
+.tooth-state-missing i {
+    color: #e74a3b;
+}
+
+.tooth-state-crown i {
+    color: #f6c23e;
+}
+
+.tooth-state-bridge i {
+    color: #1cc88a;
+}
+
+.tooth-state-decay i {
+    color: #e74a3b;
+}
+
+.tooth-state-filling i {
+    color: #36b9cc;
+}
+
+.tooth-state-root-canal i {
+    color: #5a5c69;
+}
+
+.tooth-state-extraction i {
+    color: #e74a3b;
+}
+
+.tooth-state-done i {
+    color: #1cc88a;
+}
+
+/* استایل‌های چارت صورت و بدن */
+.facial-area,
+.body-area {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    /* width: 100px;
+    height: 100px; */
+}
+
+.facial-area:hover,
+.body-area:hover {
+    background-color: #f8f9fa;
+}
+
+.facial-area.selected,
+.body-area.selected {
+    background-color: #cfe2ff;
+    border-color: #4e73df;
+}
+
+.facial-area i,
+.body-area i {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.area-label {
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.treatment-icons {
+    display: flex;
+    gap: 3px;
+    margin-top: 5px;
+}
+
+/* استایل‌های مودال پرداخت */
+.payment-form,
+.installment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.payment-form-group,
+.installment-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-form-group label,
+.installment-form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.payment-form-group input,
+.payment-form-group select,
+.payment-form-group textarea,
+.installment-form-group input,
+.installment-form-group select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.payment-form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.check-fields {
+    display: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.check-fields.active {
+    display: block;
+}
+
+.payment-form-actions,
+.installment-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.payment-submit,
+.installment-submit,
+.installment-preview-btn {
+    background-color: #4e73df;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+.payment-cancel,
+.installment-cancel {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    cursor: pointer;
+}
+
+/* استایل‌های پیش‌نمایش اقساط */
+.installment-preview {
+    margin-top: 20px;
+}
+
+.installment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.installment-table th,
+.installment-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: right;
+}
+
+.installment-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+/* استایل‌های تنظیمات ستون‌ها */
+.columns-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.column-item {
+    margin-bottom: 10px;
+}
+
+.column-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.column-checkbox {
+    margin-left: 8px;
+}
+
+.column-name {
+    font-size: 0.9em;
+}
+
+/* پاسخگویی */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .treatment-group {
+        min-width: 100%;
+    }
+    
+    .dental-treatment-types {
+        flex-direction: column;
+    }
+    
+    .dental-tooth {
+        width: 40px;
+        height: 60px;
+    }
+    
+    .dental-tooth-icon i {
+        font-size: 1.2em;
+    }
+    
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+}
+/* استایل‌های مشترک چارت‌ها */
+.chart-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4e73df;
+    font-weight: bold;
+    border-bottom: 2px solid #e3e6f0;
+    padding-bottom: 10px;
+}
+
+/* استایل‌های چارت دندان */
+.adult-teeth-chart-content,
+.child-teeth-chart-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.teeth-status-guide {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+}
+
+.status-item i {
+    font-size: 1.2em;
+}
+
+.jaw-container {
+    margin: 20px 0;
+    position: relative;
+}
+/* 
+.jaw-label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #4e73df;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+} */
+
+.teeth-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.teeth-numbers,
+.teeth-icons,
+.teeth-names {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.tooth-number,
+.tooth-name {
+    width: 50px;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 3px 0;
+}
+
+.dental-tooth {
+    width: 50px;
+    height: 60px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 2px;
+    background-color: #f8f9fa;
+}
+
+.dental-tooth:hover {
+    background-color: #e9ecef;
+    transform: scale(1.05);
+}
+
+.dental-tooth.selected {
+    background-color: #cfe2ff;
+    border-color: #4e73df;
+}
+
+.tooth-icon {
+    font-size: 1.5em;
+    color: #6c757d;
+}
+
+.jaw-separator {
+    position: relative;
+    height: 30px;
+    margin: 10px 0;
+}
+
+.separator-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background-color: #ddd;
+}
+
+.separator-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ddd;
+    color: #6c757d;
+}
+
+/* استایل‌های خاص چارت دندان کودک */
+.child-jaw {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.child-tooth {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+}
+
+.child-tooth .tooth-icon {
+    color: #2196f3;
+}
+
+.child-tooth:hover {
+    background-color: #bbdefb;
+}
+
+.child-tooth.selected {
+    background-color: #90caf9;
+    border-color: #1976d2;
+}
+
+/* استایل‌های چارت صورت */
+.facial-chart-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.face-container {
+    display: flex;
+    gap: 20px;
+}
+
+.face-image-container {
+    flex: 2;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    min-height: 500px;
+    display: flex;
+    justify-content: center;
+}
+
+.face-outline {
+    max-height: 480px;
+    opacity: 0.7;
+}
+
+.face-areas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.facial-area {
+    position: absolute;
+    cursor: pointer;
+}
+
+.area-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(78, 115, 223, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.area-marker i {
+    font-size: 10px;
+    color: #4e73df;
+}
+
+.area-label {
+    position: absolute;
+    background-color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.facial-area:hover .area-marker {
+    transform: scale(1.2);
+    background-color: rgba(78, 115, 223, 0.4);
+}
+
+.facial-area:hover .area-label {
+    opacity: 1;
+}
+
+.facial-area.selected .area-marker {
+    background-color: rgba(28, 200, 138, 0.4);
+}
+
+.facial-area.selected .area-marker i {
+    color: #1cc88a;
+}
+
+.face-treatments-panel {
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+.treatment-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.treatment-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: white;
+}
+
+.treatment-option:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.treatment-option i {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+    color: #4e73df;
+}
+
+.selected-areas-info {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.selected-areas-list {
+    min-height: 100px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+/* استایل‌های چارت بدن */
+.body-chart-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.body-container {
+    display: flex;
+    gap: 20px;
+}
+
+.body-views {
+    flex: 2;
+    display: flex;
+    gap: 20px;
+}
+
+.body-view {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+}
+
+.view-title {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #4e73df;
+    font-weight: bold;
+}
+
+.body-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-height: 500px;
+}
+
+.body-outline {
+    max-height: 480px;
+    opacity: 0.7;
+}
+
+.body-areas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.body-area {
+    position: absolute;
+    cursor: pointer;
+}
+
+.body-area .area-marker {
+    background-color: rgba(246, 194, 62, 0.2);
+}
+
+.body-area .area-marker i {
+    color: #f6c23e;
+}
+
+.body-area:hover .area-marker {
+    background-color: rgba(246, 194, 62, 0.4);
+}
+
+.body-area.selected .area-marker {
+    background-color: rgba(28, 200, 138, 0.4);
+}
+
+.body-area.selected .area-marker i {
+    color: #1cc88a;
+}
+
+.body-treatments-panel {
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+/* پاسخگویی */
+@media (max-width: 992px) {
+    .face-container,
+    .body-container {
+        flex-direction: column;
+    }
+    
+    .body-views {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 768px) {
+    .teeth-numbers,
+    .teeth-icons,
+    .teeth-names {
+        flex-wrap: wrap;
+    }
+    
+    .tooth-number,
+    .tooth-name,
+    .dental-tooth {
+        width: 40px;
+    }
+}
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 18px;
+}
+
+.loading-spinner i {
+    margin-left: 10px;
+    font-size: 24px;
+    color: #3498db;
+}
+
+.error-message {
+    color: #e74c3c;
+    text-align: center;
+    padding: 20px;
+    background-color: #fce4e4;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+/* استایل‌های مربوط به تب پرداخت */
+.payment-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-header {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.payment-header h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+/* بخش جستجو و فیلتر */
+.payment-search-section {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    display: flex;
+    width: 60%;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-family: inherit;
+}
+
+.search-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.filter-options {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-options select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    background-color: white;
+}
+
+/* جداول */
+.payment-table-container,
+.payment-history-container,
+.installments-container {
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+}
+
+.payment-table-container h3,
+.payment-history-container h3,
+.installments-container h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.payment-table,
+.payment-history-table,
+.installments-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-history-table th,
+.installments-table th {
+    background-color: #f2f2f2;
+    padding: 12px;
+    text-align: right;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.payment-table td,
+.payment-history-table td,
+.installments-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-table tr:hover,
+.payment-history-table tr:hover,
+.installments-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.empty-table {
+    text-align: center;
+    color: #777;
+    padding: 20px !important;
+}
+
+/* نوار پیشرفت */
+.progress-bar {
+    height: 10px;
+    background-color: #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #2ecc71;
+    border-radius: 5px;
+}
+
+/* دکمه‌های عملیات */
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.action-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.action-btn.payment {
+    color: #3498db;
+}
+
+.action-btn.installment {
+    color: #9b59b6;
+}
+
+.action-btn.history {
+    color: #f39c12;
+}
+
+.action-btn.view {
+    color: #2ecc71;
+}
+
+.action-btn.print {
+    color: #16a085;
+}
+
+.action-btn.delete {
+    color: #e74c3c;
+}
+
+/* مودال‌ها */
+.payment-modal,
+.installment-modal,
+.view-installments-modal,
+.payment-history-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.payment-modal-content,
+.installment-modal-content,
+.view-installments-modal-content,
+.payment-history-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.payment-modal-header,
+.installment-modal-header,
+.view-installments-modal-header,
+.payment-history-modal-header {
+    padding: 15px 20px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.payment-modal-header h3,
+.installment-modal-header h3,
+.view-installments-modal-header h3,
+.payment-history-modal-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.payment-modal-body,
+.installment-modal-body,
+.view-installments-modal-body,
+.payment-history-modal-body {
+    padding: 20px;
+}
+
+/* فرم‌ها */
+.payment-form-group,
+.installment-form-group {
+    margin-bottom: 15px;
+}
+
+.payment-form-group label,
+.installment-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.payment-form-group input,
+.payment-form-group select,
+.payment-form-group textarea,
+.installment-form-group input,
+.installment-form-group select,
+.installment-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.payment-form-group textarea,
+.installment-form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.check-fields {
+    display: none;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.payment-form-actions,
+.installment-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.payment-submit,
+.installment-submit {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+.payment-cancel,
+.installment-cancel {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+/* پیش‌نمایش اقساط */
+.installment-preview {
+    margin-top: 20px;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.installment-preview h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#installment-preview-container {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.preview-installment {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.preview-installment:last-child {
+    border-bottom: none;
+}
+
+/* اطلاعات درمان و اقساط */
+.treatment-info,
+.installment-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.treatment-info-item,
+.installment-info-item {
+    margin-bottom: 8px;
+}
+
+.info-label {
+    font-weight: bold;
+    color: #333;
+    margin-left: 5px;
+}
+
+/* جداول جزئیات */
+.installment-details-table,
+.payment-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.installment-details-table th,
+.payment-details-table th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: right;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.installment-details-table td,
+.payment-details-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* وضعیت پرداخت */
+.payment-status {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.payment-status.paid {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.payment-status.unpaid {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* پاسخگویی */
+@media (max-width: 768px) {
+    .payment-search-section {
+        flex-direction: column;
+    }
+    
+    .search-box {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .filter-options {
+        width: 100%;
+    }
+    
+    .payment-modal-content,
+    .installment-modal-content,
+    .view-installments-modal-content,
+    .payment-history-modal-content {
+        width: 95%;
+    }
+    
+    .action-buttons {
+        flex-wrap: wrap;
+    }
+}
+/* patient/static/patient/css/treatment.css */
+
+/* استایل کانتینر دکمه‌های نوع درمان */
+.treatment-type-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+/* استایل هر دکمه نوع درمان */
+.treatment-type-btn {
+    padding: 8px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 5px; /* گوشه‌های کاملا گرد */
+    background-color: #f8f9fa;
+    color: #495057;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden; /* برای انیمیشن */
+}
+
+/* افکت هاور */
+.treatment-type-btn:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* استایل دکمه فعال (انتخاب شده) با انیمیشن */
+.treatment-type-btn.active {
+    background-color: #38bda2;
+    color: white;
+    border-color: #00b36895;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* انیمیشن موج هنگام کلیک */
+.treatment-type-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0) translate(-50%);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(20, 20) translate(-50%);
+        opacity: 0;
+    }
+}
+
+.treatment-type-btn:focus:not(:active)::after {
+    animation: ripple 0.7s ease-out;
+}
+.dental-tooth.selected {
+    background-color: #4CAF50 !important;
+    border: 2px solid #2E7D32 !important;
+    /* سایر استایل‌ها */
+}
+
+.facial-area.selected, .body-area.selected {
+    fill: #4CAF50 !important;
+    stroke: #2E7D32 !important;
+    stroke-width: 2px !important;
+    /* سایر استایل‌ها */
+}
+
+/* static/css/payment_dashboard.css */
+
+.payment_dashboard {
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+    padding: 20px;
+    background-color: #f9fafb;
+}
+
+.payment_financial-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.payment_summary-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.payment_summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.07);
+}
+
+.payment_summary-card .payment_card-icon {
+    font-size: 24px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.payment_summary-card.wallet .payment_card-icon { background-color: #28a745; }
+.payment_summary-card.debt .payment_card-icon { background-color: #dc3545; }
+.payment_summary-card.transfer .payment_card-icon { background-color: #17a2b8; }
+
+.payment_summary-card .payment_card-details { flex-grow: 1; }
+.payment_summary-card h4 { margin: 0 0 5px 0; font-size: 16px; color: #333; }
+.payment_summary-card .amount { font-size: 22px; font-weight: 700; margin: 0; }
+.payment_summary-card .description { font-size: 14px; color: #666; margin: 0; }
+
+.payment_tabs .payment_tab-headers {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.payment_tab-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    position: relative;
+    color: #6c757d;
+    transition: color 0.2s;
+}
+
+.payment_tab-link.active {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.payment_tab-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #007bff;
+    border-radius: 3px 3px 0 0;
+}
+
+.payment_tab-content { display: none; animation: payment_fadeIn 0.5s; }
+.payment_tab-content.active { display: block; }
+
+@keyframes payment_fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.payment_modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.payment_modern-table th, .payment_modern-table td { padding: 15px; text-align: right; border-bottom: 1px solid #f1f1f1; vertical-align: middle; }
+.payment_modern-table thead { background-color: #f8f9fa; }
+.payment_modern-table th { font-weight: 600; color: #495057; }
+.payment_modern-table tbody tr:hover { background-color: #f1f5f9; }
+.payment_empty-row td { text-align: center; padding: 40px; color: #6c757d; }
+
+.payment_modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.payment_modal-overlay.visible { opacity: 1; }
+
+.payment_modal-content {
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+}
+.payment_modal-overlay.visible .payment_modal-content { transform: translateY(0); }
+.payment_modal-content.large { max-width: 800px; }
+
+.payment_modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9ecef; padding-bottom: 15px; margin-bottom: 20px; }
+.payment_modal-header h3 { margin: 0; }
+.payment_modal-close { background: none; border: none; font-size: 24px; cursor: pointer; }
+
+.payment_form-group { margin-bottom: 15px; }
+.payment_form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+.payment_input-style { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+
+.payment_modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; padding-top: 15px; border-top: 1px solid #e9ecef; }
+
+.payment_form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.payment_installment-preview { margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; }
+#payment_installment-preview-container { max-height: 150px; overflow-y: auto; }
+/* در انتهای فایل static/css/payment_dashboard.css */
+
+.installment-details-header {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.installment-details-header h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.installment-summary {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.installment-summary span {
+    color: #495057;
+}
+
+.installment-summary strong {
+    color: #007bff;
+    font-weight: 700;
+}
+
+.payment_modern-table .text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1.5rem; /* 24px */
+}
+
+.p-5 {
+    padding: 3rem; /* 48px */
+}
+/* در انتهای فایل static/css/payment_dashboard.css */
+
+.payment_summary-card.credit .payment_card-icon { background-color: #20c997; } /* رنگ سبز برای بستانکاری */
+.payment_summary-card.info .payment_card-icon { background-color: #6f42c1; } /* رنگ بنفش برای اطلاعات */
+
+.payment_card-details .description {
+    font-size: 14px;
+    color: #666;
+    margin: 4px 0 0 0;
+}
+.payment_card-details .description strong {
+    color: #333;
+    font-weight: 600;
+}
+/* در انتهای فایل static/css/payment_dashboard.css */
+
+.financial-summary-table {
+    margin-top: 30px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+
+.summary-title {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 16px;
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 500;
+    color: #495057;
+    display: flex;
+    align-items: center;
+}
+
+.summary-label i {
+    margin-left: 10px;
+    color: #6c757d;
+}
+
+.summary-value {
+    font-weight: 700;
+    font-family: 'Vazirmatn', sans-serif; /* برای نمایش بهتر اعداد */
+}
+
+.summary-row.paid .summary-value {
+    color: #28a745; /* Green */
+}
+
+.summary-row.debt .summary-value {
+    color: #dc3545; /* Red */
+}
+.summary-title {
+    /* ... استایل‌های قبلی ... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* در انتهای فایل static/css/payment_dashboard.css */
+
+.payment_search-container {
+    position: relative;
+}
+
+.payment_search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none; /* در ابتدا مخفی است */
+}
+
+.payment_search-result-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.payment_search-result-item:last-child {
+    border-bottom: none;
+}
+
+.payment_search-result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.payment_search-result-item strong {
+    color: #007bff;
+}
+
+.payment_search-no-results {
+    padding: 10px 15px;
+    color: #6c757d;
+}
+.payment_sub-form { border-right: 3px solid #007bff; padding-right: 15px; margin-right: 5px; margin-top: 10px; }
+tr.reminder-seen { opacity: 0.6; }
+tr.reminder-seen a { color: #6c757d; }
+.manual-price-toggle {
+    margin-bottom: 10px;
+}
+
+.manual-price-input {
+    border: 1px solid #28a745;
+    background-color: #f8fff8;
+}
+
+.price-modified {
+    color: #28a745;
+    font-weight: bold;
+}
+/* استایل برای نمایش قیمت دستی در جدول */
+.manual-price {
+    color: #28a745;
+    font-weight: bold;
+    position: relative;
+}
+
+.manual-price::after {
+    content: "✎";
+    position: absolute;
+    top: 0;
+    right: 5px;
+    font-size: 10px;
+    color: #28a745;
+}
+/* اضافه کردن به فایل CSS */
+.insurance-status {
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.insurance-status-good {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.insurance-status-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.insurance-status-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+اضافه کردن به فایل CSS
+.tab-loader {
+    position: fixed;
+    top: 0;
+    padding: 10px;;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.loader-container{
+    display: flex;
+    padding: 10px;
+}
+.tab-loader.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-spinner {
+    width: 30px;
+    height: 40px;
+    border: 5px solid #f3f3f3;
+    /* border-top: 5px solid #3498db; */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader-message {
+    margin-right: 50px;
+    position: absolute;
+    /* bottom: -30px; */
+    font-size: 14px;
+    color: #ded2d2;
+    font-weight: bold;
+}
+.clinic-logo {
+    max-height: 80px;
+    max-width: 200px;
+    margin-bottom: 10px;
+}
+ /* Fix for modal backdrop covering the modal */
+.modal-backdrop {
+  z-index: 1050 !important; /* اطمینان از اینکه پس‌زمینه z-index پایین‌تری دارد */
+}
+
+.modal {
+  z-index: 1060 !important; /* اطمینان از اینکه خود مودال z-index بالاتری دارد */
+}

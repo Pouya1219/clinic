@@ -1,0 +1,37 @@
+<!-- templates/schedules/schedule_list.html -->
+{% extends 'dashboard.html' %}
+
+{% block content %}
+    <section class="main-content">
+{% if messages %}
+        <div class="alert-container">
+        {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+                </div>
+        {% endfor %}
+        </div>
+{% endif %}
+<div class="shift-main-container">
+    <div class="shift-header">
+        <h2>برنامه‌های کاری</h2>
+        <a href="{% url 'schedule_create' %}" class="shift-add-btn">افزودن برنامه جدید</a>
+    </div>
+    
+    <div class="shift-schedule-list">
+        {% for schedule in schedules %}
+        <div class="shift-schedule-item">
+            <div class="shift-schedule-info">
+                <h3>{{ schedule.profile.get_full_name }}</h3>
+                <p>{{ schedule.title }}</p>
+                <span class="shift-hours">مجموع ساعات: {{ schedule.calculate_total_hours }}</span>
+            </div>
+            <a href="{% url 'schedule_detail' schedule.pk %}" class="shift-edit-btn">ویرایش</a>
+        </div>
+        {% empty %}
+        <p>هیچ برنامه کاری تعریف نشده است.</p>
+        {% endfor %}
+    </div>
+</div>
+</section>
+{% endblock %}

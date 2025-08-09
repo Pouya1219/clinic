@@ -1,0 +1,164 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'settings_app/css/coding_tree.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-main-test">
+<section class="main-content">
+<div class="coding_container">
+    <div class="coding_row">
+        <!-- سایدبار درختواره -->
+        <div class="coding_sidebar">
+            <h3 class="coding_sidebar-title">مدیریت تنظیمات</h3>
+            
+    <div class="coding_tree">
+    <ul class="coding_tree-list">
+        <!-- بخش بیمه -->
+        <li class="coding_tree-item">
+            <div class="coding_tree-toggle">
+                <i class="coding_icon coding_icon-chevron-left"></i>
+                <span>انواع بیمه</span>
+            </div>
+            <ul class="coding_tree-children">
+                <!-- افزودن نوع بیمه جدید به عنوان اولین آیتم -->
+                 <!--یادت باشه اگر خاستی بیمه اضافه کنی اینو دربیار همه چیش کامله-->
+                {% comment %} <li class="coding_tree-item">
+                    <div class="coding_tree-content coding_add-new" data-type="insurance-type">
+                        <i class="coding_icon coding_icon-plus"></i>
+                        <span>افزودن نوع بیمه جدید</span>
+                    </div>
+                </li> {% endcomment %}
+                
+                {% for type in insurance_types %}
+                <li class="coding_tree-item">
+                    <div class="coding_tree-toggle" data-id="{{ type.id }}" data-type="insurance-type">
+                        <i class="coding_icon coding_icon-chevron-left"></i>
+                        <span>{{ type.name }}</span>
+                    </div>
+                    <ul class="coding_tree-children">
+                        <!-- افزودن بیمه‌گر جدید به عنوان اولین آیتم -->
+                        <li class="coding_tree-item">
+                            <div class="coding_tree-content coding_add-new" data-parent="{{ type.id }}" data-type="insurance-provider">
+                                <i class="coding_icon coding_icon-plus"></i>
+                                <span>افزودن بیمه‌گر جدید</span>
+                            </div>
+                        </li>
+                        
+                        {% for provider in type.providers.all %}
+                        <li class="coding_tree-item">
+                            <div class="coding_tree-content" data-id="{{ provider.id }}" data-type="insurance-provider">
+                                <i class="coding_icon coding_icon-building"></i>
+                                <span>{{ provider.name }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        
+        <!-- بخش خدمات درمانی -->
+        <li class="coding_tree-item">
+            <div class="coding_tree-toggle">
+                <i class="coding_icon coding_icon-chevron-left"></i>
+                <span>خدمات درمانی</span>
+            </div>
+            <ul class="coding_tree-children">
+                <!-- افزودن نوع درمان جدید به عنوان اولین آیتم -->
+                <li class="coding_tree-item">
+                    <div class="coding_tree-content coding_add-new" data-type="treatment-type">
+                        <i class="coding_icon coding_icon-plus"></i>
+                        <span>افزودن نوع درمان جدید</span>
+                    </div>
+                </li>
+                
+                {% for type in treatment_types %}
+                <li class="coding_tree-item">
+                    <div class="coding_tree-toggle" data-id="{{ type.id }}" data-type="treatment-type">
+                        <i class="coding_icon coding_icon-chevron-left"></i>
+                        <span>{{ type.title }}</span>
+                    </div>
+                    <ul class="coding_tree-children">
+                        <!-- افزودن شرح درمان جدید به عنوان اولین آیتم -->
+                        <li class="coding_tree-item">
+                            <div class="coding_tree-content coding_add-new" data-parent="{{ type.id }}" data-type="treatment-detail">
+                                <i class="coding_icon coding_icon-plus"></i>
+                                <span>افزودن شرح درمان جدید</span>
+                            </div>
+                        </li>
+                        
+                        {% for detail in type.details.all %}
+                        <li class="coding_tree-item">
+                            <div class="coding_tree-content" data-id="{{ detail.id }}" data-type="treatment-detail">
+                                <i class="coding_icon coding_icon-file-medical"></i>
+                                <span>{{ detail.description }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+</div>
+</section>
+
+        <!-- محتوای اصلی - فرم‌ها -->
+        <div class="coding_main-content">
+            <div class="coding_card">
+                <div class="coding_card-header">
+                    <h4 id="coding_form-title">لطفاً یک گزینه از درختواره انتخاب کنید</h4>
+                </div>
+                <div class="coding_card-body">
+                    <div id="coding_dynamic-form">
+                        <!-- فرم‌ها اینجا با fetch لود می‌شوند -->
+                        <div class="coding_placeholder">
+                            <div class="coding_placeholder-icon">
+                                <i class="coding_icon coding_icon-info-circle"></i>
+                            </div>
+                            <div class="coding_placeholder-text">
+                                برای ویرایش یا افزودن مورد جدید، از درختواره سمت راست انتخاب کنید
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- مودال تأیید حذف -->
+<div class="coding_modal" id="coding_delete-modal">
+    <div class="coding_modal-content">
+        <div class="coding_modal-header">
+            <h5>تأیید حذف</h5>
+            <span class="coding_modal-close">×</span>
+        </div>
+        <div class="coding_modal-body">
+            <p>آیا از حذف این مورد اطمینان دارید؟</p>
+            <p class="coding_text-danger">این عملیات قابل بازگشت نیست!</p>
+        </div>
+        <div class="coding_modal-footer">
+            <button class="coding_btn coding_btn-secondary coding_modal-close">انصراف</button>
+            <button class="coding_btn coding_btn-danger" id="coding_confirm-delete">حذف</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    console.log("Tree view template loaded at: " + new Date().toLocaleTimeString());
+</script>
+<script src="{% static 'settings_app/js/config.js' %}"></script>
+<script src="{% static 'settings_app/js/api.js' %}"></script>
+<script src="{% static 'settings_app/js/ui-settings.js' %}"></script>
+<script src="{% static 'settings_app/js/main.js' %}"></script>
+<script src="{% static 'settings_app/js/csrf.js' %}"></script>
+{% endblock %}

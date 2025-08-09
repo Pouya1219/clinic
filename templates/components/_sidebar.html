@@ -1,0 +1,127 @@
+{% load  static %}
+<button class="toggle-sidebar">
+    <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar active">
+    <!-- لوگو -->
+    <div class="logo-container">
+        <img src="{% static 'img/logo.png' %}" alt="logo" style="max-width: 150px;">
+    </div>
+    <!-- منو -->
+    <div class="menu-container">
+        <!-- داشبورد -->
+        <div class="menu-item">
+            <i class="fa-solid fa-gauge-high menu-icon"></i>
+            <a href="{% url 'dashboard'%}" style="text-decoration:none;" class="submenu-link"> داشبورد </a>
+        </div>
+
+        <!-- بیماران -->
+        <div class="menu-item">
+            <i class="fa-solid fa-user-group menu-icon"></i>
+            <span>بیماران</span>
+            <div class="submenu">
+                <a href="{% url 'Patient:list' %}" class="submenu-link"> پروند بیمار </a>
+                <a href="{% url 'appointments:calendar' %}" class="submenu-link"> وقت ملاقات</a> 
+            </div>
+        </div>
+        <!-- نوبت‌دهی -->
+        <div class="menu-item">
+            <i class="fa-solid fa-calendar-check menu-icon"></i>
+            <span>امکانات </span>
+            <div class="submenu">
+                <a href="/appointments/timeofwork/" class="submenu-link"> حضور و غیاب </a>
+                <a href="/appointments/lab/" class="submenu-link">  لابراتوار </a>
+                <a href="/appointments/sms/" class="submenu-link"> پیامک </a>
+            </div>
+        </div>
+
+        <!-- حسابداری -->
+        <div class="menu-item">
+            <i class="fa-solid fa-money-bill-wave menu-icon"></i>
+            <span>حسابداری</span>
+            <div class="submenu">
+                <a href="/billing/invoices/" class="submenu-link"> صورتحساب‌ها </a>
+                <a href="/billing/payments/" class="submenu-link"> ثبت هزینه ها </a>
+                <a href="/billing/billingbook/" class="submenu-link"> دفتر کل </a>
+            </div>
+        </div>
+
+        <!-- داروخانه -->
+       <div class="menu-item">
+    <i class="fa-solid fa-warehouse menu-icon"></i>
+    <span>انبار</span>
+    <div class="submenu">
+        <a href="{% url 'inventory:dashboard' %}" class="submenu-link">
+            <i class="fas fa-tachometer-alt me-1"></i>
+            داشبورد انبار
+        </a>
+         <a href="{% url 'inventory:warehouse_list' %}" class="submenu-link">
+            <i class="fas fa-clipboard-list me-1"></i>
+            مدیریت انبار  
+        </a>
+        <a href="{% url 'inventory:item_list_page' %}" class="submenu-link">
+            <i class="fas fa-boxes me-1"></i>
+            ثبت اقلام
+        </a>
+        <a href="{% url 'inventory:stock_entry_list_page' %}" class="submenu-link">
+            <i class="fas fa-arrow-down me-1"></i>
+            ورود اقلام
+        </a>
+        <a href="{% url 'inventory:stock_exit_list_page' %}" class="submenu-link">
+            <i class="fas fa-arrow-up me-1"></i>
+            خروج اقلام
+        </a>
+        <a href="{% url 'inventory:inventory_list_page' %}" class="submenu-link">
+            <i class="fas fa-clipboard-list me-1"></i>
+            انبار گردانی
+        </a>
+        <a href="{% url 'inventory:notifications_page' %}" class="submenu-link">
+            <i class="fas fa-bell me-2"></i>
+                صفحه اعلان‌ها
+        </a>
+        <a href="{% url 'inventory:reports_page' %}" class="submenu-link">
+            <i class="fas fa-chart-bar me-1"></i>
+            گزارش های انبار
+        </a>
+    </div>
+</div>
+
+        <!-- مدیریت کاربران -->
+        <div class="menu-item">
+            <i class="fa-solid fa-user-doctor menu-icon"></i>
+            <span>مدیریت کاربران</span>
+            <div class="submenu">
+                <a href="/users/access/" class="submenu-link"> دسترسی‌ها </a>
+                <a href="{% url 'user_list' %}" class="submenu-link"> لیست کاربران </a>
+                <a href="{% url 'schedules:schedule_view' %}" class="sidebar-link">
+                <i class="fas fa-calendar-alt"></i>
+                <span>مدیریت ساعات کاری</span>
+    </a>
+            </div>
+        </div>
+ <div class="menu-item">
+            <i class="fa-solid fa-gauge-high menu-icon"></i>
+            <span>گزارشات</span>
+            <div class="submenu">
+                
+                <a href="/dashboard/daily-report/" class="submenu-link"> گزارشات کلی </a>
+                <a href="/dashboard/statistics/" class="submenu-link"> گزارشات حسابداری  </a>
+                <a href="/dashboard/statistics/" class="submenu-link"> گزارشات پرسنلی </a>
+                <a href="/dashboard/statistics/" class="submenu-link"> گزارشات انبار  </a>
+                <a href="/dashboard/statistics/" class="submenu-link"> گزارشات حسابداری  </a>
+                
+            </div>
+        </div>
+        <!-- تنظیمات -->
+        <div class="menu-item">
+            <i class="fa-solid fa-gear menu-icon"></i>
+            <span>تنظیمات</span>
+            <div class="submenu">
+                <a href="/settings/general/" class="submenu-link"> تنظیمات کلی </a>
+                <a href="{% url 'settings_app:tree_view' %}" class="submenu-link">درختواره</a>
+                <a href="/settings/sms/" class="submenu-link"> تنظیمات پیامکی  </a>
+                <a href="{% url 'settings_app:settings_view' %}" class="submenu-link"> تنظیمات   </a>
+            </div>
+        </div>
+    </div>
+</div>

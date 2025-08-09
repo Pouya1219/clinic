@@ -1,0 +1,308 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% block title %} پرونده بیمار {% endblock %}
+{% block content %}
+{% load patient_tags %}
+    <!-- Main Navigation -->
+     <section class="main-content">
+        {% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+ <nav class="main-nav">
+        <div class="nav-tabs">
+            <div class="nav-tab active" data-tab="patient-info" data-tooltip="مشخصات بیمار">
+                <i class="fas fa-user"></i>
+                <span>مشخصات بیمار</span>
+            </div>
+            <div class="nav-tab" data-tab="attachments" data-tooltip="ضمایم">
+                <i class="fas fa-paperclip"></i>
+                <span>ضمایم</span>
+            </div>
+            <div class="nav-tab" data-tab="treatment-plan" data-tooltip="تقویم وقت ملاقات ">
+                <i class="fas fa-clipboard-list"></i>
+                <span> </span>
+            </div>
+             <div class="nav-tab" data-tab="treatment" data-tooltip="درمان">
+                <i class="fas fa-tooth"></i>
+                <span>درمان</span>
+            </div>
+            <div class="nav-tab" data-tab="prescription" data-tooltip="نسخه نویسی">
+                <i class="fas fa-prescription"></i>
+                <span>نسخه نویسی</span>
+            </div>
+            <div class="nav-tab" data-tab="payment" data-tooltip="پرداخت">
+                <i class="fas fa-credit-card"></i>
+                <span>پرداخت</span>
+            </div>
+            <div class="nav-tab" data-tab="points" data-tooltip="امتیازات">
+                <i class="fas fa-star"></i>
+                <span>امتیازات</span>
+            </div>
+        </div>
+    </nav>
+<div class="content-area">
+    <div class="tab-content active" id="patient-info">
+        
+        <!-- زیرنوار در تب مشخصات بیمار -->
+        <nav class="sub-nav">
+            <div class="sub-nav-tabs">
+                <div class="sub-nav-tab active" data-sub-tab="patient-details">اطلاعات بیمار</div>
+                <div class="sub-nav-tab" data-sub-tab="edit-profile">ویرایش پرونده</div>
+                <div class="sub-nav-tab" data-sub-tab="insurance-info">مشخصات بیمه</div>
+                <div class="sub-nav-tab" data-sub-tab="additional-info">اطلاعات تکمیلی</div>
+                <div class="sub-nav-tab" data-sub-tab="print-management">پرینت پرونده</div>
+                <div class="sub-nav-tab" data-sub-tab="issue_card">صدور کارت</div>
+            </div>
+        </nav>
+</section>
+      <!-- محتوای زیرنوار -->
+<div class="sub-tab-content patient-subtab-content" id="patient-details">
+    <!-- محتوای اطلاعات بیمار -->
+        {% include 'pation/tabs/__sub_tab_pation_information.html' %}
+</div>
+<!-- فرم ویرایش پروفایل -->
+<div class="sub-tab-content edit-profile-container" id="edit-profile">
+        {% include 'pation/tabs/__sub_tab_edit_pation.html' %}
+</div>
+
+<!-- اطلاعات تکمیلی -->
+<div class="sub-tab-content additional-info-container" id="additional-info">
+    {% include 'pation/tabs/__sub_tab_multi_information.html' %}
+</div>
+
+<!-- tab print -->
+<div class="med-print-container sub-tab-content insurance-info-container" id="print-management">
+    {% include 'pation/tabs/__sub_tab_print.html' %}
+</div>
+<!-- فرم اطلاعات بیمه -->
+<div class="sub-tab-content insurance-info-container" id="insurance-info">
+    <!-- فرم ثبت اطلاعات بیمه -->
+     {% include 'pation/tabs/__sub_tab_insurance.html' %}
+</div>
+<div class="sub-tab-content patient-subtab-content" id="issue_card">
+    {% include 'pation/tabs/_tab_issue_card.html' %}
+</div>
+
+<!-- سایر تب‌ها -->
+<div class="tab-content" id="attachments">
+   {% include 'pation/_tab_supplement.html' %}
+</div>
+
+<div class="tab-content" id="treatment">
+    {% include 'pation/_tab_treatment.html' %}
+</div>
+
+
+<div class="tab-content" id="lab-tab">
+    {% include 'pation/_tab_lab.html'%}
+</div>
+
+<!-- سایر تب‌ها -->
+<div class="tab-content" id="payment">
+   {% include 'pation/_tab_payment.html'%}
+</div>
+<div class="tab-content" id="prescription">
+    {% include 'pation/_tab_prescription.html'%}
+</div>
+<div class="tab-content" id="points">
+    {% include 'pation/_tab_points.html'%}
+</div>
+
+
+
+<!-- Print Template (outside of tab content) -->
+<div id="print-template" style="display: none;">
+    <div class="print-page">
+        <div class="print-header">
+            <div class="clinic-logo">
+                <i class="fas fa-tooth fa-3x"></i>
+            </div>
+            <div class="clinic-info">
+                <h1>کلینیک تخصصی دندانپزشکی زیبادنت</h1>
+                <p>دارای مجوز رسمی از وزارت بهداشت</p>
+                <div class="clinic-details">
+                    <p>تلفن: 021-12345678</p>
+                    <p>آدرس: تهران، خیابان ولیعصر، کوچه مهر، پلاک 12</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="patient-info">
+            <div class="patient-header">
+                <div class="patient-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="patient-details">
+                    <table>
+                        <tr>
+                            <th>نام و نام خانوادگی:</th>
+                            <td>علی محمدی</td>
+                            <th>شماره پرونده:</th>
+                            <td>12345</td>
+                        </tr>
+                        <tr>
+                            <th>تاریخ تولد:</th>
+                            <td>1370/06/15</td>
+                            <th>کد ملی:</th>
+                            <td>0123456789</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="treatment-plan-title">
+            <h2>طرح درمان پیشنهادی</h2>
+            <p class="plan-date">تاریخ: <span id="print-date"></span></p>
+        </div>
+
+        <div id="print-content">
+            <!-- محتوای جدول اینجا به صورت پویا اضافه می‌شود -->
+        </div>
+
+        <div class="treatment-notes">
+            <h3>توضیحات تکمیلی:</h3>
+            <p>1. مدت زمان تقریبی انجام کل درمان‌ها: 3 جلسه</p>
+            <p>2. اعتبار این طرح درمان: یک ماه از تاریخ صدور</p>
+            <p>3. هزینه‌های لابراتوار جداگانه محاسبه می‌گردد</p>
+        </div>
+
+        <div class="print-footer">
+            <div class="signatures">
+                <div class="signature-box">
+                    <p>پزشک معالج: <span id="print-doctor"></span></p>
+                    <div class="signature-line">امضاء و مهر</div>
+                </div>
+                <div class="signature-box">
+                    <p>تأیید بیمار</p>
+                    <div class="signature-line">امضاء</div>
+                </div>
+            </div>
+            <div class="clinic-footer">
+                <p>www.zibadent.com | info@zibadent.com</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--tab pardakht-->
+<div class="tab-content" id="payment">
+   {% include 'pation/_tab_payment.html'%}
+</div>
+<!-- tab noskhe nevisi-->
+<div class="tab-content" id="prescription">
+    {% include 'pation/_tab_prescription.html'%}
+</div>
+<!-- tab emtiazat -->
+ <div class="tab-content" id="points">
+    {% include 'pation/_tab_points.html'%}
+</div>
+
+<!-- Tab contents will be here -->
+    </div>
+
+{% endblock content %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/Treatment/treatment.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Treatment/treatment-charts.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{% static 'patient/js/api-patient.js' %}"></script>
+    {% comment %} <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script> {% endcomment %}
+    <script src="{% static 'patient/js/config.js' %}"></script>
+    <script src="{% static 'patient/js/main.js' %}"></script>
+    <script src="{% static 'patient/js/ui-patient.js' %}"></script>
+
+
+    <!-- اسکریپت‌های قبلی -->
+{% comment %} <script src="{% static 'patient/js/treatment.js' %}"></script> {% endcomment %}
+    <!-- اسکریپت‌های مربوط به درمان -->
+    <script src="{% static 'patient/js/treatment-config.js' %}"></script>
+    <script src="{% static 'patient/js/api.js' %}"></script>
+    <script src="{% static 'patient/js/ui-treatment.js' %}"></script>
+    <script src="{% static 'patient/js/treatment-main.js' %}"></script>
+    <!-- در بخش اسکریپت‌های صفحه -->
+    <script src="{% static 'patient/js/patient-websocket.js' %}"></script>
+    <!--Payment-->
+    {% comment %} <script src="{% static 'patient/js/payment-ui.js' %}"></script> {% endcomment %}
+    <script src="{% static 'patient/js/payment-manager.js' %}"></script>
+    <!-- در بخش اسکریپت‌های صفحه patient_detail.html -->
+    {% comment %} <script src="{% static 'patient/js/treatment-websocket.js' %}"></script> {% endcomment %}
+    
+<script>
+    
+document.addEventListener('DOMContentLoaded', function() {
+    // گرفتن همه تب‌های اصلی
+    const mainNavTabs = document.querySelectorAll('.nav-tab');
+    
+    // اضافه کردن event listener به هر تب اصلی
+    mainNavTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // مخفی کردن همه زیرتب‌ها وقتی یک تب اصلی کلیک می‌شود
+            const allSubTabContents = document.querySelectorAll('.sub-tab-content');
+            allSubTabContents.forEach(subTab => {
+                subTab.style.display = 'none';
+            });
+            
+            // غیرفعال کردن همه زیرتب‌های فعال
+            const activeSubTabs = document.querySelectorAll('.sub-nav-tab.active');
+            activeSubTabs.forEach(subTab => {
+                subTab.classList.remove('active');
+            });
+            
+            // مخفی کردن نوار زیرتب‌ها اگر تب اصلی "مشخصات بیمار" نیست
+            const subNav = document.querySelector('.sub-nav');
+            if (subNav) {
+                if (this.dataset.tab === 'patient-info') {
+                    subNav.style.display = 'block';
+                    
+                    // فعال کردن اولین زیرتب به صورت پیش‌فرض
+                    const firstSubTab = document.querySelector('.sub-nav-tab');
+                    const firstSubTabContent = document.getElementById(firstSubTab?.dataset.subTab);
+                    
+                    if (firstSubTab && firstSubTabContent) {
+                        firstSubTab.classList.add('active');
+                        firstSubTabContent.style.display = 'block';
+                    }
+                } else {
+                    subNav.style.display = 'none';
+                }
+            }
+        });
+    });
+    
+    // مدیریت کلیک روی زیرتب‌ها
+    const subNavTabs = document.querySelectorAll('.sub-nav-tab');
+    subNavTabs.forEach(subTab => {
+        subTab.addEventListener('click', function() {
+            // غیرفعال کردن همه زیرتب‌ها
+            subNavTabs.forEach(t => t.classList.remove('active'));
+            
+            // مخفی کردن همه محتوای زیرتب‌ها
+            const subTabContents = document.querySelectorAll('.sub-tab-content');
+            subTabContents.forEach(c => c.style.display = 'none');
+            
+            // فعال کردن زیرتب کلیک شده
+            this.classList.add('active');
+            
+            // نمایش محتوای زیرتب مربوطه
+            const subTabContent = document.getElementById(this.dataset.subTab);
+            if (subTabContent) {
+                subTabContent.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+
+   

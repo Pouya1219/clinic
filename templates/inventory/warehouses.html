@@ -1,0 +1,479 @@
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}مدیریت انبارها{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'inventory/css/warehouses.css' %}">
+<meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block content %}
+<!-- هدر صفحه -->
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">مدیریت انبارها</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWarehouseModal">
+            <i class="fas fa-plus me-2"></i>افزودن انبار جدید
+        </button>
+    </div>
+
+    <!-- کارت آمار -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                تعداد کل انبارها</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ warehouses.count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-warehouse fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                انبارهای فعال</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ active_warehouses_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                تعداد کالاها در انبارها</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_items_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                ارزش موجودی انبارها</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_inventory_value|floatformat:0|intcomma }} ریال</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- جستجو و فیلترها -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">فیلترها</h6>
+            <button class="btn btn-sm btn-outline-secondary" onclick="resetFilters()">
+                <i class="fas fa-undo me-1"></i>پاک کردن فیلترها
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="جستجو در انبارها..." id="warehouseSearch">
+                        <button class="btn btn-outline-secondary" type="button" onclick="searchWarehouses()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                {% comment %} <div class="col-md-3 mb-3">
+                    <select class="form-select" id="managerFilter">
+                        <option value="">همه مدیران</option>
+                        {% for manager in managers %}
+                        <option value="{{ manager.id }}">{{ manager.get_full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div> {% endcomment %}
+                <div class="col-md-3 mb-3">
+                    <select class="form-select" id="managerFilter">
+                        <option value="">همه مدیران</option>
+                <!-- لیست مدیران به صورت داینامیک توسط JavaScript پر می‌شود -->
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="active">فعال</option>
+                        <option value="inactive">غیرفعال</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نتایج جستجو -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 id="searchResultsTitle" class="mb-0" style="display: none;">نتایج جستجو</h5>
+        <button id="clearSearch" class="btn btn-sm btn-outline-secondary" onclick="clearSearch()" style="display: none;">
+            <i class="fas fa-times me-1"></i>
+            پاک کردن جستجو
+        </button>
+    </div>
+
+    <!-- جدول انبارها -->
+<table class="table table-bordered table-hover" id="warehousesTable" width="100%" cellspacing="0">
+    <thead class="table-light">
+        <tr>
+            <th width="5%">
+                <input type="checkbox" id="selectAllWarehouses" onchange="toggleAllWarehouses(this)">
+            </th>
+            <th>نام انبار</th>
+            <th>کد انبار</th>
+            <th>مدیر انبار</th>
+            <th>اطلاعات تماس</th>
+            <th>موقعیت</th>
+            <th>تعداد کالا</th>
+            <th>وضعیت</th>
+            <th width="15%">عملیات</th>
+        </tr>
+    </thead>
+    <tbody id="warehousesTableBody">
+        {% for warehouse in warehouses %}
+        <tr data-warehouse-id="{{ warehouse.id }}">
+            <td>
+                <input type="checkbox" class="warehouse-checkbox" value="{{ warehouse.id }}" onchange="toggleWarehouseSelection(this)">
+            </td>
+            <td>{{ warehouse.name }}</td>
+            <td>{{ warehouse.code }}</td>
+            <td>{{ warehouse.manager.first_name }} {{ warehouse.manager.last_name|default:"تعیین نشده" }}</td>
+            <td>
+                {% if warehouse.manager %}
+                <small>
+                    <i class="fas fa-envelope me-1"></i> {{ warehouse.manager.user.email|default:"-" }}<br>
+                    <i class="fas fa-phone me-1"></i> {{ warehouse.manager.phone_number|default:"-" }}
+                </small>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>{{ warehouse.location|truncatechars:30|default:"-" }}</td>
+            <td>{{ warehouse.inventory_set.count }}</td>
+            <td>
+                <span class="badge {% if warehouse.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                    {% if warehouse.is_active %}فعال{% else %}غیرفعال{% endif %}
+                </span>
+            </td>
+            <td>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-info" onclick="viewWarehouseDetails('{{ warehouse.id }}')" title="مشاهده جزئیات">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-primary" onclick="editWarehouse('{{ warehouse.id }}')" title="ویرایش">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteWarehouse('{{ warehouse.id }}')" title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="9" class="text-center py-4">
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    هیچ انباری یافت نشد
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+            </div>
+
+            <!-- صفحه‌بندی -->
+            {% if warehouses.has_other_pages %}
+            <nav aria-label="صفحه‌بندی" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if warehouses.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ warehouses.previous_page_number }}" aria-label="قبلی">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">«</span>
+                    </li>
+                    {% endif %}
+
+                    {% for i in warehouses.paginator.page_range %}
+                    {% if warehouses.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if warehouses.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ warehouses.next_page_number }}" aria-label="بعدی">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">»</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- مودال افزودن انبار جدید -->
+<div class="modal fade" id="addWarehouseModal" tabindex="-1" aria-labelledby="addWarehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addWarehouseModalLabel">افزودن انبار جدید</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addWarehouseForm">
+                {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="warehouseName" class="form-label">نام انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="warehouseName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="warehouseCode" class="form-label">کد انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="warehouseCode" name="code" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouseManager" class="form-label">مدیر انبار</label>
+                        <select class="form-select" id="warehouseManager" name="manager_id">
+                            <option value="">انتخاب مدیر...</option>
+                            <!-- لیست انبارداران به صورت داینامیک توسط JavaScript پر می‌شود -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouseLocation" class="form-label">آدرس انبار</label>
+                        <textarea class="form-control" id="warehouseLocation" name="location" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouseDescription" class="form-label">توضیحات</label>
+                        <textarea class="form-control" id="warehouseDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="warehouseActive" name="is_active" checked>
+                        <label class="form-check-label" for="warehouseActive">انبار فعال است</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="WarehouseManager.saveWarehouse()">ذخیره</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال ویرایش انبار -->
+<div class="modal fade" id="editWarehouseModal" tabindex="-1" aria-labelledby="editWarehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editWarehouseModalLabel">ویرایش انبار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editWarehouseForm">
+                    <input type="hidden" id="editWarehouseId" name="id">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="editWarehouseName" class="form-label">نام انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editWarehouseName" name="name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editWarehouseCode" class="form-label">کد انبار <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editWarehouseCode" name="code" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editWarehouseManager" class="form-label">مدیر انبار</label>
+                        <select class="form-select" id="editWarehouseManager" name="manager_id">
+                            <option value="">انتخاب مدیر...</option>
+                            <!-- لیست انبارداران به صورت داینامیک توسط JavaScript پر می‌شود -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editWarehouseLocation" class="form-label">آدرس انبار</label>
+                        <textarea class="form-control" id="editWarehouseLocation" name="location" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editWarehouseDescription" class="form-label">توضیحات</label>
+                        <textarea class="form-control" id="editWarehouseDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="editWarehouseActive" name="is_active">
+                        <label class="form-check-label" for="editWarehouseActive">انبار فعال است</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="updateWarehouse()">به‌روزرسانی</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال جزئیات انبار -->
+<div class="modal fade" id="warehouseDetailsModal" tabindex="-1" aria-labelledby="warehouseDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="warehouseDetailsModalLabel">جزئیات انبار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="fw-bold">نام انبار:</label>
+                            <p id="detailWarehouseName"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">کد انبار:</label>
+                            <p id="detailWarehouseCode"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">مدیر انبار:</label>
+                            <p id="detailWarehouseManager"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="fw-bold">وضعیت:</label>
+                            <p id="detailWarehouseStatus"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">تاریخ ایجاد:</label>
+                            <p id="detailWarehouseCreatedAt"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="fw-bold">آخرین به‌روزرسانی:</label>
+                            <p id="detailWarehouseUpdatedAt"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">آدرس انبار:</label>
+                    <p id="detailWarehouseLocation"></p>
+                </div>
+                <div class="mb-3">
+                    <label class="fw-bold">توضیحات:</label>
+                    <p id="detailWarehouseDescription"></p>
+                </div>
+                
+                <hr>
+                
+                <h6 class="fw-bold mb-3">آمار انبار</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">تعداد کالاها</h6>
+                                <p class="card-text fs-4" id="detailWarehouseItemCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">ارزش موجودی</h6>
+                                <p class="card-text fs-4" id="detailWarehouseValue">0 ریال</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-light mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">کالاهای کم موجود</h6>
+                                <p class="card-text fs-4" id="detailWarehouseLowStockCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary" onclick="editWarehouse(currentWarehouseId)">ویرایش</button>
+                <a id="viewWarehouseInventoryBtn" href="#" class="btn btn-info">
+                    <i class="fas fa-boxes me-1"></i>
+                    مشاهده موجودی
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال حذف انبار -->
+<div class="modal fade" id="deleteWarehouseModal" tabindex="-1" aria-labelledby="deleteWarehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteWarehouseModalLabel">حذف انبار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا از حذف انبار "<span id="deleteWarehouseName"></span>" اطمینان دارید؟</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    توجه: این عملیات قابل بازگشت نیست و تمام اطلاعات مرتبط با این انبار حذف خواهد شد.
+                </div>
+                <input type="hidden" id="deleteWarehouseId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteWarehouse()">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'inventory/js/warehouses.js' %}"></script>
+{% comment %} <script src="{% static 'inventory/js/warehouses-websocket.js' %}"></script> {% endcomment %}
+<script>
+    window.csrfToken = '{{ csrf_token }}';
+    console.log('CSRF Token set in window:', window.csrfToken);
+</script>
+{% endblock %}

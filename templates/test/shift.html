@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>تنظیم ساعات کاری پزشک</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+
+.shift-page-wrapper * {
+    box-sizing: border-box;
+    font-family: 'Vazirmatn', sans-serif;
+}
+
+.shift-page-body {
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.shift-main-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transform: translateY(0);
+    animation: shift-float 6s ease-in-out infinite;
+}
+
+@keyframes shift-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.shift-tab-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eef2f7;
+}
+
+.shift-tab-button {
+    padding: 12px 24px;
+    border: none;
+    background: #f8f9fa;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    color: #64748b;
+    position: relative;
+    overflow: hidden;
+}
+
+.shift-tab-button:hover {
+    transform: translateY(-2px);
+    background: #e2e8f0;
+}
+
+.shift-tab-button.shift-tab-active {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.shift-day-card {
+    max-weight:500px;
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.shift-day-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.shift-day-header {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.shift-time-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.shift-time-container:hover {
+    background: #f1f5f9;
+}
+
+.shift-time-label {
+    min-width: 100px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.shift-time-input {
+    padding: 10px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    color: #1e293b;
+    background: white;
+}
+
+.shift-time-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.shift-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.shift-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.shift-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.shift-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.shift-toggle-switch input:checked + .shift-toggle-slider {
+    background-color: #10b981;
+}
+
+.shift-toggle-switch input:checked + .shift-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.shift-status-label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.shift-save-button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.4s ease;
+    margin-top: 30px;
+    width: 100%;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.shift-save-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+}
+
+.shift-holiday-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #fed7aa;
+    transition: all 0.3s ease;
+}
+
+.shift-holiday-input {
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    margin: 5px;
+    width: 160px;
+    transition: all 0.3s ease;
+}
+
+.shift-holiday-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.shift-add-holiday-btn {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.shift-add-holiday-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+}
+
+.shift-copy-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.shift-copy-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* انیمیشن‌های اضافی */
+@keyframes shift-fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.shift-schedule-wrapper {
+    animation: shift-fadeIn 0.5s ease-out;
+}
+
+/* استایل برای حالت غیرفعال */
+.shift-day-card.shift-disabled {
+    opacity: 0.6;
+    filter: grayscale(30%);
+}
+
+/* استایل برای پیام‌های موفقیت */
+.shift-success-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    animation: shift-slideIn 0.5s ease-out;
+}
+
+@keyframes shift-slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+/* استایل‌های جدید */
+.shift-page-body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.shift-personnel-section {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.shift-personnel-select {
+    padding: 12px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    width: 300px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.shift-personnel-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
+}
+
+.shift-total-hours {
+    background: #f8fafc;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+/* گرید برای روزهای هفته */
+.shift-schedule-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    animation: shift-fadeIn 0.5s ease-out;
+}
+
+.shift-day-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 0; /* حذف مارجین قبلی */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s ease;
+    border: 1px solid #e5e7eb;
+}
+
+/* کوچک‌تر کردن المان‌ها */
+.shift-day-header {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.shift-time-container {
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.shift-time-input {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.shift-time-label {
+    font-size: 14px;
+}
+
+.shift-copy-btn {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+/* انیمیشن جدید برای لود شدن گرید */
+@keyframes shift-gridFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.shift-day-card {
+    animation: shift-gridFadeIn 0.5s ease-out forwards;
+}
+
+/* تاخیر در انیمیشن برای هر کارت */
+.shift-day-card:nth-child(1) { animation-delay: 0.1s; }
+.shift-day-card:nth-child(2) { animation-delay: 0.2s; }
+.shift-day-card:nth-child(3) { animation-delay: 0.3s; }
+.shift-day-card:nth-child(4) { animation-delay: 0.4s; }
+.shift-day-card:nth-child(5) { animation-delay: 0.5s; }
+.shift-day-card:nth-child(6) { animation-delay: 0.6s; }
+.shift-day-card:nth-child(7) { animation-delay: 0.7s; }
+
+    </style>
+</head>
+<body class="shift-page-body">
+    <div class="shift-main-container">
+        <div class="shift-tab-container">
+            <button class="shift-tab-button shift-tab-active" onclick="shiftSwitchTab(this, 'shift-schedule1')">برنامه عادی</button>
+            <button class="shift-tab-button" onclick="shiftSwitchTab(this, 'shift-schedule2')">برنامه تعطیلات</button>
+        </div>
+        <!-- اضافه کردن بخش انتخاب پرسنل در بالای صفحه -->
+<div class="shift-personnel-section">
+    <select class="shift-personnel-select" onchange="shiftLoadPersonnelData(this.value)">
+        <option value="">انتخاب پرسنل</option>
+        <option value="1">دکتر رضا محمدی</option>
+        <option value="2">دکتر سارا احمدی</option>
+        <option value="3">دکتر علی کریمی</option>
+    </select>
+    <div class="shift-total-hours">
+        مجموع ساعات کاری هفته: <span id="shift-total-hours-value">0</span> ساعت
+    </div>
+</div>
+
+        <div id="shift-schedule1" class="shift-schedule-wrapper">
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>شنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>یکشنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>دوشنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>سه شنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>چهار شنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>پنج شنبه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+            <div class="shift-day-card">
+                <div class="shift-day-header">
+                    <span>آدینه</span>
+                    <label class="shift-toggle-switch">
+                        <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+                        <span class="shift-toggle-slider"></span>
+                    </label>
+                    <span class="shift-status-label">فعال</span>
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-start" value="07:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-morning-end" value="11:59">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-start" value="14:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-sat-evening-end" value="22:00">
+                </div>
+                <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+            </div>
+
+            <!-- تکرار برای روزهای دیگر هفته با همین الگو -->
+        </div>
+
+        <div id="shift-schedule2" class="shift-schedule-wrapper" style="display: none;">
+            <div class="shift-holiday-card">
+                <h3>تعریف روزهای تعطیل</h3>
+                <div>
+                    <input type="date" class="shift-holiday-input" id="shift-holiday-date">
+                    <input type="text" class="shift-holiday-input" placeholder="توضیحات تعطیلی" id="shift-holiday-desc">
+                    <button class="shift-add-holiday-btn" onclick="shiftAddHoliday()">افزودن تعطیلی</button>
+                </div>
+                <div id="shift-holiday-list">
+                    <!-- لیست تعطیلات اینجا اضافه می‌شود -->
+                </div>
+            </div>
+
+            <div class="shift-day-card">
+                <div class="shift-day-header">برنامه روزهای تعطیل</div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت صبح:</span>
+                    <input type="time" class="shift-time-input" id="shift-holiday-morning-start" value="09:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-holiday-morning-end" value="13:00">
+                </div>
+                <div class="shift-time-container">
+                    <span class="shift-time-label">شیفت عصر:</span>
+                    <input type="time" class="shift-time-input" id="shift-holiday-evening-start" value="16:00"> تا
+                    <input type="time" class="shift-time-input" id="shift-holiday-evening-end" value="20:00">
+                </div>
+            </div>
+        </div>
+
+        <button class="shift-save-button" onclick="shiftSaveSchedule()">ذخیره برنامه</button>
+    </div>
+
+    <script>
+        function shiftSwitchTab(tab, scheduleId) {
+            document.querySelectorAll('.shift-tab-button').forEach(t => t.classList.remove('shift-tab-active'));
+            tab.classList.add('shift-tab-active');
+            
+            document.querySelectorAll('.shift-schedule-wrapper').forEach(s => s.style.display = 'none');
+            document.getElementById(scheduleId).style.display = 'block';
+        }
+
+        function shiftToggleDay(checkbox) {
+            const dayCard = checkbox.closest('.shift-day-card');
+            const inputs = dayCard.querySelectorAll('.shift-time-input');
+            const statusLabel = dayCard.querySelector('.shift-status-label');
+            
+            inputs.forEach(input => {
+                input.disabled = !checkbox.checked;
+            });
+            
+            statusLabel.textContent = checkbox.checked ? 'فعال' : 'غیرفعال';
+            dayCard.style.opacity = checkbox.checked ? '1' : '0.6';
+        }
+
+        function shiftCopyToAllDays(btn) {
+            const sourceCard = btn.closest('.shift-day-card');
+            const sourceInputs = sourceCard.querySelectorAll('.shift-time-input');
+            const allCards = document.querySelectorAll('.shift-day-card');
+            
+            allCards.forEach(card => {
+                if (card !== sourceCard) {
+                    const targetInputs = card.querySelectorAll('.shift-time-input');
+                    targetInputs.forEach((input, index) => {
+                        input.value = sourceInputs[index].value;
+                    });
+                }
+            });
+            
+            alert('برنامه به تمام روزها کپی شد');
+        }
+
+        function shiftAddHoliday() {
+            const date = document.getElementById('shift-holiday-date').value;
+            const desc = document.getElementById('shift-holiday-desc').value;
+            
+            if (!date) {
+                alert('لطفا تاریخ را وارد کنید');
+                return;
+            }
+
+            const holidayList = document.getElementById('shift-holiday-list');
+            const holidayItem = document.createElement('div');
+            holidayItem.className = 'shift-holiday-card';
+            holidayItem.innerHTML = `
+                <p>تاریخ: ${date}</p>
+                <p>توضیحات: ${desc || 'بدون توضیحات'}</p>
+                <button class="shift-add-holiday-btn" onclick="this.parentElement.remove()">حذف</button>
+            `;
+            
+            holidayList.appendChild(holidayItem);
+            
+            document.getElementById('shift-holiday-date').value = '';
+            document.getElementById('shift-holiday-desc').value = '';
+        }
+
+        function shiftSaveSchedule() {
+            const schedule = {
+                regularDays: {},
+                holidays: {
+                    defaultTimes: {},
+                    specificDays: []
+                }
+            };
+
+            // ذخیره برنامه روزهای عادی
+            document.querySelectorAll('.shift-day-card').forEach(card => {
+                const dayHeader = card.querySelector('.shift-day-header').textContent.trim();
+                const inputs = card.querySelectorAll('.shift-time-input');
+                const isActive = card.querySelector('.shift-day-toggle')?.checked ?? true;
+                
+                if (dayHeader && inputs.length) {
+                    schedule.regularDays[dayHeader] = {
+                        active: isActive,
+                        morning: {
+                            start: inputs[0].value,
+                            end: inputs[1].value
+                        },
+                        evening: {
+                            start: inputs[2].value,
+                            end: inputs[3].value
+                        }
+                    };
+                }
+            });
+
+            // ذخیره برنامه تعطیلات
+            const holidayInputs = document.querySelectorAll('#shift-schedule2 .shift-time-input');
+            if (holidayInputs.length) {
+                schedule.holidays.defaultTimes = {
+                    morning: {
+                        start: holidayInputs[0].value,
+                        end: holidayInputs[1].value
+                    },
+                    evening: {
+                        start: holidayInputs[2].value,
+                        end: holidayInputs[3].value
+                    }
+                };
+            }
+
+            // ذخیره لیست تعطیلات خاص
+            document.querySelectorAll('#shift-holiday-list .shift-holiday-card').forEach(holiday => {
+                const date = holiday.querySelector('p:first-child').textContent.replace('تاریخ: ', '');
+                const desc = holiday.querySelector('p:last-of-type').textContent.replace('توضیحات: ', '');
+                schedule.holidays.specificDays.push({ date, desc });
+            });
+            
+            console.log('برنامه ذخیره شده:', schedule);
+            alert('برنامه با موفقیت ذخیره شد!');
+        }
+
+        function calculateTotalHours() {
+    let totalMinutes = 0;
+    document.querySelectorAll('.shift-day-card').forEach(card => {
+        if (card.querySelector('.shift-day-toggle').checked) {
+            // محاسبه شیفت صبح
+            const morningStart = card.querySelector('[id*="morning-start"]').value;
+            const morningEnd = card.querySelector('[id*="morning-end"]').value;
+            
+            // محاسبه شیفت عصر
+            const eveningStart = card.querySelector('[id*="evening-start"]').value;
+            const eveningEnd = card.querySelector('[id*="evening-end"]').value;
+            
+            totalMinutes += calculateTimeDifference(morningStart, morningEnd);
+            totalMinutes += calculateTimeDifference(eveningStart, eveningEnd);
+        }
+    });
+    
+    const totalHours = Math.round(totalMinutes / 60 * 10) / 10;
+    document.getElementById('shift-total-hours-value').textContent = totalHours;
+}
+
+function calculateTimeDifference(start, end) {
+    if (!start || !end) return 0;
+    
+    const startDate = new Date(`2000-01-01T${start}`);
+    const endDate = new Date(`2000-01-01T${end}`);
+    
+    return (endDate - startDate) / 1000 / 60; // تبدیل به دقیقه
+}
+
+// اضافه کردن event listener برای محاسبه خودکار
+document.querySelectorAll('.shift-time-input').forEach(input => {
+    input.addEventListener('change', calculateTotalHours);
+});
+
+document.querySelectorAll('.shift-day-toggle').forEach(toggle => {
+    toggle.addEventListener('change', calculateTotalHours);
+});
+
+function shiftLoadPersonnelData(personnelId) {
+    // این تابع برای لود کردن اطلاعات از دیتابیس است
+    console.log('Loading data for personnel ID:', personnelId);
+    // اینجا می‌توانید API call برای دریافت اطلاعات را اضافه کنید
+}
+
+    </script>
+</body>
+</html>

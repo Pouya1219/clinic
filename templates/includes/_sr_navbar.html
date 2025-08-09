@@ -1,0 +1,33 @@
+{% load static %}
+<!-- templates/includes/sr_navbar.html -->
+<nav class="sr_navbar">
+    <div class="sr_navbar_container">
+        <!-- لوگو -->
+        <div class="sr_logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="sr_logo_img">
+        </div>
+
+        <!-- باکس جستجو -->
+        <div class="sr_search_wrapper">
+            <form method="POST" id="sr_search_form" data-search-url="{% url 'sr_search_dashboard' %}">
+                {% csrf_token %}
+                <div class="sr_search_container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="sr_search_input" placeholder="جستجوی بیمار...">
+                    <div id="sr_search_results" class="sr_search_results" style="display: none;"></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- دکمه‌های سمت راست -->
+        <div class="sr_navbar_actions">
+            <button class="sr_refresh_btn" title="بروزرسانی">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button class="sr_help_btn" title="راهنما">
+                <i class="fas fa-question-circle"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+

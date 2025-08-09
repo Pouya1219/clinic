@@ -1,0 +1,218 @@
+{% load static %}
+{% load patient_tags %}
+<div class="patient-profile">
+    <div class="profile-header">
+        <div class="profile-image">
+            {% if patient.profile_picture %}
+                <img src="{{ patient.profile_picture.url }}" alt="{{ patient.get_full_name }}">
+            {% else %}
+                <img src="{% static 'img/default.jpg' %}" alt="تصویر پیش‌ فرض">
+            {% endif %}
+        </div>
+        <div class="profile-status">
+            <span class="status-indicator {% if patient.status == 'active' %}active{% endif %}"></span>
+            {{ patient.get_status_display }}
+        </div>
+    </div>
+
+    <div class="patient-info-grid">
+        <!-- اطلاعات اصلی -->
+        <div class="info-section">
+            <h3 class="section-title">اطلاعات اصلی</h3>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">شماره پرونده</div>
+                    <div class="info-value">{{ patient.file_num }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">نام و نام خانوادگی</div>
+                    <div class="info-value">{{ patient.get_full_name }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">کد ملی</div>
+                    <div class="info-value">{{ patient.national_code|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">نام پدر</div>
+                    <div class="info-value">{{ patient.name_of_father|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- اطلاعات تماس -->
+        <div class="info-section">
+            <h3 class="section-title">اطلاعات تماس</h3>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">تلفن تماس</div>
+                    <div class="info-value">{{ patient.contant_info|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">شماره اضطراری</div>
+                    <div class="info-value">{{ patient.emergency_contact|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">تلفن سرپرست</div>
+                    <div class="info-value">{{ patient.family_number|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">ایمیل</div>
+                    <div class="info-value">{{ patient.email|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- اطلاعات شخصی -->
+        <div class="info-section">
+            <h3 class="section-title">اطلاعات شخصی</h3>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">تاریخ تولد</div>
+                    <div class="info-value">{{ patient.birthday|to_jalali }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">سن</div>
+                    <div class="info-value">{{ patient.get_age }} سال</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">جنسیت</div>
+                    <div class="info-value">{% if patient.sex %}مرد{% else %}زن{% endif %}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">وضعیت تأهل</div>
+                    <div class="info-value">{{ patient.get_marital_status_display|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">شغل</div>
+                    <div class="info-value">{{ patient.occupation|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">گروه خونی</div>
+                    <div class="info-value">{{ patient.blood_type|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- اطلاعات پزشکی -->
+        <div class="info-section">
+            <h3 class="section-title">اطلاعات پزشکی</h3>
+            <div class="info-grid">
+                <div class="info-group">
+                    <div class="info-label">قد</div>
+                    <div class="info-value">{{ patient.height|default:"-" }} سانتی‌متر</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">وزن</div>
+                    <div class="info-value">{{ patient.weight|default:"-" }} کیلوگرم</div>
+                </div>
+                {% if patient.get_bmi %}
+                <div class="info-group">
+                    <div class="info-label">شاخص BMI</div>
+                    <div class="info-value">{{ patient.get_bmi }}</div>
+                </div>
+                {% endif %}
+                <div class="info-group">
+                    <div class="info-label">میزان استرس دندانپزشکی</div>
+                    <div class="info-value">{{ patient.get_afraid_of_dental_display|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- بیماری‌های خاص -->
+        <div class="info-section">
+    <h3 class="section-title">بیماری‌های خاص</h3>
+    <div class="diseases-grid">
+        <div class="disease-item {% if patient.has_heart_disease == True %}has-disease{% else %}no-disease{% endif %}">
+            <div class="disease-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="disease-info">
+                <span class="disease-name">بیماری قلبی</span>
+                <span class="disease-status">
+                    {% if patient.has_heart_disease == True %}
+                        <i class="fas fa-check text-danger"></i>
+                    {% else %}
+                        <i class="fas fa-times text-success"></i>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="disease-item {% if patient.has_diabetes == True %}has-disease{% else %}no-disease{% endif %}">
+            <div class="disease-icon">
+                <i class="fas fa-tint"></i>
+            </div>
+            <div class="disease-info">
+                <span class="disease-name">دیابت</span>
+                <span class="disease-status">
+                    {% if patient.has_diabetes == True %}
+                        <i class="fas fa-check text-danger"></i>
+                    {% else %}
+                        <i class="fas fa-times text-success"></i>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="disease-item {% if patient.has_blood_pressure == True %}has-disease{% else %}no-disease{% endif %}">
+            <div class="disease-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <div class="disease-info">
+                <span class="disease-name">فشار خون</span>
+                <span class="disease-status">
+                    {% if patient.has_blood_pressure == True %}
+                        <i class="fas fa-check text-danger"></i>
+                    {% else %}
+                        <i class="fas fa-times text-success"></i>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="disease-item {% if patient.has_hepatitis == True %}has-disease{% else %}no-disease{% endif %}">
+            <div class="disease-icon">
+                <i class="fas fa-virus"></i>
+            </div>
+            <div class="disease-info">
+                <span class="disease-name">هپاتیت</span>
+                <span class="disease-status">
+                    {% if patient.has_hepatitis == True %}
+                        <i class="fas fa-check text-danger"></i>
+                    {% else %}
+                        <i class="fas fa-times text-success"></i>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- اطلاعات بیمه -->
+        <div class="info-section">
+            <h3 class="section-title">اطلاعات بیمه</h3>
+            <div class="insurance-info">
+                <div class="info-group">
+                    <div class="info-label">وضعیت بیمه</div>
+                    <div class="info-value">
+                        <span class="status-insurance {% if patient.get_insurance_status %}status-active{% else %}status-inactive{% endif %}">
+                            {% if patient.get_insurance_status %}فعال{% else %}غیرفعال{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">نوع بیمه</div>
+                    <div class="info-value">{{ patient.insurance_type|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">شماره بیمه</div>
+                    <div class="info-value">{{ patient.insurance_number|default:"-" }}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">تاریخ انقضا</div>
+                    <div class="info-value">{{ patient.insurance_expiry_date|to_jalali|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

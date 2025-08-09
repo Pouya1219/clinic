@@ -1,0 +1,362 @@
+<!-- templates/inventory/base/base.html -->
+ {% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}سیستم مدیریت انبار{% endblock %}</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Persian Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- از UNPKG -->
+    <link rel="stylesheet" href="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css">
+    <script src="https://unpkg.com/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel=stylesheet  type="text/css"  href="{% static 'inventory/css/inventory.css' %}">
+    <link rel=stylesheet  type="text/css"  href="{% static 'inventory/css/notifications.css' %}">
+    <link rel=stylesheet  type="text/css"  href="{% static 'inventory/css/persian-calendar-themes.css' %}">
+
+
+    <style>
+        
+    </style>
+    
+{% comment %} <!-- استفاده ساده -->
+<input type="text" class="form-control persian-date" placeholder="انتخاب تاریخ">
+
+<!-- با تنظیمات سفارشی -->
+<input type="text" class="form-control persian-date" 
+       data-theme="blue" 
+       data-format="YYYY/MM/DD" 
+       data-auto-close="true"
+       placeholder="تاریخ تولد">
+
+<!-- با محدوده تاریخ -->
+<input type="text" class="form-control persian-date" 
+       data-min-date="1400/01/01" 
+       data-max-date="1405/12/29"
+       placeholder="تاریخ در محدوده"> {% endcomment %}
+
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading" id="loadingOverlay">
+        <div class="spinner">
+            <div class="spinner-border text-light" role="status">
+                <span class="visually-hidden">در حال بارگذاری...</span>
+            </div>
+        </div>
+    </div>
+    <!-- در ابتدای body یا جایی مناسب -->
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">در حال بارگذاری...</span>
+    </div>
+</div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                {% include 'inventory/components/sidebar.html' %}
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <!-- Navbar -->
+                {% include 'inventory/components/navbar.html' %}
+                
+                <!-- Alerts -->
+                {% include 'inventory/components/alerts.html' %}
+                
+                <!-- Page Content -->
+                <div class="container-fluid py-4">
+                    {% block content %}
+                    
+                    
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery UI برای انیمیشن‌ها (اختیاری) -->
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<!-- یا از CDN محلی -->
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% comment %} <script src="{% url 'inventory:config_js' %}"></script> {% endcomment %}
+<!-- فایل‌های JavaScript سیستم انبارداری -->
+<script src="{% static 'inventory/js/inventory-config.js' %}"></script>
+<script src="{% static 'inventory/js/notifications_config.js' %}"></script>
+<script src="{% static 'inventory/js/inventory-ui.js' %}"></script>
+<script src="{% static 'inventory/js/inventory-api.js' %}"></script>
+<script src="{% static 'inventory/js/inventory_websocket.js' %}"></script>
+<script src="{% static 'inventory/js/inventory-main.js' %}"></script>
+{% comment %} <script src="{% static 'inventory/js/stock_entry.js' %}"></script> {% endcomment %}
+<script src="{% static 'inventory/js/NotificationService.js' %}"></script>
+<script src="{% static 'inventory/js/notifications-dropdown.js' %}"></script>
+<!-- در انتهای صفحه، قبل از بسته شدن تگ body -->
+<script src="/static/inventory/js/inventory_filter.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Axios for API calls -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Global API Configuration
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+        axios.defaults.headers.common['Content-Type'] = 'application/json';
+        
+        // CSRF Token
+        {% comment %} const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+        if (csrfToken) {
+            axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
+        } {% endcomment %}
+        
+        // Loading Functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        // Toast Notifications
+        function showToast(message, type = 'success') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            
+            Toast.fire({
+                icon: type,
+                title: message
+            });
+        }
+        
+        // Confirm Dialog
+        function confirmAction(title, text, confirmText = 'بله', cancelText = 'خیر') {
+            return Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: confirmText,
+                cancelButtonText: cancelText
+            });
+        }
+        
+        // Format Numbers (Persian)
+        function formatNumber(num) {
+            return new Intl.NumberFormat('fa-IR').format(num);
+        }
+        
+        // Format Currency
+        function formatCurrency(amount) {
+            return formatNumber(amount) + ' ریال';
+        }
+        
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        }
+        
+        // Auto-hide alerts
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                if (alert.classList.contains('alert-dismissible')) {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }
+            });
+        }, 5000);
+    </script>
+    
+
+    <!-- Base Scripts that will be included in base.html -->
+<script>
+// CSRF Token Setup
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                  document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+// API Base Configuration
+const API_BASE_URL = '/inventory/api/';
+const API_ENDPOINTS = {
+    items: 'items/',
+    entries: 'entries/',
+    exits: 'exits/',
+    warehouses: 'warehouses/',
+    inventory: 'inventory/',
+    reports: 'reports/',
+    search: 'search/'
+};
+
+// Global Event Handlers
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Initialize popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
+    });
+});
+
+// Global Utility Functions
+function showAlert(message, type = 'info', duration = 5000) {
+    const alertsContainer = document.getElementById('dynamicAlerts');
+    const alertId = 'alert_' + Date.now();
+    
+    const alertHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert" id="${alertId}">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    alertsContainer.insertAdjacentHTML('beforeend', alertHTML);
+    
+    // Auto remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            const alert = document.getElementById(alertId);
+            if (alert) {
+                alert.remove();
+            }
+        }, duration);
+    }
+}
+
+// Format Persian Numbers
+function toPersianDigits(str) {
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+    const englishDigits = '0123456789';
+    
+    return str.toString().replace(/[0-9]/g, function(w) {
+        return persianDigits[englishDigits.indexOf(w)];
+    });
+}
+
+// Format Currency
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' ریال';
+}
+
+// Debounce function for search
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+</script>
+<script>
+let isNotificationMenuOpen = false;
+
+// تابع برای باز/بسته کردن منوی اعلان‌ها
+function loadNotifications() {
+    const menu = document.getElementById('notificationMenu');
+    
+    // تغییر وضعیت نمایش
+    if (isNotificationMenuOpen) {
+        menu.classList.remove('show');
+    } else {
+        menu.classList.add('show');
+        
+        // درخواست اعلان‌ها از وب‌سوکت
+        if (window.notificationService) {
+            window.notificationService.send({ type: 'get_initial_data' });
+        }
+    }
+    
+    // تغییر وضعیت متغیر
+    isNotificationMenuOpen = !isNotificationMenuOpen;
+}
+
+// بستن منو با کلیک خارج از آن
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('notificationMenu');
+    const button = document.getElementById('notificationDropdown');
+    
+    if (isNotificationMenuOpen && menu && button && 
+        !menu.contains(event.target) && !button.contains(event.target)) {
+        menu.classList.remove('show');
+        isNotificationMenuOpen = false;
+    }
+});
+
+// دکمه خواندن همه
+document.addEventListener('DOMContentLoaded', function() {
+    const markAllReadBtn = document.getElementById('markAllReadBtn');
+    if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (window.notificationService) {
+                window.notificationService.send({ type: 'mark_all_read' });
+                
+                // تغییر کلاس همه اعلان‌ها
+                const items = document.querySelectorAll('.notification-item');
+                items.forEach(item => item.classList.remove('unread'));
+                
+                // صفر کردن بج
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                    badge.textContent = '0';
+                }
+            }
+        });
+    }
+});
+</script>
+<script>
+    window.NOTIFICATIONS_WEBSOCKET_URL = "{{ NOTIFICATIONS_WEBSOCKET_URL }}";
+    console.log("NOTIFICATIONS_WEBSOCKET_URL from template:", window.NOTIFICATIONS_WEBSOCKET_URL);
+</script>
+
+    {% block extra_js %}
+    <script src="{% static 'inventory/js/persian-calendar.js' %}"></script>
+    {% endblock %}
+    {% block module_js %}{% endblock %}
+</body>
+</html>

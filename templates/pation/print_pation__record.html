@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load patient_tags %}
+
+{% block content %}
+<div class="print-page">
+    <div class="print-header">
+        <div class="clinic-logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo">
+        </div>
+        <div class="clinic-info">
+            <h2>{{ clinic_name }}</h2>
+            <p>آدرس: {{ clinic_address }}</p>
+            <p>تلفن: {{ clinic_phone }}</p>
+        </div>
+    </div>
+
+    <div class="med-print-section">
+        <h3>مشخصات بیمار</h3>
+        <div class="med-print-info-grid">
+            <div class="med-print-info-item">
+                <span class="med-print-label">شماره پرونده:</span>
+                <span class="med-print-value">{{ patient.file_num }}</span>
+            </div>
+            <div class="med-print-info-item">
+                <span class="med-print-label">نام و نام خانوادگی:</span>
+                <span class="med-print-value">{{ patient.get_full_name }}</span>
+            </div>
+            <!-- ... (سایر اطلاعات بیمار) ... -->
+            <div class="med-print-info-item">
+                <span class="med-print-label">آدرس:</span>
+                <span class="med-print-value">{{ patient.address }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="med-print-section">
+        <h3>اطلاعات بیمه</h3>
+        <table class="med-print-table">
+            <thead>
+                <tr>
+                    <th>نوع بیمه</th>
+                    <th>نام بیمه‌گر</th>
+                    <th>شماره بیمه</th>
+                    <th>تاریخ اعتبار</th>
+                    <th>درصد پوشش</th>
+                    <th>وضعیت</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for insurance in insurances %}
+                    <tr>
+                        <td>{{ insurance.insurance_provider.insurance_type.name }}</td>
+                        <td>{{ insurance.insurance_provider.name }}</td>
+                        <td>{{ insurance.insurance_number }}</td>
+                        <td>{{ insurance.expiry_date|to_jalali }}</td>
+                        <td>{{ insurance.coverage_percentage }}%</td>
+                        <td>{{ insurance.is_active|yesno:"فعال,غیرفعال" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6">اطلاعات بیمه موجود نیست.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="med-print-section">
+        <h3>سوابق درمانی</h3>
+        <table class="med-print-table">
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>نام پزشک</th>
+                    <th>شرح درمان</th>
+                    <th>هزینه</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for treatment in treatments %}
+                    <tr>
+                        <td>{{ treatment.procedure_date|to_jalali }}</td>
+                        <td>{{ treatment.performed_by.get_full_name }}</td>
+                        <td>{{ treatment.description }}</td>
+                        <td>{{ treatment.cost }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">سابقه درمان موجود نیست.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3>سوابق درمانی قبلی</h3>
+    <table class="med-print-table">
+        <thead>
+            <tr>
+                <th>تاریخ مراجعه</th>
+                <th>نام پزشک</th>
+                <th>شرح درمان</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treatment in previous_treatments %}
+                <tr>
+                    <td>{{ treatment.visit_date|to_jalali }}</td>
+                    <td>{{ treatment.doctor_name }}</td>
+                    <td>{{ treatment.description }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">سابقه درمان قبلی موجود نیست.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="med-print-footer">
+        <div class="med-print-date">تاریخ چاپ: {{ print_date }}</div>
+        <div class="med-print-page-number">صفحه <span class="page-num"></span></div>
+    </div>
+</div>
+{% endblock %}

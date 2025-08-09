@@ -1,0 +1,20 @@
+<!-- templates/Patient/modals/_refund_modal.html -->
+<div class="payment_modal-overlay" id="payment_refund-modal-overlay">
+    <div class="payment_modal-content">
+        <div class="payment_modal-header">
+            <h3>ثبت عودت وجه</h3>
+            <button class="payment_modal-close">×</button>
+        </div>
+        <form id="payment_refund-form" onsubmit="PaymentManager.handleRefund(event)">
+            <input type="hidden" name="payment_id" id="payment_refund-payment-id">
+            <div class="payment_form-group">
+                <label for="payment_refund-reason">دلیل عودت</label>
+                <textarea id="payment_refund-reason" name="reason" class="payment_input-style" rows="3" required></textarea>
+            </div>
+            <div class="payment_modal-footer">
+                <button type="button" class="btn btn-secondary payment_modal-cancel">انصراف</button>
+                <button type="submit" class="btn btn-danger">ثبت عودت</button>
+            </div>
+        </form>
+    </div>
+</div>

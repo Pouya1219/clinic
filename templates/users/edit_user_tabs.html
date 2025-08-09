@@ -1,0 +1,97 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% block title %} ویرایش کاربران {% endblock %}
+{% block content %}
+<section class="main-content">
+<!-- templates/users/edit_user_tabs.html -->
+<div class="edit-user-tabs__container">
+    <div class="edit-user-tabs__nav">
+        <button class="edit-user-tabs__button edit-user-tabs__button--active" data-edit-tab="user-info">کاربران</button>
+        <button class="edit-user-tabs__button" data-edit-tab="insurance-info">اطلاعات بیمه</button>
+        <button class="edit-user-tabs__button" data-edit-tab="profile-img">عکس پرفایل</button>
+        <button class="edit-user-tabs__button" data-edit-tab="salary-info">فیش حقوقی</button>
+    </div>
+
+    <div class="edit-user-tabs__content" id="edit-user-tabs-salary-info">
+        {% include 'users/tabs/salary_info_tab.html' %}
+    </div>
+
+    <div class="edit-user-tabs__content" id="edit-user-tabs-profile-img">
+        {% include 'users/tabs/profile_img_tab.html' %}
+    </div>
+
+    <div class="edit-user-tabs__content edit-user-tabs__content--active" id="edit-user-tabs-user-info">
+        {% include 'users/tabs/user_info_tab.html' %}
+    </div>
+
+    <div class="edit-user-tabs__content" id="edit-user-tabs-insurance-info">
+        {% include 'users/tabs/insurance_info_tab.html' %}
+    </div>
+
+    
+
+</div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // تنظیمات تاریخ شمسی
+    $('.datepicker').persianDatepicker({
+        format: 'YYYY/MM/DD',
+        initialValue: true
+    });
+
+    // نمایش نام فایل انتخاب شده
+    $('.custom-file-input').on('change', function() {
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+        
+        // نمایش پیش‌نمایش تصویر
+        if (this.files && this.files[0]) {
+            var reader = new FileReader();
+            var preview = $(this).closest('.form-group').find('.preview-image');
+            
+            reader.onload = function(e) {
+                preview.attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
+</script>
+<script>
+    function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function printCard() {
+    const printContent = document.querySelector('.card-container').innerHTML;
+    const originalContent = document.body.innerHTML;
+    
+    document.body.innerHTML = `
+        <div style="width: 85.6mm; height: 53.98mm; margin: 0;">
+            ${printContent}
+        </div>
+    `;
+    
+    window.print();
+    document.body.innerHTML = originalContent;
+    location.reload();
+}
+
+</script>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,141 @@
+<div class="dtl_appointment_view-mode">
+  <div class="dtl_appointment_view-header">
+    <h3>جزئیات نوبت</h3>
+  </div>
+  
+  <div class="dtl_appointment_info-grid">
+    <!-- اطلاعات پایه -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات پایه</h4>
+      <div class="dtl_info-group">
+        <strong>نام:</strong> 
+        <span data-field="visit_first_name">{{ appointment.first_name }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>نام خانوادگی:</strong>
+        <span data-field="visit_last_name">{{ appointment.last_name }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>کد ملی:</strong>
+        <span data-field="visit_national_code">{{ appointment.national_code }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>شماره تماس:</strong>
+        <span data-field="visit_phone">{{ appointment.phone }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>شماره پرونده:</strong>
+        <span data-field="visit_file_number">{{ appointment.file_number|default:"تعیین نشده" }}</span>
+      </div>
+    </div>
+
+    <!-- اطلاعات زمانی -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">زمان نوبت</h4>
+      <div class="dtl_info-group">
+        <strong>تاریخ مراجعه:</strong>
+        <span data-field="date">{{ appointment.date|date:"Y/m/d" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>از ساعت:</strong>
+        <span data-field="visit_time_from">{{ appointment.time_from|time:"H:i" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>تا ساعت:</strong>
+        <span data-field="visit_time_to">{{ appointment.time_to|time:"H:i" }}</span>
+      </div>
+    </div>
+
+    <!-- اطلاعات درمان -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات درمان</h4>
+      <div class="dtl_info-group">
+        <strong>نوع درمان:</strong>
+        <span data-field="visit_treatment_type">{{ appointment.treatment_type|default:"تعیین نشده" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>شرح درمان:</strong>
+        <span data-field="visit_treatment_description">{{ appointment.treatment_description|default:"توضیحات ندارد" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>پزشک معالج:</strong>
+        <span data-field="visit_treating_doctor">{{ appointment.treating_doctor.get_full_name }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>یونیت:</strong>
+        <span data-field="visit_unit">{{ appointment.unit|default:"تعیین نشده" }}</span>
+      </div>
+    </div>
+
+    <!-- وضعیت نوبت -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">وضعیت</h4>
+      <div class="dtl_info-group">
+        <strong>وضعیت نوبت:</strong>
+        <span data-field="visit_status" class="dtl_status-badge dtl_status-{{ appointment.status }}">
+          {{ appointment.get_status_display }}
+        </span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>بیمار ویزیت شده:</strong>
+        <span data-field="visited">{{ appointment.visited|yesno:"بله,خیر" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>نیاز به پرونده:</strong>
+        <span data-field="no_file">{{ appointment.no_file|yesno:"خیر,بله" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>معرف:</strong>
+        <span data-field="visit_referral">{{ appointment.referral|default:"ندارد" }}</span>
+      </div>
+    </div>
+
+    <!-- اطلاعات سیستمی -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات سیستمی</h4>
+      <div class="dtl_info-group">
+        <strong>ثبت توسط:</strong>
+        <span data-field="created_by">{{ appointment.created_by.get_full_name }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>تاریخ ثبت:</strong>
+        <span data-field="created_at">{{ appointment.created_at|date:"Y/m/d H:i" }}</span>
+      </div>
+      <div class="dtl_info-group">
+        <strong>آخرین ویرایش:</strong>
+        <span data-field="updated_at">{{ appointment.updated_at|date:"Y/m/d H:i" }}</span>
+      </div>
+    </div>
+
+    <!-- توضیحات -->
+    {% if appointment.description %}
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">توضیحات</h4>
+      <div class="dtl_info-group dtl_description">
+        {{ appointment.description|linebreaks }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% comment %} onclick="UIManager.editAppointment({{ appointment.id }})" {% endcomment %}
+  <div class="dtl_appointment_actions-panel">
+    <button class="dtl_appointment_button dtl_appointment_button-info dtl_btn-edit">
+      <i class="fas fa-edit"></i> ویرایش
+    </button>
+    <button class="dtl_appointment_button dtl_appointment_button-danger" onclick="UIManager.deleteAppointment({{ appointment.id }})">
+      <i class="fas fa-trash-alt"></i> حذف
+    </button>
+    <button class="dtl_appointment_button dtl_appointment_button-success" onclick="UIManager.sendSMS({{ appointment.id }})">
+      <i class="fas fa-sms"></i> ارسال پیامک
+    </button>
+    <button type="button" class="appointment_button appointment_button-danger" onclick="UIManager.closeModal()">
+      <i class="fas fa-times"></i> انصراف
+    </button>
+    <button class="dtl_appointment_button dtl_appointment_button-secondary" onclick="UIManager.printAppointment({{ appointment.id }})">
+      <i class="fas fa-print"></i> پرینت نوبت
+    </button>
+    <button class="dtl_appointment_button dtl_appointment_button-secondary" onclick="UIManager.thermalPrint({{ appointment.id }})">
+      <i class="fas fa-receipt"></i> پرینت حرارتی
+    </button>
+  </div>
+</div>

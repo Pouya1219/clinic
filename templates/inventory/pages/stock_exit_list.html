@@ -1,0 +1,825 @@
+<!-- templates/inventory/pages/stock_exit_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}لیست خروجی انبار{% endblock %}
+
+{% block content %}
+<section class="main-content">
+    <div class="container-fluid">
+        <!-- Header با دکمه بازگشت به کلینیک -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="page-header">
+                        <h2 class="page-title">
+                            <i class="fas fa-arrow-up me-2"></i>
+                            لیست خروجی انبار
+                        </h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'inventory:dashboard' %}">داشبورد انبار</a></li>
+                                <li class="breadcrumb-item active">خروجی انبار</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="page-actions">
+                        <!-- دکمه بازگشت به کلینیک -->
+                        <a href="/" class="btn btn-outline-secondary me-2" title="بازگشت به کلینیک">
+                            <i class="fas fa-clinic-medical me-1"></i>
+                            بازگشت به کلینیک
+                        </a>
+                        
+                        <button class="btn btn-success me-2" onclick="openExitModal()">
+                            <i class="fas fa-plus"></i>
+                            خروجی جدید
+                        </button>
+                        
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-download"></i>
+                                صادرات
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="exportExcel()">
+                                    <i class="fas fa-file-excel me-2"></i>Excel
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="exportPDF()">
+                                    <i class="fas fa-file-pdf me-2"></i>PDF
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- بعد از فیلترها، قبل از آمار -->
+<div class="row mb-3" id="bulkActions" style="display: none;">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <i class="fas fa-check-square me-2"></i>
+            <span id="selectedCount">0</span> مورد انتخاب شده
+            <button class="btn btn-sm btn-danger ms-3" onclick="deleteSelected()">
+                <i class="fas fa-trash me-1"></i>
+                حذف انتخاب شده‌ها
+            </button>
+        </div>
+    </div>
+</div>
+
+        <!-- فیلترها -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-filter me-2"></i>
+                            فیلترها
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="filterForm" class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">جستجو</label>
+                                <input type="text" class="form-control" id="searchInput" placeholder="نام کالا، کد، شماره خروجی...">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">انبار</label>
+                                <select class="form-select" id="warehouseFilter">
+                                    <option value="">همه انبارها</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">دسته‌بندی</label>
+                                <select class="form-select" id="categoryFilter">
+                                    <option value="">همه دسته‌ها</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">از تاریخ</label>
+                                <input type="date" class="form-control" id="dateFrom">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">تا تاریخ</label>
+                                <input type="date" class="form-control" id="dateTo">
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label"> </label>
+                                <button type="button" class="btn btn-primary w-100" onclick="applyFilters()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- آمار سریع -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card bg-danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalExits">0</h3>
+                        <p>کل خروجی‌ها</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card bg-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="todayExits">0</h3>
+                        <p>خروجی امروز</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card bg-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalQuantity">0</h3>
+                        <p>کل مقدار</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="stat-card bg-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalValue">0</h3>
+                        <p>کل ارزش (تومان)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول خروجی‌ها -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="card-title mb-0">
+                                <i class="fas fa-list me-2"></i>
+                                لیست خروجی‌ها
+                            </h6>
+                            <div class="card-actions">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="refreshTable()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="exitsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">
+                                            <input type="checkbox" id="selectAll" class="form-check-input">
+                                        </th>
+                                        <th>شماره خروجی</th>
+                                        <th>تاریخ خروجی</th>
+                                        <th>نام کالا</th>
+                                        <th>کد کالا</th>
+                                        <th>انبار</th>
+                                        <th>مقدار</th>
+                                        <th>واحد</th>
+                                        <th>قیمت واحد</th>
+                                        <th>کل قیمت</th>
+                                        <th>توضیحات</th>
+                                        <th width="10%">عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exitsTableBody">
+                                    <!-- داده‌ها با AJAX لود می‌شوند -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Loading -->
+                        <div id="tableLoading" class="text-center py-4" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">در حال بارگذاری...</span>
+                            </div>
+                            <p class="mt-2">در حال بارگذاری...</p>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">هیچ خروجی‌ای یافت نشد</h5>
+                            <p class="text-muted">برای شروع، اولین خروجی انبار را ثبت کنید.</p>
+                            <button class="btn btn-primary" onclick="openExitModal()">
+                                <i class="fas fa-plus me-2"></i>
+                                خروجی جدید
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="pagination-info">
+                                نمایش <span id="showingFrom">0</span> تا <span id="showingTo">0</span> از <span id="totalRecords">0</span> رکورد
+                            </div>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0" id="pagination">
+                                    <!-- صفحه‌بندی با JavaScript -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal خروجی جدید -->
+<div class="modal fade" id="exitModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-arrow-up me-2"></i>
+                    <span id="modalTitle">خروجی جدید</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="exitForm">
+                    <input type="hidden" id="exitId">
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">شماره خروجی *</label>
+                            <input type="text" class="form-control" id="exitNumber" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">تاریخ خروجی *</label>
+                            <input type="datetime-local" class="form-control" id="exitDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">کالا *</label>
+                            <select class="form-select" id="itemSelect" required>
+                                <option value="">انتخاب کالا...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">انبار *</label>
+                            <select class="form-select" id="warehouseSelect" required>
+                                <option value="">انتخاب انبار...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">مقدار *</label>
+                            <input type="number" class="form-control" id="quantity" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">واحد</label>
+                            <select class="form-select" id="unitSelect">
+                                <option value="">انتخاب واحد...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">قیمت واحد</label>
+                            <input type="number" class="form-control" id="unitCost" step="0.01" min="0">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">توضیحات</label>
+                            <textarea class="form-control" id="notes" rows="3" placeholder="توضیحات اضافی..."></textarea>
+                        </div>
+                        
+                        <!-- نمایش موجودی فعلی -->
+                        <div class="col-12">
+                            <div class="alert alert-info" id="stockInfo" style="display: none;">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>موجودی فعلی:</strong> <span id="currentStock">0</span> <span id="currentUnit"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-success" onclick="saveExit()">
+                    <i class="fas fa-save me-2"></i>
+                    ذخیره
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal حذف -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">
+                    <i class="fas fa-trash me-2"></i>
+                    حذف خروجی
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا از حذف این خروجی اطمینان دارید؟</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>توجه:</strong> این عمل قابل بازگشت نیست و موجودی انبار تغییر خواهد کرد.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                    <i class="fas fa-trash me-2"></i>
+                    حذف
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary) 100%);
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card.bg-danger { background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%); }
+.stat-card.bg-warning { background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%); }
+.stat-card.bg-info { background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%); }
+.stat-card.bg-success { background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); }
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.stat-content h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.page-title {
+    color: #495057;
+    font-weight: 600;
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.btn-action {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    margin: 0 2px;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .page-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .page-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+// متغیرهای سراسری
+let currentPage = 1;
+let totalPages = 1;
+let deleteExitId = null;
+
+// بارگذاری اولیه صفحه
+$(document).ready(function() {
+    loadExits();
+    loadWarehouses();
+    loadCategories();
+    loadItems();
+    loadUnits();
+    
+    // تنظیم تاریخ پیش‌فرض
+    const today = new Date();
+    $('#exitDate').val(today.toISOString().slice(0, 16));
+    
+    // Event listeners
+    $('#searchInput').on('keyup', debounce(applyFilters, 500));
+    $('#selectAll').on('change', toggleSelectAll);
+    $('#itemSelect').on('change', loadItemStock);
+    $('#quantity, #unitCost').on('input', calculateTotal);
+});
+
+// بارگذاری لیست خروجی‌ها
+function loadExits(page = 1) {
+    showLoading();
+    
+    const filters = {
+        page: page,
+        search: $('#searchInput').val(),
+        warehouse: $('#warehouseFilter').val(),
+        category: $('#categoryFilter').val(),
+        date_from: $('#dateFrom').val(),
+        date_to: $('#dateTo').val()
+    };
+    
+    $.ajax({
+        url: '{% url "inventory:api_stock_exit" %}',
+        method: 'GET',
+        data: filters,
+        success: function(response) {
+            hideLoading();
+            
+            if (response.exits && response.exits.length > 0) {
+                renderExitsTable(response.exits);
+                updatePagination(response.pagination);
+                updateStats(response.stats);
+                showTable();
+            } else {
+                showEmptyState();
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            showError('خطا در بارگذاری داده‌ها');
+            showEmptyState();
+        }
+    });
+}
+
+// رندر جدول خروجی‌ها
+function renderExitsTable(exits) {
+    const tbody = $('#exitsTableBody');
+    tbody.empty();
+    
+    exits.forEach(exit => {
+        const row = `
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input row-checkbox" value="${exit.id}">
+                </td>
+                <td>
+                    <strong>${exit.exit_number}</strong>
+                </td>
+                <td>
+                    <small class="text-muted">${formatDateTime(exit.exit_date)}</small>
+                </td>
+                <td>
+                    <div>
+                        <strong>${exit.item_name}</strong>
+                    </div>
+                </td>
+                <td>
+                    <code>${exit.item_code}</code>
+                </td>
+                <td>
+                    <span class="badge bg-secondary">${exit.warehouse_name}</span>
+                </td>
+                <td>
+                    <strong class="text-danger">${formatNumber(exit.quantity)}</strong>
+                </td>
+                <td>
+                    <small>${exit.unit || '-'}</small>
+                </td>
+                <td>
+                    <small>${formatCurrency(exit.unit_cost)}</small>
+                </td>
+                <td>
+                    <strong>${formatCurrency(exit.total_cost)}</strong>
+                </td>
+                <td>
+                    <small class="text-muted">${exit.notes || '-'}</small>
+                </td>
+                <td>
+                    <!-- ادامه از همون جا که قطع شده: -->
+<div class="btn-group btn-group-sm">
+    <button class="btn btn-outline-primary btn-action" onclick="viewExit('${exit.id}')" title="مشاهده">
+        <i class="fas fa-eye"></i>
+    </button>
+    <button class="btn btn-outline-warning btn-action" onclick="editExit('${exit.id}')" title="ویرایش">
+        <i class="fas fa-edit"></i>
+    </button>
+    <button class="btn btn-outline-danger btn-action" onclick="deleteExit('${exit.id}')" title="حذف">
+        <i class="fas fa-trash"></i>
+    </button>
+    <button class="btn btn-outline-success btn-action" onclick="duplicateExit('${exit.id}')" title="کپی">
+        <i class="fas fa-copy"></i>
+    </button>
+</div>
+
+                        // صادرات PDF
+function exportPDF() {
+    window.open('{% url "inventory:export_movements" %}?format=pdf&type=exit', '_blank');
+}
+
+// مشاهده جزئیات خروجی
+function viewExit(exitId) {
+    $.ajax({
+        url: `{% url "inventory:api_stock_exit" %}${exitId}/`,
+        method: 'GET',
+        success: function(response) {
+            const exit = response.exit;
+            
+            // نمایش جزئیات در modal یا صفحه جدید
+            let detailsHtml = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>اطلاعات کلی</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>شماره خروجی:</strong></td><td>${exit.exit_number}</td></tr>
+                            <tr><td><strong>تاریخ خروجی:</strong></td><td>${formatDateTime(exit.exit_date)}</td></tr>
+                            <tr><td><strong>کالا:</strong></td><td>${exit.item_name} (${exit.item_code})</td></tr>
+                            <tr><td><strong>انبار:</strong></td><td>${exit.warehouse_name}</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>اطلاعات مالی</h6>
+                        <table class="table table-sm">
+                            <tr><td><strong>مقدار:</strong></td><td>${formatNumber(exit.quantity)} ${exit.unit || ''}</td></tr>
+                            <tr><td><strong>قیمت واحد:</strong></td><td>${formatCurrency(exit.unit_cost)}</td></tr>
+                            <tr><td><strong>کل قیمت:</strong></td><td>${formatCurrency(exit.total_cost)}</td></tr>
+                            <tr><td><strong>توضیحات:</strong></td><td>${exit.notes || '-'}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            // نمایش در SweetAlert یا modal
+            Swal.fire({
+                title: 'جزئیات خروجی',
+                html: detailsHtml,
+                width: '800px',
+                showCloseButton: true,
+                showConfirmButton: false
+            });
+        },
+        error: function() {
+            showError('خطا در بارگذاری جزئیات خروجی');
+        }
+    });
+}
+
+// انتخاب همه
+function toggleSelectAll() {
+    const isChecked = $('#selectAll').is(':checked');
+    $('.row-checkbox').prop('checked', isChecked);
+}
+
+// محاسبه کل قیمت
+function calculateTotal() {
+    const quantity = parseFloat($('#quantity').val()) || 0;
+    const unitCost = parseFloat($('#unitCost').val()) || 0;
+    const total = quantity * unitCost;
+    
+    // نمایش کل قیمت (اگر فیلد داشته باشیم)
+    if ($('#totalCost').length) {
+        $('#totalCost').val(total.toFixed(2));
+    }
+}
+
+// بروزرسانی آمار
+function updateStats(stats) {
+    $('#totalExits').text(formatNumber(stats.total_exits || 0));
+    $('#todayExits').text(formatNumber(stats.today_exits || 0));
+    $('#totalQuantity').text(formatNumber(stats.total_quantity || 0));
+    $('#totalValue').text(formatCurrency(stats.total_value || 0));
+}
+
+// بروزرسانی صفحه‌بندی
+function updatePagination(pagination) {
+    currentPage = pagination.current_page;
+    totalPages = pagination.total_pages;
+    
+    $('#showingFrom').text(pagination.from);
+    $('#showingTo').text(pagination.to);
+    $('#totalRecords').text(pagination.total);
+    
+    // ساخت دکمه‌های صفحه‌بندی
+    const paginationHtml = buildPaginationHtml(pagination);
+    $('#pagination').html(paginationHtml);
+}
+
+// ساخت HTML صفحه‌بندی
+function buildPaginationHtml(pagination) {
+    let html = '';
+    
+    // دکمه قبلی
+    if (pagination.has_previous) {
+        html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="loadExits(${pagination.current_page - 1})">قبلی</a>
+        </li>`;
+    }
+    
+    // شماره صفحات
+    for (let i = Math.max(1, pagination.current_page - 2); 
+         i <= Math.min(pagination.total_pages, pagination.current_page + 2); i++) {
+        const activeClass = i === pagination.current_page ? 'active' : '';
+        html += `<li class="page-item ${activeClass}">
+            <a class="page-link" href="#" onclick="loadExits(${i})">${i}</a>
+        </li>`;
+    }
+    
+    // دکمه بعدی
+    if (pagination.has_next) {
+        html += `<li class="page-item">
+            <a class="page-link" href="#" onclick="loadExits(${pagination.current_page + 1})">بعدی</a>
+        </li>`;
+    }
+    
+    return html;
+}
+
+// نمایش loading
+function showLoading() {
+    $('#tableLoading').show();
+    $('#exitsTable').hide();
+    $('#emptyState').hide();
+}
+
+// مخفی کردن loading
+function hideLoading() {
+    $('#tableLoading').hide();
+}
+
+// نمایش جدول
+function showTable() {
+    $('#exitsTable').show();
+    $('#emptyState').hide();
+}
+
+// نمایش حالت خالی
+function showEmptyState() {
+    $('#exitsTable').hide();
+    $('#emptyState').show();
+}
+
+// توابع کمکی
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fa-IR') + ' ' + date.toLocaleTimeString('fa-IR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function formatNumber(number) {
+    return new Intl.NumberFormat('fa-IR').format(number);
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('fa-IR').format(amount) + ' تومان';
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// نمایش پیام موفقیت
+function showSuccess(message) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'موفق!',
+            text: message,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// نمایش پیام خطا
+function showError(message) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'error',
+            title: 'خطا!',
+            text: message
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// حذف چندتایی
+function deleteSelected() {
+    const selectedIds = $('.row-checkbox:checked').map(function() {
+        return $(this).val();
+    }).get();
+    
+    if (selectedIds.length === 0) {
+        showError('لطفاً حداقل یک مورد را انتخاب کنید.');
+        return;
+    }
+    
+    Swal.fire({
+        title: 'حذف چندتایی',
+        text: `آیا از حذف ${selectedIds.length} خروجی اطمینان دارید؟`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، حذف کن',
+        cancelButtonText: 'انصراف'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '{% url "inventory:api_stock_exit" %}bulk_delete/',
+                method: 'POST',
+                data: JSON.stringify({ ids: selectedIds }),
+                contentType: 'application/json',
+                success: function(response) {
+                    showSuccess(`${selectedIds.length} خروجی با موفقیت حذف شد.`);
+                    loadExits(currentPage);
+                    $('#selectAll').prop('checked', false);
+                },
+                error: function() {
+                    showError('خطا در حذف خروجی‌ها');
+                }
+            });
+        }
+    });
+}
+
+// کپی کردن خروجی
+function duplicateExit(exitId) {
+    $.ajax({
+        url: `{% url "inventory:api_stock_exit" %}${exitId}/`,
+        method: 'GET',
+        success: function(response) {
+            const exit = response.exit;
+            
+            // پر کردن فرم با اطلاعات کپی شده
+            $('#exitId').val('');
+            $('#exitNumber').val('EXT-' + Date.now()); // شماره جدید
+            $('#exitDate').val(new Date().toISOString().slice(0, 16)); // تاریخ امروز
+            $('#itemSelect').val(exit.item_id);
+            $('#warehouseSelect').val(exit.warehouse_id);
+            $('#quantity').val(exit.quantity);
+            $('#unitSelect').val(exit.unit_id);
+            $('#unitCost').val(exit.unit_cost);
+            $('#notes').val(exit.notes);
+            
+            $('#modalTitle').text('کپی خروجی');
+            $('#exitModal').modal('show');
+            
+            loadItemStock();
+        },
+        error: function() {
+            showError('خطا در کپی کردن خروجی');
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,230 @@
+<form class="treatment-form" id="treatment-form">
+    <input type="hidden" id="treatment-id" name="treatment_id">
+    <input type="hidden" name="patient_id" value="{{ patient.id }}">
+    <input type="hidden" name="treatment_id" id="treatment-id" value="">
+    
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">نواحی انتخاب شده</label>
+            <input type="text" class="treatment-input" id="selected-areas" name="treatment_areas" readonly>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">تعداد نواحی</label>
+            <input type="text" class="treatment-input" id="areas-count" readonly>
+        </div>
+    </div>
+
+    <div class="form-row">
+        
+
+<!-- بخش شرح درمان (این بخش بدون تغییر باقی می‌ماند و با جاوا اسکریپت پر می‌شود) -->
+        <div class="treatment-group">
+            <label class="treatment-label">شرح درمان</label>
+                <select class="treatment-select" name="treatment_detail" id="treatment-detail" required>
+                    <option value="">ابتدا نوع درمان را انتخاب کنید</option>
+                </select>
+        </div>
+</div>
+<div class="form-group">
+    <div class="form-row">
+    <div class="form-check manual-price-toggle">
+        <input type="checkbox" id="manual-price-toggle" class="form-check-input">
+        <label for="manual-price-toggle" class="form-check-label">تغییر قیمت به صورت دستی</label>
+        <small class="form-text text-muted">در حالت دستی، محاسبات بر اساس تعرفه عمومی انجام می‌شود</small>
+    </div>
+</div>
+
+    
+    <div class="form-row">
+        <div class="col">
+            <label for="general-fee">تعرفه عمومی:</label>
+            <div class="input-group">
+                <input type="text" id="general-fee" name="general_fee" class="form-control">
+                <input type="text" id="general-fee-manual" name="general_fee_manual" class="form-control manual-price-input" style="display: none;">
+            </div>
+        </div>
+        <div class="col">
+            <label for="special-fee">تعرفه تخصصی:</label>
+            <div class="input-group">
+                <input type="text" id="special-fee" name="special_fee" class="form-control" readonly>
+                <input type="text" id="special-fee-manual" name="special_fee_manual" class="form-control manual-price-input" style="display: none;" required>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="form-row">
+    <div class="treatment-group">
+        <label class="treatment-label">پزشک معالج</label>
+        <select class="treatment-select" name="doctor" required>
+            <option value="">انتخاب کنید</option>
+            
+            <!-- این حلقه از متغیر 'doctors' که در ویو ساختیم استفاده می‌کند -->
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.first_name }} {{ doctor.last_name }}</option>
+            {% endfor %}
+            
+        </select>
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">دستیار پزشک</label>
+        <select class="treatment-select" name="assistant">
+            <option value="">انتخاب کنید</option>
+            
+            <!-- این حلقه از متغیر 'assistants' که در ویو ساختیم استفاده می‌کند -->
+            {% for assistant in assistants %}
+                <option value="{{ assistant.id }}">{{ assistant.first_name }} {{ assistant.last_name }}</option>
+            {% endfor %}
+            
+        </select>
+    </div>
+</div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label" for="Visit-date">تاریخ مراجعه</label>
+            <input class="date-input form-input jalali input-field patient-form-input treatment-input" id="Visit-date" data-id="10773" name="treatment_date" required>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label" for="next-Visit-date">تاریخ مراجعه بعدی</label>
+            <input class="date-input form-input jalali input-field patient-form-input treatment-input" id="next-Visit-date" data-id="10793" name="next_visit_date" required>
+        </div>
+    </div>
+
+    <div class="form-row">
+        {% comment %} <div class="treatment-group">
+            <label class="treatment-label">نوع بیمه</label>
+            <select class="treatment-select" name="insurance_provider" id="insurance-provider">
+                <option value="">انتخاب کنید</option>
+                {% for provider in insurance_providers %}
+                <option value="{{ provider.id }}">{{ provider.name }} ({{ provider.insurance_type.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+    </div> {% endcomment %}
+             <div class="treatment-group">
+        <label class="treatment-label">بیمه</label>
+        <select class="treatment-select" name="insurance_provider" id="insurance-provider">
+            <option value="">انتخاب کنید</option>
+            
+            <!-- حلقه جدید بر اساس بیمه‌های خود بیمار -->
+            {% for p_insurance in patient_active_insurances %}
+                <option value="{{ p_insurance.insurance_provider.id }}" 
+                        data-percentage="{{ p_insurance.coverage_percentage }}"
+                        data-ceiling="{{ p_insurance.coverage_ceiling }}"
+                        data-used="{{ p_insurance.used_coverage }}">
+                    {{ p_insurance.insurance_provider.name }} ({{ p_insurance.insurance_number }})
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">درصد بیمه</label>
+        <input type="number" class="treatment-input" name="insurance_percentage" id="insurance-percentage" min="0" max="100" value="0" readonly>
+    </div>
+</div>
+
+<!-- فیلدهای جدید برای نمایش اطلاعات بیمه -->
+<div class="form-row">
+    <div class="treatment-group">
+        <label class="treatment-label">سقف بیمه</label>
+        <input type="text" class="treatment-input" id="insurance-ceiling" readonly>
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">استفاده شده از بیمه</label>
+        <input type="text" class="treatment-input" id="insurance-used" readonly>
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">باقیمانده بیمه</label>
+        <input type="text" class="treatment-input" id="insurance-remaining" readonly>
+    </div>
+</div>
+    <div class="form-row">
+    <div class="treatment-group">
+        <label class="treatment-label">مبلغ تخفیف</label>
+        <input type="number" class="treatment-input" id="discount" name="discount" value="0">
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">نوع تخفیف</label>
+        <select class="treatment-select" id="discount-type" name="discount_type_id">
+            <option value="">انتخاب نوع تخفیف</option>
+            <!-- گزینه‌ها با جاوااسکریپت پر می‌شوند -->
+        </select>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="treatment-group">
+        <label class="treatment-label">سهم پزشک از تخفیف</label>
+        <input type="text" class="treatment-input" id="doctor-discount-share" readonly>
+    </div>
+    <div class="treatment-group">
+        <label class="treatment-label">سهم کلینیک از تخفیف</label>
+        <input type="text" class="treatment-input" id="clinic-discount-share" readonly>
+    </div>
+</div>
+
+
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">هزینه مواد</label>
+            <input type="number" class="treatment-input" name="material_cost" id="material-cost" value="0">
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">هزینه لابراتوار</label>
+            <input type="number" class="treatment-input" name="lab_cost" id="lab-cost" value="0">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group full-width">
+            <label class="treatment-label">مبلغ قابل پرداخت</label>
+            <input type="number" class="treatment-input highlight-input" name="payable_amount" id="payable-amount" readonly>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="insurance_sent" id="insurance-sent">
+                <span class="checkmark"></span>
+                ارسال شده به بیمه
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="is_completed" id="is-completed">
+                <span class="checkmark"></span>
+                درمان انجام شده
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="insurance_paid" id="insurance-paid">
+                <span class="checkmark"></span>
+                از بیمه مبلغ دریافت شده
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="is_treatment_plan" id="is-treatment-plan">
+                <span class="checkmark"></span>
+                ثبت به عنوان طرح درمان
+            </label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group full-width">
+            <label class="treatment-label">توضیحات</label>
+            <textarea class="treatment-textarea" name="description" id="description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="treatment-submit" id="save-treatment">ثبت درمان</button>
+        <button type="reset" class="treatment-reset">پاک کردن فرم</button>
+    </div>
+</form>

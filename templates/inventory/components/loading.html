@@ -1,0 +1,91 @@
+<!-- templates/inventory/components/loading.html -->
+<!-- Full Page Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">در حال بارگذاری...</span>
+        </div>
+        <div class="mt-3">
+            <h5>در حال بارگذاری...</h5>
+            <p class="text-muted">لطفا صبر کنید</p>
+        </div>
+    </div>
+</div>
+
+<!-- Inline Loading Spinner -->
+<div class="inline-loading text-center p-4" id="inlineLoading" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">در حال بارگذاری...</span>
+    </div>
+    <div class="mt-2">
+        <small class="text-muted">در حال بارگذاری...</small>
+    </div>
+</div>
+
+<!-- Table Loading -->
+<tr class="table-loading" id="tableLoading" style="display: none;">
+    <td colspan="100%" class="text-center p-4">
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+        در حال بارگذاری...
+    </td>
+</tr>
+
+<!-- Button Loading State -->
+<div class="btn-loading" style="display: none;">
+    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+    در حال پردازش...
+</div>
+
+<!-- Card Loading Skeleton -->
+<div class="card-loading" id="cardLoading" style="display: none;">
+    <div class="card">
+        <div class="card-body">
+            <div class="placeholder-glow">
+                <span class="placeholder col-6"></span>
+                <span class="placeholder w-75"></span>
+                <span class="placeholder" style="width: 25%;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-content {
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder {
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+    display: inline-block;
+    height: 1em;
+    vertical-align: middle;
+}
+
+.placeholder-glow .placeholder {
+    animation: placeholder-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes placeholder-glow {
+    50% {
+        opacity: 0.2;
+    }
+}
+</style>

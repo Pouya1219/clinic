@@ -1,0 +1,161 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% block title %}کاربران{% endblock %}
+{% block content %}
+<section class="main-content">
+
+    <div class="content-section">
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            
+            <a href="{% url 'create_user' %}" class="action-button btn-primary">
+                <i class="fas fa-plus"></i>
+                جدید
+            </a>
+            
+            
+            <button class="action-button btn-secondary">
+                <i class="fas fa-file-export"></i>
+                خروجی
+            </button>
+            <button class="action-button btn-secondary">
+                <i class="fas fa-print"></i>
+                چاپ
+            </button>
+            <button class="action-button btn-secondary">
+                <i class="fas fa-sync-alt"></i>
+                بروزرسانی
+            </button>
+        </div>
+    
+        <!-- Search Section -->
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="جستجو...">
+            <select class="select-filter">
+                <option value="">وضعیت</option>
+                <option value="all">همه</option>
+                <option value="active">فعال</option>
+                <option value="inactive">غیرفعال</option>
+            </select>
+            <select class="select-filter">
+                <option value="">سمت</option>
+                <option value="all">همه</option>
+                <option value="doctor">پزشک</option>
+                <option value="assistant">دستیار</option>
+                <option value="reception">پذیرش</option>
+            </select>
+            <button class="show-button">نمایش</button>
+        </div>
+    
+      <!-- Example User Card -->
+<div class="users-grid">
+    {% for profile in profiles %}
+    <div class="user-card">
+        <!-- نشانگر وضعیت -->
+        <span class="status-badge {% if profile.is_activate %}status-active{% else %}status-inactive{% endif %}">
+            {% if profile.is_activate %}فعال{% else %}غیرفعال{% endif %}
+        </span>
+
+        <!-- دکمه ویرایش -->
+        <button class="edit-button" onclick="location.href='{% url 'edit_user' profile.id %}'">
+            <i class="fas fa-edit"></i>
+        </button>
+
+        <div class="user-info">
+            <!-- بخش آواتار -->
+            <div class="avatar-container">
+                {% if profile.avatar and profile.avatar.url != '/media/default.jpg' %}
+                    <img src="{{ profile.avatar.url }}" alt="{{ profile.first_name }}" class="user-avatar">
+                {% else %}
+                    <div class="default-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- اطلاعات کاربر -->
+            <div class="user-details">
+                <!-- نام و نام خانوادگی -->
+                <div class="detail-row">
+                    <span class="detail-label">نام و نام خانوادگی:</span>
+                    <span class="detail-value">{{ profile.first_name }} {{ profile.last_name }}</span>
+                </div>
+
+                <!-- جنسیت -->
+                <div class="detail-row">
+                    <span class="gender-badge {% if profile.sex %}gender-male{% else %}gender-female{% endif %}">
+                        <i class="fas {% if profile.sex %}fa-mars{% else %}fa-venus{% endif %}"></i>
+                        {% if profile.sex %}مرد{% else %}زن{% endif %}
+                    </span>
+                </div>
+
+                <!-- سمت -->
+                <div class="user-position">
+                    <i class="fas fa-user-md"></i>
+                    سمت: {{ profile.role.name|default:"نامشخص" }}
+                </div>
+
+                <!-- شماره پرسنلی -->
+                <div class="user-id">
+                    <i class="fas fa-id-card"></i>
+                    شماره پرسنلی: {{ profile.personal_number }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-users">
+        <p>هیچ کاربری یافت نشد</p>
+    </div>
+    {% endfor %}
+</div>
+
+</section>
+{% block JavaScript %}
+<script>
+    // تغییر حالت شب و روز
+    document.getElementById("mode-toggle").addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+        document.body.classList.toggle("light-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+            this.innerHTML = "🌙";
+            this.setAttribute("title", "حالت روز را فعال کنید");
+        } else {
+            this.innerHTML = "🌞";
+            this.setAttribute("title", "حالت شب را فعال کنید");
+        }
+    });
+
+    // تابع خروج دستی
+    function logoutUser() {
+        fetch('/logout/', {
+            method: 'POST',
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        }).then(() => {
+            window.location.href = "/login";
+        });
+    }
+
+    // تنظیم دکمه خروج
+    document.getElementById("logout-btn").addEventListener("click", logoutUser);
+
+    // دریافت توکن CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie) {
+            const cookies = document.cookie.split(';');
+            cookies.forEach(cookie => {
+                const trimmedCookie = cookie.trim();
+                if (trimmedCookie.startsWith(name + '=')) {
+                    cookieValue = trimmedCookie.split('=')[1];
+                }
+            });
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock JavaScript %}
+{% endblock content %}

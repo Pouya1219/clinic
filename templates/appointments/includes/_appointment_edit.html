@@ -1,0 +1,152 @@
+<div class="dtl_appointment_edit-mode">
+  <div class="dtl_appointment_edit-header">
+    <h3>ویرایش نوبت</h3>
+  </div>
+
+  <form class="dtl_appointment_edit-form" id="appointmentEditForm">
+    {% csrf_token %}
+    
+    <!-- فیلدهای غیرقابل ویرایش -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات ثابت</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>شماره پرونده:</label>
+          <input type="text" class="dtl_edit-input" value="{{ appointment.file_number }}" readonly />
+        </div>
+        <div class="dtl_edit-group">
+          <label>تاریخ ثبت:</label>
+          <input type="text" class="dtl_edit-input" data-role="created" value="{{ appointment.created_at|date:'Y/m/d' }}" readonly />
+        </div>
+      </div>
+    </div>
+
+    <!-- اطلاعات زمانی -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">زمان نوبت</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>تاریخ مراجعه:</label>
+          <input type="text" name="date" class="dtl_edit-input date-picker" value="{{ appointment.date|date:'Y/m/d' }}" />
+        </div>
+        <div class="dtl_edit-group">
+          <label>از ساعت:</label>
+          <input type="text" name="time_from" class="dtl_edit-input time-picker" value="{{ appointment.time_from|time:'H:i' }}" />
+        </div>
+        <div class="dtl_edit-group">
+          <label>تا ساعت:</label>
+          <input type="text" name="time_to" class="dtl_edit-input time-picker" value="{{ appointment.time_to|time:'H:i' }}" />
+        </div>
+      </div>
+    </div>
+
+    <!-- اطلاعات بیمار -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات بیمار</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>نام:</label>
+          <input type="text" name="first_name" class="dtl_edit-input" value="{{ appointment.first_name }}" required />
+        </div>
+        <div class="dtl_edit-group">
+          <label>نام خانوادگی:</label>
+          <input type="text" name="last_name" class="dtl_edit-input" value="{{ appointment.last_name }}" required />
+        </div>
+      </div>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>کد ملی:</label>
+          <input type="text" name="national_code" class="dtl_edit-input" value="{{ appointment.national_code }}" maxlength="10" />
+        </div>
+        <div class="dtl_edit-group">
+          <label>شماره تماس:</label>
+          <input type="text" name="phone" class="dtl_edit-input" value="{{ appointment.phone }}" />
+        </div>
+      </div>
+    </div>
+
+    <!-- اطلاعات درمان -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">اطلاعات درمان</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>نوع درمان:</label>
+          <input type="text" name="treatment_type" class="dtl_edit-input" value="{{ appointment.treatment_type }}" />
+        </div>
+        <div class="dtl_edit-group">
+          <label>پزشک معالج:</label>
+          <input type="text" class="dtl_edit-input readonly" value="{{ appointment.treating_doctor }}" readonly />
+          <input type="hidden" name="treating_doctor" value="{{ appointment.treating_doctor.id }}">
+        </div>
+      </div>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group full-width">
+          <label>شرح درمان:</label>
+          <textarea name="treatment_description" class="dtl_edit-textarea">{{ appointment.treatment_description }}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- وضعیت و تنظیمات -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">وضعیت و تنظیمات</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group">
+          <label>وضعیت:</label>
+          <select name="status" class="dtl_edit-select">
+            <option value="normal" {% if appointment.status == 'normal' %}selected{% endif %}>عادی</option>
+            <option value="emergency" {% if appointment.status == 'emergency' %}selected{% endif %}>اورژانسی</option>
+            <option value="pending" {% if appointment.status == 'pending' %}selected{% endif %}>در انتظار</option>
+            <option value="visit" {% if appointment.status == 'visit' %}selected{% endif %}>در حال ویزیت</option>
+            <option value="completed" {% if appointment.status == 'completed' %}selected{% endif %}>تکمیل شده</option>
+            <option value="cancelled" {% if appointment.status == 'cancelled' %}selected{% endif %}>لغو شده</option>
+          </select>
+        </div>
+        <div class="dtl_edit-group">
+          <label>یونیت:</label>
+          <select name="unit" class="dtl_edit-select">
+            <option value="">انتخاب یونیت...</option>
+            {% for unit in units %}
+              <option value="{{ unit.id }}" {% if unit.id == appointment.unit.id %}selected{% endif %}>
+                {{ unit.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group checkbox-group">
+          <input type="checkbox" name="visited" id="visited" {% if appointment.visited %}checked{% endif %} />
+          <label for="visited">بیمار ویزیت شده</label>
+        </div>
+        <div class="dtl_edit-group checkbox-group">
+          <input type="checkbox" name="no_file" id="no_file" {% if appointment.no_file %}checked{% endif %} />
+          <label for="no_file">بدون پرونده</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- توضیحات -->
+    <div class="dtl_appointment_section">
+      <h4 class="dtl_section-title">توضیحات</h4>
+      <div class="dtl_edit-row">
+        <div class="dtl_edit-group full-width">
+          <textarea name="description" class="dtl_edit-textarea" placeholder="توضیحات اضافی...">{{ appointment.description }}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- دکمه‌های عملیات -->
+    <div class="dtl_appointment_actions">
+      <button type="submit" class="dtl_appointment_button dtl_appointment_button-success">
+        <i class="fas fa-save"></i> ذخیره تغییرات
+      </button>
+      <button type="button" class="dtl_appointment_button dtl_appointment_button-danger" onclick="UIManager.deleteAppointment({{ appointment.id }})">
+        <i class="fas fa-trash"></i> حذف نوبت
+      </button>
+      <button type="button" class="dtl_appointment_button dtl_appointment_button-secondary" onclick="UIManager.closeEditMode()">
+        <i class="fas fa-times"></i> انصراف
+      </button>
+    </div>
+  </form>
+</div>

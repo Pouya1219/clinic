@@ -1,0 +1,142 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% block title %}پرونده بیمار {% endblock %}
+{% block content %}
+<section class="main-content">
+    <div class="stats-bar">
+        <div class="stat-item">
+        <i class="fas fa-folder"></i>
+        <span>تعداد پرونده‌ها: {{ total_records }}</span>
+    </div>
+    <div class="stat-item">
+        <i class="fas fa-user-times"></i>
+        <span>مراجعه نکرده‌ها: {{ inactive_patients }}</span>
+    </div>
+        <div class="stat-item">
+            <i class="fas fa-chart-line"></i>
+            <span>آمار 1: 75</span>
+        </div>
+        <div class="stat-item">
+            <i class="fas fa-chart-pie"></i>
+            <span>آمار 2: 42</span>
+        </div>
+    </div>
+
+    <div class="main-toolbar">
+        <div class="toolbar-left">
+    {% comment %} <form method="POST">
+    {% csrf_token %}
+        <div class="search-bar" data-search-target="patient-search-results">
+            <i class="fas fa-search"></i>
+                <input type="text" id="search-input-patient" placeholder="جستجوی پرونده...">
+        <div id="patient-search-results" class="search-results" style="display: none;"></div>
+    </div>
+    </form> {% endcomment %}
+
+{% include 'includes/sr_search_component.html' %}
+
+            <div class="toolbar-buttons">
+
+<button class="toolbar-button" onclick="window.location.href='{% url 'Patient:create_patient' %}'">
+    <i class="fas fa-plus"></i>
+    جدید
+</button>
+
+                <button class="toolbar-button">
+                    <i class="fas fa-search"></i>
+                    جستجوی پیشرفته
+                </button>
+                <button class="toolbar-button">
+                    <i class="fas fa-cog"></i>
+                    تنظیمات
+                </button>
+            </div>
+        </div>
+        <div class="toolbar-right">
+        <select name="page_size" class="page-size-select" onchange="this.form.submit()">
+            <option value="3" {% if page_size == '3' %}selected{% endif %}>3 مورد</option>
+            <option value="10" {% if page_size == '10' %}selected{% endif %}>10 مورد</option>
+            <option value="100" {% if page_size == '100' %}selected{% endif %}>100 مورد</option>
+        </select>
+    </div>
+    </div>
+
+ <div class="patients-grid">
+        {% for record in records %}
+        <div class="patient-card">
+            <div class="patient-card__image">
+                <a href="{% url 'Patient:patient_detail' record.id %}">
+                    <img src="{% if record.profile_picture %}{{ record.profile_picture.url }}{% else %}{% static 'img/default.jpg' %}{% endif %}" 
+                         alt="{{ record.name }} {{ record.family }}">
+                </a>
+            </div>
+            <div class="patient-card__info">
+                <div class="patient-card__header">
+                    <a href="{% url 'Patient:patient_detail' record.id %}" class="patient-card__name">
+
+                        <label for="name_family">نام  :</lable>{{ record.name }} {{ record.family }}
+                    </a>
+                    <div class="patient-card__actions">
+                        <a href="{% url 'Patient:edit_patient' record.id %}" class="action-btn edit-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'Patient:patient_detail' record.id %}" class="action-btn view-btn">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="patient-card__details">
+                    <div class="detail-item">
+                        <i class="fas fa-id-card"> </i>
+                        <span>کدملی : {{ record.national_code|default:"-" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-folder"> </i>
+                        <span>شماره پرونده : {{ record.file_num }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-phone"></i>
+                        <span>  شماره تماس : {{ record.contant_info|default:"-" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-venus-mars">   </i>
+                        <span>جنسیت :{% if record.sex %}مرد{% else %}زن{% endif %}</span>
+                    </div>
+                    {% if record.color %}
+                    <div class="detail-item">
+                        <i class="fas fa-palette"></i>
+                        <div class="color-dot" style="background-color: {{ record.color }}"></div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-results">
+            <i class="fas fa-folder-open"></i>
+            <p>هیچ پرونده‌ای یافت نشد</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+    <div class="pagination">
+    {% if has_previous %}
+    <a href="?page={{ previous_page }}&search={{ search_query }}&page_size={{ page_size }}" class="page-link">قبلی</a>
+    {% endif %}
+
+    {% for page_num in page_range %}
+        {% if page_num == current_page %}
+        <span class="page-link active">{{ page_num }}</span>
+        {% else %}
+        <a href="?page={{ page_num }}&search={{ search_query }}&page_size={{ page_size }}" class="page-link">{{ page_num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if has_next %}
+    <a href="?page={{ next_page }}&search={{ search_query }}&page_size={{ page_size }}" class="page-link">بعدی</a>
+    {% endif %}
+</div>
+
+</section>
+{% endblock content %}

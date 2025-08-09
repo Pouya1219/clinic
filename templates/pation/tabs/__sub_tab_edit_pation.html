@@ -1,0 +1,230 @@
+{% load static %}
+{% load patient_tags %}  {# برای استفاده از فیلتر to_jalali #}
+
+
+<form class="edit-profile-form" method="POST" action="{% url 'Patient:edit_patient' patient.id %}" data-patient-id="{{ patient.id }}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-grid">
+        <!-- اطلاعات اصلی -->
+        <div class="form-group">
+            <label>شماره پرونده</label>
+            <input type="text" name="file_num" class="edit-input" value="{{ patient.file_num }}" required>
+        </div>
+        <div class="form-group">
+            <label>نام *</label>
+            <input type="text" name="name" class="edit-input" value="{{ patient.name }}" required>
+        </div>
+        <div class="form-group">
+            <label>نام خانوادگی *</label>
+            <input type="text" name="family" class="edit-input" value="{{ patient.family }}" required>
+        </div>
+        <div class="form-group">
+            <label>کد ملی *</label>
+            <input type="text" name="national_code" class="edit-input" value="{{ patient.national_code }}">
+        </div>
+        <div class="form-group">
+            <label>نام پدر</label>
+            <input type="text" name="name_of_father" class="edit-input" value="{{ patient.name_of_father }}">
+        </div>
+        <div class="form-group">
+            <label>تاریخ تولد *</label>
+            <div class="date-input-container">
+                <input class="date-input form-input jalali input-field patient-form-input" 
+                       id="birthday" name="birthday" value="{{ patient.birthday}}">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+        </div>
+
+        <!-- اطلاعات تماس -->
+        <div class="form-group">
+            <label>شماره تماس *</label>
+            <input type="tel" name="contant_info" class="edit-input" value="{{ patient.contant_info }}" >
+        </div>
+        <div class="form-group">
+            <label>شماره تماس اضطراری</label>
+            <input type="tel" name="emergency_contact" class="edit-input" value="{{ patient.emergency_contact }}">
+                   
+        </div>
+        <div class="form-group">
+            <label>تلفن سرپرست</label>
+            <input type="tel" name="family_number" class="edit-input" value="{{ patient.family_number }}">
+        </div>
+
+        <!-- اطلاعات شخصی -->
+        <div class="form-group">
+            <label>جنسیت *</label>
+            <select name="sex" class="edit-input" required>
+                <option value="true" {% if patient.sex %}selected{% endif %}>مرد</option>
+                <option value="false" {% if not patient.sex %}selected{% endif %}>زن</option>
+            </select>
+        </div>
+       <!-- وضعیت تأهل -->
+<div class="form-group">
+    <label>وضعیت تأهل</label>
+    <select name="marital_status" class="edit-input">
+        <option value="مجرد" {% if patient.marital_status == "مجرد" %}selected{% endif %}>مجرد</option>
+        <option value="متاهل" {% if patient.marital_status == "متاهل" %}selected{% endif %}>متاهل</option>
+        <option value="مطلقه" {% if patient.marital_status == "مطلقه" %}selected{% endif %}>مطلقه</option>
+        <option value="همسر فوت شده" {% if patient.marital_status == "همسر فوت شده" %}selected{% endif %}>همسر فوت شده</option>
+    </select>
+</div>
+
+        <div class="form-group">
+            <label>شغل</label>
+            <input type="text" name="occupation" class="edit-input" value="{{ patient.occupation }}">
+        </div>
+        
+
+<!-- گروه خونی -->
+<div class="form-group">
+    <label>گروه خونی</label>
+    <select name="blood_type" class="edit-input">
+        <option value="A+" {% if patient.blood_type == "A+" %}selected{% endif %}>A+</option>
+        <option value="A-" {% if patient.blood_type == "A-" %}selected{% endif %}>A-</option>
+        <option value="B+" {% if patient.blood_type == "B+" %}selected{% endif %}>B+</option>
+        <option value="B-" {% if patient.blood_type == "B-" %}selected{% endif %}>B-</option>
+        <option value="O+" {% if patient.blood_type == "O+" %}selected{% endif %}>O+</option>
+        <option value="O-" {% if patient.blood_type == "O-" %}selected{% endif %}>O-</option>
+        <option value="AB+" {% if patient.blood_type == "AB+" %}selected{% endif %}>AB+</option>
+        <option value="AB-" {% if patient.blood_type == "AB-" %}selected{% endif %}>AB-</option>
+    </select>
+</div>
+        <!-- اطلاعات فیزیکی -->
+        <div class="form-group">
+            <label>قد (سانتی‌متر)</label>
+            <input type="number" name="height" class="edit-input" value="{{ patient.height|default:"10" }}">
+        </div>
+        <div class="form-group">
+            <label>وزن (کیلوگرم)</label>
+            <input type="number" name="weight" class="edit-input" value="{{ patient.weight|default:"10" }}">
+        </div>
+        <!-- نوع بیمه -->
+<div class="form-group">
+    <label>نوع بیمه</label>
+    <select name="insurance_type" class="edit-input">
+        <option value="تامین اجتماعی" {% if patient.insurance_type == "تامین اجتماعی" %}selected{% endif %}>تامین اجتماعی</option>
+        <option value="سلامت" {% if patient.insurance_type == "سلامت" %}selected{% endif %}>سلامت</option>
+        <option value="نیروهای مسلح" {% if patient.insurance_type == "نیروهای مسلح" %}selected{% endif %}>نیروهای مسلح</option>
+        <option value="بیمه های درصدی" {% if patient.insurance_type == "بیمه های درصدی" %}selected{% endif %}>بیمه های درصدی</option>
+        <option value="سایر" {% if patient.insurance_type == "سایر" %}selected{% endif %}>سایر</option>
+    </select>
+</div>
+        <div class="form-group">
+            <label>شماره بیمه</label>
+            <input type="text" name="insurance_number" class="edit-input" value="{{ patient.insurance_number }}">
+        </div>
+
+        <!-- اطلاعات اضافی -->
+        <div class="form-group">
+            <label>معرف</label>
+            <input type="text" name="introducer" class="edit-input" value="{{ patient.introducer }}">
+        </div>
+   
+<!-- میزان استرس دندانپزشکی -->
+<div class="form-group">
+    <label>میزان استرس دندانپزشکی</label>
+    <select name="afraid_of_dental" class="edit-input">
+        <option value="کم" {% if patient.afraid_of_dental == "کم" %}selected{% endif %}>کم</option>
+        <option value="متوسط" {% if patient.afraid_of_dental == "متوسط" %}selected{% endif %}>متوسط</option>
+        <option value="زیاد" {% if patient.afraid_of_dental == "زیاد" %}selected{% endif %}>زیاد</option>
+    </select>
+</div>
+
+<!-- اعتیاد -->
+<div class="form-group">
+    <label>اعتیاد</label>
+    <select name="addiction_to_alcohol" class="edit-input">
+        <option value="true" {% if patient.addiction_to_alcohol %}selected{% endif %}>دارد</option>
+        <option value="false" {% if not patient.addiction_to_alcohol %}selected{% endif %}>ندارد</option>
+    </select>
+</div>
+
+    <!-- آدرس -->
+    <div class="form-group full-width">
+        <label>آدرس محل سکونت</label>
+        <textarea name="address" class="edit-input" rows="3">{{ patient.address }}</textarea>
+    </div>
+
+    <!-- اطلاعات پزشکی -->
+    <div class="medical-info-section">
+        <h3>سوابق پزشکی</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>سابقه بیماری‌های خاص</label>
+                <textarea name="medications_info" class="edit-input" rows="2">{{ patient.medications_info }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>حساسیت‌های دارویی</label>
+                <textarea name="allergy" class="edit-input" rows="2">{{ patient.allergy }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>داروهای مصرفی فعلی</label>
+                <textarea name="medicine_use" class="edit-input" rows="2">{{ patient.medicine_use }}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- بیماری‌های خاص -->
+    <div class="diseases-section">
+        <h3>بیماری‌های خاص</h3>
+        <div class="checkbox-grid">
+            <label class="checkbox-container">
+                <input type="checkbox" name="has_heart_disease" {% if patient.has_heart_disease %}checked{% endif %}>
+                <span class="checkmark"></span>
+                بیماری قلبی
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" name="has_diabetes" {% if patient.has_diabetes %}checked{% endif %}>
+                <span class="checkmark"></span>
+                دیابت
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" name="has_blood_pressure" {% if patient.has_blood_pressure %}checked{% endif %}>
+                <span class="checkmark"></span>
+                فشار خون
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" name="has_hepatitis" {% if patient.has_hepatitis %}checked{% endif %}>
+                <span class="checkmark"></span>
+                هپاتیت
+            </label>
+        </div>
+    </div>
+
+    <!--تصویر-->
+<div class="form-group">
+    <label>تصویر پروفایل</label>
+    <div class="custom-file">
+        <input type="file" name="profile_picture" class="custom-file-input" id="profile_picture">
+        <label class="custom-file-label" for="profile_picture">
+            {% if patient.profile_picture %}
+                تغییر تصویر
+            {% else %}
+                انتخاب تصویر
+            {% endif %}
+        </label>
+    </div>
+    {% if patient.profile_picture %}
+        <div class="current-image">
+            <img src="{{ patient.profile_picture.url }}" alt="تصویر فعلی" class="preview-image">
+            <div class="image-actions">
+                <label class="checkbox-container">
+                    <input type="checkbox" name="remove_profile_picture"> حذف تصویر فعلی
+                </label>
+            </div>
+        </div>
+    {% endif %}
+</div>
+    <!-- دکمه‌ها -->
+    <div class="form-actions">
+        <button type="submit" class="save-btn">
+            <i class="fas fa-save"></i>
+            ذخیره تغییرات
+        </button>
+        <a href="{% url 'Patient:patient_detail' patient.id %}" class="cancel-btn">
+            <i class="fas fa-times"></i>
+            انصراف
+        </a>
+    </div>
+    </div>
+</form>

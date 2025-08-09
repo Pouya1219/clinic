@@ -1,0 +1,252 @@
+{% load humanize %}
+{% load patient_tags %}
+<!-- بخش خلاصه وضعیت مالی -->
+<div class="payment_financial-summary">
+    <!-- کارت ۱: وضعیت نهایی (بدهی یا بستانکاری) -->
+    {% if total_debt > 0 %}
+    <div class="payment_summary-card debt">
+        <div class="payment_card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+        <div class="payment_card-details">
+            <h4>مجموع بدهی بیمار</h4>
+            <p class="amount">{{ total_debt|floatformat:0|intcomma }} ریال</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="payment_summary-card credit"> {# استایل جدید برای بستانکاری #}
+        <div class="payment_card-icon"><i class="fas fa-hand-holding-usd"></i></div>
+        <div class="payment_card-details">
+            <h4>اعتبار / بستانکاری</h4>
+            <p class="amount">{{ total_credit|floatformat:0|intcomma }} ریال</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- کارت ۲: خلاصه کل هزینه‌ها و پرداخت‌ها -->
+    <div class="payment_summary-card info"> {# استایل جدید برای اطلاعات #}
+        <div class="payment_card-icon"><i class="fas fa-calculator"></i></div>
+        <div class="payment_card-details">
+            <h4>خلاصه مالی</h4>
+            <p class="description">کل هزینه‌ها: <strong>{{ total_treatment_cost|floatformat:0|intcomma }}</strong> ریال</p>
+            <p class="description">کل پرداختی‌ها: <strong>{{ total_paid_amount|floatformat:0|intcomma }}</strong> ریال</p>
+        </div>
+    </div>
+
+    <!-- کارت ۳: کیف پول (بدون تغییر) -->
+    <div class="payment_summary-card wallet">
+        <div class="payment_card-icon"><i class="fas fa-wallet"></i></div>
+        <div class="payment_card-details">
+            <h4>موجودی کیف پول</h4>
+            <p class="amount">{{ wallet.balance|floatformat:0|intcomma }} ریال</p>
+        </div>
+        <div class="payment_card-actions">
+            <button class="btn btn-sm btn-primary" onclick="PaymentManager.showWalletDepositModal()"><i class="fas fa-plus"></i> شارژ</button>
+        </div>
+    </div>
+    <div class="payment_summary-card transfer">
+        <div class="payment_card-icon"><i class="fas fa-exchange-alt"></i></div>
+        <div class="payment_card-details">
+            <h4>انتقال وجه</h4>
+            <p class="description">انتقال از کیف پول به دیگران</p>
+        </div>
+        <div class="payment_card-actions">
+            <button class="btn btn-sm btn-info" onclick="PaymentManager.showTransferModal()">
+                <i class="fas fa-paper-plane"></i> انتقال
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="payment_tabs">
+    <!-- هدر تب‌ها -->
+    <div class="payment_tab-headers">
+        <button class="payment_tab-link active" data-tab="payment_open-treatments-tab">درمان‌های باز</button>
+        <button class="payment_tab-link" data-tab="payment_installments-due-tab">قسط‌های در انتظار</button>
+        <button class="payment_tab-link" data-tab="payment_installments-plans-tab">طرح‌های اقساط</button>
+        <button class="payment_tab-link" data-tab="payment_transaction-history-tab">تاریخچه تراکنش‌ها</button>
+    </div>
+
+    <!-- محتوای تب ۱: درمان‌های باز -->
+    <div class="payment_tab-content active" id="payment_open-treatments-tab">
+        <table class="payment_modern-table">
+            <thead>
+                <tr>
+                    <th>شرح درمان</th>
+                    <th>پزشک معالج</th>
+                    <th>تاریخ</th>
+                    <th>مبلغ کل</th>
+                    <th>پرداخت شده</th>
+                    <th>باقیمانده</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in open_treatments %}
+            <tr>
+                <td>{{ item.description }}</td> {# تغییر از item.treatment.treatment_detail.description #}
+                <td>{{ item.doctor_name }}</td>
+                <td>{{ item.date|date:"Y/m/d" }}</td> {# تغییر از item.treatment.treatment_date #}
+                <td>{{ item.payable_amount|intcomma }}</td> {# تغییر از item.treatment.payable_amount #}
+                <td>{{ item.paid_amount|intcomma }}</td>
+                <td class="text-danger">{{ item.remaining_amount|intcomma }}</td>
+                <td>
+                    {# حالا از item.id استفاده می‌کنیم که همیشه معتبر است #}
+                    <button class="btn-action primary" title="پرداخت" onclick="PaymentManager.showPaymentModal('{{ item.id }}', '{{ item.remaining_amount }}')"><i class="fas fa-dollar-sign">پرداخت</i></button>
+                    <button class="btn-action success" title="پرداخت از کیف پول" onclick="PaymentManager.payFromWallet('{{ item.id }}', '{{ item.remaining_amount }}')"><i class="fas fa-wallet">کیف پول</i></button>
+                    <button class="btn-action info" title="ایجاد طرح اقساط" onclick="PaymentManager.showInstallmentModal('{{ item.id }}', '{{ item.remaining_amount }}')"><i class="fas fa-calendar-alt">اقساط</i></button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="payment_empty-row">هیچ درمان بازی برای پرداخت وجود ندارد.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     {# [کد جدید] جدول خلاصه مالی کلی در پایین تب #}
+<div class="financial-summary-table">
+    <div class="summary-title">خلاصه وضعیت کلی مالی بیمار</div>
+    <table class="table table-sm table-bordered mb-0">
+        <tbody>
+            <tr>
+                <td class="summary-label"><i class="fas fa-file-medical-alt"></i> مبلغ کل درمان‌ها</td>
+                <td class="summary-value">{{ total_treatment_cost|intcomma }} ریال</td>
+            </tr>
+            <tr>
+                <td class="summary-label"><i class="fas fa-check-circle"></i> جمع کل پرداختی‌ها</td>
+                <td class="summary-value paid">{{ total_paid_amount|intcomma }} ریال</td>
+            </tr>
+            <tr class="final-balance">
+                <td class="summary-label"><i class="fas fa-balance-scale"></i> مانده نهایی</td>
+                <td class="summary-value {% if patient_balance < 0 %}debt{% else %}credit{% endif %}">
+                    {{ patient_balance|intcomma }} ریال
+                    {% if patient_balance < 0 %}(بدهکار){% elif patient_balance > 0 %}(بستانکار){% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><span>خلاصه وضعیت کلی مالی بیمار</span> </td>
+                <td><button class="btn btn-sm btn-outline-secondary" onclick="window.open('{% url 'Patient:print_financial_statement' patient.id %}', '_blank')">
+            <i class="fas fa-print"></i> پرینت صورتحساب
+        </button> </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+    <!-- محتوای تب ۲: قسط‌های در انتظار -->
+    <div class="payment_tab-content" id="payment_installments-due-tab">
+        <table class="payment_modern-table">
+            <thead>
+                <tr>
+                    <th>شرح درمان مربوطه</th>
+                    <th>مبلغ قسط</th>
+                    <th>تاریخ سررسید</th>
+                    <th class="text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inst in unpaid_installments %}
+                <tr>
+                    <td>{{ inst.plan.treatment.treatment_detail.description }}</td>
+                    <td>{{ inst.amount|intcomma }} ریال</td>
+                    <td>{{ inst.due_date|date:"Y/m/d" }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-primary" onclick="PaymentManager.payInstallment('{{ inst.id }}', '{{ inst.amount }}')">
+                            <i class="fas fa-dollar-sign"></i> پرداخت قسط
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="payment_empty-row">هیچ قسط پرداخت نشده‌ای وجود ندارد.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- محتوای تب ۳: طرح‌های اقساط -->
+    <div class="payment_tab-content" id="payment_installments-plans-tab">
+        <table class="payment_modern-table">
+            <thead>
+                <tr>
+                    <th>شرح درمان</th>
+                    <th>مبلغ کل</th>
+                    <th>وضعیت پرداخت</th>
+                    <th class="text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan in all_installment_plans %}
+                <tr>
+                    <td>{{ plan.treatment.treatment_detail.description }}</td>
+                    <td>{{ plan.total_amount|intcomma }} ریال</td>
+                    <td>
+                        <span class="status-badge info">{{ plan|paid_installments_count }} از {{ plan.installment_count }} قسط پرداخت شده</span>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-info" onclick="PaymentManager.showInstallmentDetails('{{ plan.id }}')">
+                            <i class="fas fa-eye"></i> مشاهده جزئیات
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="payment_empty-row">هیچ طرح اقساطی ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- محتوای تب ۴: تاریخچه تراکنش‌ها -->
+    <div class="payment_tab-content" id="payment_transaction-history-tab">
+        <table class="payment_modern-table">
+            <thead>
+                <tr>
+                    <th>تاریخ</th>
+                    <th>نوع/روش</th>
+                    <th>شرح</th>
+                    <th>پزشک</th>
+                    <th>مبلغ</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transaction_history %}
+                <tr>
+                    <td>{{ tx.date|date:"Y/m/d" }}</td>
+                    <td>{{ tx.type }}</td>
+                    <td>{{ tx.description }}</td>
+                    <td>{{ tx.doctor_name }}</td>
+                    <td class="{% if tx.amount > 0 %}text-success{% else %}text-danger{% endif %}">{{ tx.amount|intcomma }}</td>
+                    <td>
+                        {% if tx.status == 'paid' %}<span class="status-badge success">{{ tx.status_display }}</span>
+                        {% elif tx.status == 'refunded' %}<span class="status-badge danger">{{ tx.status_display }}</span>
+                        {% else %}<span class="status-badge info">{{ tx.status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+    {# اگر پرداخت از نوع چک و در انتظار وصول است #}
+    {% if tx.type == 'چک' and tx.status == 'pending' %}
+        <button class="btn-action success" title="وصول چک" onclick="PaymentManager.clearCheck('{{ tx.id }}')">
+            <i class="fas fa-check-double"></i>
+        </button>
+        <button class="btn-action warning" title="حذف چک" onclick="PaymentManager.deletePayment('{{ tx.id }}')">
+            <i class="fas fa-trash"></i>
+        </button>
+    
+    {# اگر پرداخت معمولی و پرداخت شده است #}
+    {% elif tx.status == 'paid' %}
+        <button class="btn-action danger" title="عودت وجه" onclick="PaymentManager.showRefundModal('{{ tx.id }}')">
+            <i class="fas fa-undo"></i>
+        </button>
+        <button class="btn-action warning" title="حذف" onclick="PaymentManager.deletePayment('{{ tx.id }}')">
+            <i class="fas fa-trash"></i>
+        </button>
+    {% endif %}
+</td>
+                    
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="payment_empty-row">هیچ تراکنشی ثبت نشده است.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

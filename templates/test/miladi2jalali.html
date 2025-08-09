@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>تقویم شمسی</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Persian Date Picker -->
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('path-to-your-font/IRANSans.ttf');
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'IRANSans', sans-serif;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .input-container {
+            position: relative;
+            width: 200px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 10px 35px 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .date-input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(74, 175, 80, 0.1);
+            outline: none;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 1;
+        }
+
+        .calendar-icon:hover {
+            color: #4CAF50;
+        }
+
+        /* تنظیمات ظاهری تقویم */
+        .persian-datepicker {
+            font-family: 'IRANSans' !important;
+        }
+
+        .datepicker-plot-area {
+            font-family: 'IRANSans' !important;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span:hover {
+            background-color: #e8f5e9 !important;
+            color: #4CAF50 !important;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td.selected span {
+            background-color: #4CAF50 !important;
+            color: white !important;
+        }
+
+        .datepicker-plot-area .datepicker-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        /* استایل‌های قبلی حفظ شود و این‌ها اضافه شود */
+        .convert-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .convert-icon:hover {
+            color: #4CAF50;
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        #gregorian-input {
+            padding-right: 35px;
+        }
+        
+        .error {
+            border-color: #ff5252 !important;
+        }
+        
+        .error::placeholder {
+            color: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="date-inputs">
+        <div class="input-container">
+            <input type="text" class="date-input" id="jalali-date" readonly placeholder="تاریخ شمسی">
+            <i class="fas fa-calendar-alt calendar-icon"></i>
+        </div>
+        <div class="input-container">
+            <input type="text" class="date-input" id="gregorian-date" readonly placeholder="تاریخ میلادی">
+        </div>
+    </div>
+ 
+    <div class="date-inputs">
+        <div class="input-container">
+            <input type="text" class="date-input" id="gregorian-input" placeholder="تاریخ میلادی (M/D/YYYY)">
+            <i class="fas fa-exchange-alt convert-icon"></i>
+        </div>
+        <div class="input-container">
+            <input type="text" class="date-input" id="jalali-result" readonly placeholder="تاریخ شمسی">
+        </div>
+    </div>
+    
+
+    <script>
+        $(document).ready(function() {
+            // تابع تبدیل اعداد به فارسی
+            function toPersianNum(num) {
+                const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+                return num.toString().replace(/[0-9]/g, x => persianNumbers[x]);
+            }
+        
+            // تابع اعتبارسنجی و تبدیل تاریخ
+            function convertDate(dateStr) {
+                // حذف فاصله‌های اضافی
+                dateStr = dateStr.trim();
+                
+                // اگر ورودی خالی است
+                if (!dateStr) {
+                    $('#jalali-result').val('');
+                    return;
+                }
+                
+                // الگوهای مختلف تاریخ
+                const patterns = [
+                    /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/, // برای 5/7/2025
+                    /^(\d{1,2})\/(\d{2})\/(\d{4})$/    // برای 5/07/2025
+                ];
+        
+                let match;
+                let isValid = false;
+        
+                // بررسی الگوها
+                for(let pattern of patterns) {
+                    match = dateStr.match(pattern);
+                    if(match) {
+                        isValid = true;
+                        break;
+                    }
+                }
+        
+                if(!isValid) {
+                    $('#gregorian-input').addClass('error');
+                    $('#jalali-result').val('');
+                    return false;
+                }
+        
+                // برداشتن کلاس error
+                $('#gregorian-input').removeClass('error');
+        
+                try {
+                    const month = parseInt(match[1]);
+                    const day = parseInt(match[2]);
+                    const year = parseInt(match[3]);
+        
+                    // بررسی معتبر بودن تاریخ
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+                        throw new Error('تاریخ نامعتبر است');
+                    }
+        
+                    // تبدیل به تاریخ شمسی
+                    const jalaliDate = new persianDate(date);
+                    
+                    // فرمت‌بندی خروجی
+                    const jalaliStr = `${jalaliDate.year()}/${toPersianNum(jalaliDate.month())}/${toPersianNum(jalaliDate.date())}`;
+                    $('#jalali-result').val(jalaliStr);
+                    return true;
+        
+                } catch(e) {
+                    $('#gregorian-input').addClass('error');
+                    $('#jalali-result').val('');
+                    return false;
+                }
+            }
+        
+            // متغیر برای ذخیره تایمر
+            let convertTimer;
+        
+            // تبدیل خودکار هنگام تایپ
+            $('#gregorian-input').on('input', function() {
+                // پاک کردن تایمر قبلی
+                clearTimeout(convertTimer);
+                
+                // تنظیم تایمر جدید
+                convertTimer = setTimeout(() => {
+                    const gregorianDate = $(this).val();
+                    convertDate(gregorianDate);
+                }, 300); // تاخیر 300 میلی‌ثانیه
+            });
+        
+            // پاک کردن کلاس error هنگام تایپ
+            $('#gregorian-input').on('focus', function() {
+                $(this).removeClass('error');
+            });
+        
+            // حفظ آیکون برای استفاده اختیاری
+            $('.convert-icon').click(function() {
+                const gregorianDate = $('#gregorian-input').val();
+                convertDate(gregorianDate);
+            });
+        });
+        
+        </script>
+</body>
+</html>
+
+
+

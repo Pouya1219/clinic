@@ -1,0 +1,664 @@
+<!-- templates/inventory/dashboard_content.html -->
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header با طراحی بهتر -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-header">
+                <div class="welcome-content">
+                    <h1 class="welcome-title">
+                        <i class="fas fa-warehouse me-3"></i>
+                        داشبورد انبار
+                    </h1>
+                    <p class="welcome-subtitle">مدیریت هوشمند انبار و کنترل موجودی</p>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn-modern btn-refresh" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>بروزرسانی</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار کلی -->
+    <div class="stats-container mb-5">
+        <div class="stat-card stat-primary">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-boxes stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.total_items }}</h3>
+                <p class="stat-label">کل کالاها</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-success">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-warehouse stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.total_warehouses }}</h3>
+                <p class="stat-label">انبارها</p>
+                <div class="stat-trend">
+                    <i class="fas fa-minus"></i>
+                    <span>بدون تغییر</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-info">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-arrow-down stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.today_entries }}</h3>
+                <p class="stat-label">ورودی امروز</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-warning">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-arrow-up stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.today_exits }}</h3>
+                <p class="stat-label">خروجی امروز</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-2</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-danger">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-exclamation-triangle stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.low_stock_items }}</h3>
+                <p class="stat-label">موجودی کم</p>
+                <div class="stat-trend stat-danger">
+                    <i class="fas fa-exclamation"></i>
+                    <span>نیاز به توجه</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-secondary">
+            <div class="stat-icon-wrapper">
+                <i class="fas fa-tags stat-icon"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ stats.total_categories }}</h3>
+                <p class="stat-label">دسته‌بندی‌ها</p>
+                <div class="stat-trend">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- دسترسی سریع -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-bolt me-2"></i>
+                    دسترسی سریع
+                </h3>
+                <p class="section-subtitle">عملیات پرکاربرد انبار</p>
+            </div>
+            
+            <div class="quick-actions-grid">
+                <a href="{% url 'inventory:item_list_page' %}" class="quick-action-card">
+                    <div class="action-icon bg-success">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>ثبت کالا</h4>
+                        <p>افزودن کالای جدید</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                </a>
+                
+                <a href="{% url 'inventory:stock_entry_list_page' %}" class="quick-action-card">
+                    <div class="action-icon bg-info">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>ورودی انبار</h4>
+                        <p>ثبت ورودی کالاها</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                </a>
+                
+                <a href="{% url 'inventory:stock_exit_list_page' %}" class="quick-action-card">
+                    <div class="action-icon bg-danger">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>خروجی انبار</h4>
+                        <p>ثبت خروجی کالاها</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                </a>
+                
+                <a href="{% url 'inventory:reports_page' %}" class="quick-action-card">
+                    <div class="action-icon bg-primary">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>گزارشات</h4>
+                        <p>مشاهده گزارشات</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- فعالیت‌های اخیر -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="modern-card">
+                <div class="card-header-modern">
+                    <div class="header-content">
+                        <h5 class="card-title-modern">
+                            <i class="fas fa-history me-2"></i>
+                            آخرین فعالیت‌ها
+                        </h5>
+                        <p class="card-subtitle-modern">جدیدترین حرکات انبار</p>
+                    </div>
+                    <button class="btn-icon" onclick="loadRecentEntries()">
+                        <i class="fas fa-refresh"></i>
+                    </button>
+                </div>
+                <div class="card-body-modern">
+                    <div id="recentEntries">
+                        <div class="activity-item">
+                            <div class="activity-icon bg-success">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h6>ورودی دستکش لاتکس</h6>
+                                <p class="text-muted">100 عدد - 2 ساعت پیش</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon bg-danger">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="activity-content">
+                                <h6>خروجی ماسک سه لایه</h6>
+                                <p class="text-muted">50 عدد - 4 ساعت پیش</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="modern-card">
+                <div class="card-header-modern">
+                    <div class="header-content">
+                        <h5 class="card-title-modern">
+                            <i class="fas fa-bell me-2"></i>
+                            هشدارها
+                        </h5>
+                        <p class="card-subtitle-modern">موجودی کم و هشدارها</p>
+                    </div>
+                </div>
+                <div class="card-body-modern">
+                    <div id="stockAlerts">
+                        <div class="alert-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <span>همه موجودی‌ها مناسب است</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- پیام خوش‌آمدگویی -->
+    <div class="welcome-message">
+        <div class="welcome-icon">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <div class="welcome-text">
+            <h4>به سیستم مدیریت انبار خوش آمدید!</h4>
+            <p>با استفاده از این داشبورد می‌توانید تمام عملیات انبار را به راحتی مدیریت کنید.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary-color: #6366f1;
+    --success-color: #10b981;
+    --info-color: #06b6d4;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --secondary-color: #6b7280;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Header */
+.welcome-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--card-shadow);
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-subtitle {
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+}
+
+.btn-modern {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-modern:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* آمار */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-color);
+}
+
+.stat-card.stat-success::before { background: var(--success-color); }
+.stat-card.stat-info::before { background: var(--info-color); }
+.stat-card.stat-warning::before { background: var(--warning-color); }
+.stat-card.stat-danger::before { background: var(--danger-color); }
+.stat-card.stat-secondary::before { background: var(--secondary-color); }
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.stat-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.stat-success .stat-icon { color: var(--success-color); }
+.stat-info .stat-icon { color: var(--info-color); }
+.stat-warning .stat-icon { color: var(--warning-color); }
+.stat-danger .stat-icon { color: var(--danger-color); }
+.stat-secondary .stat-icon { color: var(--secondary-color); }
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-trend {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--success-color);
+    font-weight: 600;
+}
+
+.stat-trend.stat-danger {
+    color: var(--danger-color);
+}
+
+.stat-trend i {
+    margin-left: 4px;
+}
+
+/* بخش‌ها */
+.section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.section-subtitle {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* دسترسی سریع */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.quick-action-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.action-content {
+    flex: 1;
+}
+
+.action-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: #1f2937;
+}
+
+.action-content p {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.action-arrow {
+    color: #d1d5db;
+    font-size: 1.2rem;
+}
+
+/* کارت‌های مدرن */
+.modern-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+.card-header-modern {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title-modern {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.card-subtitle-modern {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0 0;
+}
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    background: var(--light-bg);
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.card-body-modern {
+    padding: 1.5rem;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-left: 1rem;
+}
+
+.activity-content h6 {
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.activity-content p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+.alert-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #f0fdf4;
+    border-radius: 8px;
+    color: #166534;
+}
+
+.alert-item i {
+    margin-left: 0.5rem;
+}
+
+/* پیام خوش‌آمدگویی */
+.welcome-message {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    border: 1px solid #bae6fd;
+}
+
+.welcome-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-color);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin-left: 1.5rem;
+}
+
+.welcome-text h4 {
+    color: #1f2937;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.welcome-text p {
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ریسپانسیو */
+@media (max-width: 768px) {
+    .welcome-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .welcome-title {
+        font-size: 2rem;
+    }
+    
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .welcome-message {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .welcome-icon {
+        margin: 0 0 1rem 0;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function refreshDashboard() {
+    location.reload();
+}
+
+function loadRecentEntries() {
+    // فعلاً کاری نمیکنه - داده‌ها استاتیک هستن
+    console.log('Loading recent entries...');
+}
+</script>
+{% endblock %}

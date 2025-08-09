@@ -1,0 +1,38 @@
+Django==5.0.14
+django-mssql-backend==2.8.1
+django-pyodbc-azure ==2.1.0.0
+mssql-django==1.5
+pip==25.1
+pyodbc==5.2.0
+pytz==2025.2
+sqlparse==0.5.3
+tzdata==2025.2
+asgiref==3.8.1
+pillow==10.1.0
+jdatetime==5.2.0
+qrcode==8.2
+arabic-reshaper==3.0.0
+python-bidi==0.6.6
+qrcode==0.4.6
+django-jalali-date==2.0.0
+setuptools==80.8.0
+barcode==1.0.4
+python-barcode==0.15.1
+grep==0.3.2
+arabic-reshaper==3.0.0
+python-bidi==0.6.6
+django_filter==25.1
+khayyam==3.0.17
+djangorestframework==3.16.0
+cython==3.1.2
+#wheel setuptools
+#wheel==0.45.1
+xlsxwriter==3.2.5 
+pdfkit==1.0.0
+persiantools==5.3.0
+channels==4.2.2
+daphne==4.2.1
+python-dotenv==1.1.1
+openpyxl==3.1.5
+reportlab==4.4.
+#npm i @majidh1/jalalidatepicker

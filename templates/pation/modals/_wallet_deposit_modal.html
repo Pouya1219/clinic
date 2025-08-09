@@ -1,0 +1,26 @@
+<!-- templates/Patient/modals/_wallet_deposit_modal.html -->
+
+<div class="payment_modal-overlay" id="payment_wallet-deposit-modal-overlay">
+    <div class="payment_modal-content">
+        <div class="payment_modal-header">
+            <h3>شارژ کیف پول</h3>
+            <button class="payment_modal-close">×</button>
+        </div>
+        <form id="payment_wallet-deposit-form" onsubmit="PaymentManager.handleWalletDeposit(event)">
+            <div class="payment_form-group">
+                <label for="payment_deposit-amount">مبلغ شارژ (ریال)</label>
+                <input type="text" id="payment_deposit-amount" name="amount" class="payment_input-style" required onkeyup="this.value = this.value.replace(/,/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')">
+            </div>
+            
+            <div class="payment_form-group">
+                <label for="payment_deposit-description">توضیحات</label>
+                <textarea id="payment_deposit-description" name="description" class="payment_input-style" rows="3" placeholder="مثال: واریز نقدی توسط بیمار"></textarea>
+            </div>
+            
+            <div class="payment_modal-footer">
+                <button type="button" class="btn btn-secondary payment_modal-cancel">انصراف</button>
+                <button type="submit" class="btn btn-success">شارژ کن</button>
+            </div>
+        </form>
+    </div>
+</div>

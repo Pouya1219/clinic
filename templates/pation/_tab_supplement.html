@@ -1,0 +1,46 @@
+{% load static %}
+ <div class="attachment-container">
+        <!-- Toolbar -->
+        <div class="attachment-toolbar">
+            <button class="attachment-btn attachment-btn-primary">
+                <i class="fas fa-plus"></i>
+                جدید
+            </button>
+            <button class="attachment-btn attachment-btn-danger">
+                <i class="fas fa-trash"></i>
+                حذف
+            </button>
+            <button class="attachment-btn attachment-btn-secondary">
+                <i class="fas fa-print"></i>
+                پرینت عکس‌ها
+            </button>
+        </div>
+
+        <!-- Images Grid -->
+        <div class="attachment-grid">
+            <!-- Sample Attachment Item -->
+            <div class="attachment-item">
+                <div class="attachment-checkbox">
+                    <input type="checkbox" name="attachment[]" value="1">
+                </div>
+                <div class="zamaem-img">
+                <img src="{% static 'img/logo.png' %}" alt="Logo">
+                </div>
+                <div class="attachment-info">
+                    <div class="attachment-name">رادیوگرافی دندان</div>
+                    <div class="attachment-date">1402/05/12</div>
+                </div>
+            </div>
+            <!-- More attachment items can be added here -->
+                 <!-- Modal for Image Preview -->
+    <div class="attachment-modal">
+        <div class="attachment-modal-content">
+            <button class="attachment-modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <img src="" alt="نمایش تصویر" class="attachment-modal-image">
+        </div>
+    </div>
+    
+</div>
+        </div>

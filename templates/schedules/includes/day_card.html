@@ -1,0 +1,22 @@
+<div class="shift-day-card" data-day="{{ day_index }}">
+    <div class="shift-day-header">
+        <span>{{ day_name }}</span>
+        <label class="shift-toggle-switch">
+            <input type="checkbox" checked class="shift-day-toggle" onchange="shiftToggleDay(this)">
+            <span class="shift-toggle-slider"></span>
+        </label>
+        <span class="shift-status-label">فعال</span>
+    </div>
+    <div class="shift-time-container">
+        <span class="shift-time-label">شیفت صبح:</span>
+        <input type="time" class="shift-time-input" value="07:00"> تا
+        <input type="time" class="shift-time-input" value="11:59">
+    </div>
+    <div class="shift-time-container">
+        <span class="shift-time-label">شیفت عصر:</span>
+        <input type="time" class="shift-time-input" value="14:00"> تا
+        <input type="time" class="shift-time-input" value="22:00">
+    </div>
+    <button class="shift-copy-btn" onclick="shiftCopyToAllDays(this)">کپی به همه روزها</button>
+</div>
+

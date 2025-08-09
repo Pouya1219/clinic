@@ -1,0 +1,22 @@
+# تنظیم پایان خط برای همه فایل‌های متنی
+* text=auto
+
+# تنظیم صریح برای فایل‌های JavaScript
+*.js text eol=lf
+*.jsx text eol=lf
+
+# تنظیم برای فایل‌های Python
+*.py text eol=lf
+
+# تنظیم برای فایل‌های HTML و CSS
+*.html text eol=lf
+*.css text eol=lf
+
+# فایل‌های باینری را تغییر نده
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

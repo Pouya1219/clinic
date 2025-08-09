@@ -1,0 +1,27 @@
+{% load static %}
+{% load humanize %}
+{% load patient_tags %}
+
+<div class="payment_dashboard" id="payment_dashboard_container" data-wallet-balance="{{ wallet.balance|floatformat:0 }}">
+    <!-- این بخش به صورت پویا توسط تابع refreshFinancialData جایگزین می‌شود -->
+    {% include 'pation/partials/_payment_dashboard_content.html' %}
+</div>
+
+<!-- مودال‌ها -->
+{% include 'pation/modals/_payment_modal.html' %}
+{% include 'pation/modals/_wallet_deposit_modal.html' %}
+{% include 'pation/modals/_installment_modal.html' %}
+{% include 'pation/modals/_transfer_modal.html' %}
+<!-- در انتهای فایل _tab_payment.html -->
+{% include 'pation/modals/_refund_modal.html' %}
+{% include 'pation/modals/_installment_details_modal.html' %}
+<!-- اسکریپت‌ها -->
+{% comment %} <script src="{% static 'js/payment-manager.js' %}"></script> {% endcomment %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        PaymentManager.initialize({
+            patientId: {{ patient.id }},
+            csrfToken: '{{ csrf_token }}'
+        });
+    });
+</script>

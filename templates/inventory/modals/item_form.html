@@ -1,0 +1,288 @@
+{% load static %}
+<!-- Modal افزودن کالا -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addItemModalLabel">
+                    <i class="fas fa-plus me-2"></i>
+                    افزودن کالای جدید
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="item_id" name="item_id" value="">
+                    
+                    <!-- Tab Navigation -->
+                    <ul class="nav nav-tabs mb-4" id="itemTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button">
+                                <i class="fas fa-info-circle me-1"></i>
+                                اطلاعات پایه
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button">
+                                <i class="fas fa-warehouse me-1"></i>
+                                موجودی و انبار
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="storage-tab" data-bs-toggle="tab" data-bs-target="#storage" type="button">
+                                <i class="fas fa-thermometer-half me-1"></i>
+                                شرایط نگهداری
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" type="button">
+                                <i class="fas fa-cogs me-1"></i>
+                                سایر اطلاعات
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="itemTabsContent">
+                        
+                        <!-- اطلاعات پایه -->
+                        <div class="tab-pane fade show active" id="basic" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-tag text-primary me-1"></i>
+                                        نام کالا <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="itemName" name="name"   placeholder="نام کالا را وارد کنید" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-hashtag text-info me-1"></i>
+                                        کد کالا <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="itemCode" name="code"   placeholder="کد یکتا برای کالا" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-barcode text-secondary me-1"></i>
+                                        بارکد
+                                    </label>
+                                    <input type="text" class="form-control" id="itemBarcode" name="barcode"   placeholder="بارکد کالا (اختیاری)">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-list text-warning me-1"></i>
+                                        دسته‌بندی <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" id="itemCategory" name="category_id" required>
+                                        <option value="">انتخاب دسته‌بندی</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-balance-scale text-success me-1"></i>
+                                        واحد اصلی <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-lg" id="itemPrimaryUnit" name="primary_unit_id" required>
+                                        <option value="">انتخاب واحد</option>
+                                        {% for unit in units %}
+                                        <option value="{{ unit.id }}">{{ unit.name }} {% if unit.symbol %}({{ unit.symbol }}){% endif %}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-copyright text-dark me-1"></i>
+                                        برند
+                                    </label>
+                                    <input type="text" class="form-control" id="itemBrand" name="brand" 
+                                           placeholder="نام برند">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-cube text-purple me-1"></i>
+                                        مدل
+                                    </label>
+                                    <input type="text" class="form-control" id="itemModel" name="model"   placeholder="مدل کالا">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-dollar-sign text-success me-1"></i>
+                                        روش قیمت‌گذاری
+                                    </label>
+                                    <select class="form-select" id="itemCostMethod" name="cost_method">
+                                        <option value="FIFO">اول وارد، اول خارج (FIFO)</option>
+                                        <option value="LIFO">آخر وارد، اول خارج (LIFO)</option>
+                                        <option value="AVERAGE">میانگین موزون</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-align-left text-muted me-1"></i>
+                                        توضیحات
+                                    </label>
+                                    <textarea class="form-control" id="itemDescription" name="description" rows="3"  placeholder="توضیحات کامل درباره کالا..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- موجودی و انبار -->
+                        <div class="tab-pane fade" id="inventory" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-arrow-down text-danger me-1"></i>
+                                        حداقل موجودی
+                                    </label>
+                                    <input type="number" class="form-control" id="itemMinStock" name="min_stock_level" value="0" min="0" step="0.001">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-arrow-up text-success me-1"></i>
+                                        حداکثر موجودی
+                                    </label>
+                                    <input type="number" class="form-control" id="itemMaxStock" name="max_stock_level"  value="0" min="0" step="0.001">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                        آستانه هشدار
+                                    </label>
+                                    <input type="number" class="form-control" id="itemAlertThreshold" name="alert_threshold" value="3" min="0" step="0.001">
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableLowStockAlert" name="enable_low_stock_alert" checked>
+                                        <label class="form-check-label fw-bold" for="enableLowStockAlert">
+                                            <i class="fas fa-bell text-info me-1"></i>
+                                            فعال‌سازی هشدار کمبود موجودی
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-warehouse text-primary me-1"></i>
+                                        انبارهای مجاز
+                                    </label>
+                                    <div class="row">
+                                        {% for warehouse in warehouses %}
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       id="warehouse_{{ warehouse.id }}" 
+                                                       name="allowed_warehouses" 
+                                                       value="{{ warehouse.id }}">
+                                                <label class="form-check-label" for="warehouse_{{ warehouse.id }}">
+                                                    {{ warehouse.name }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- شرایط نگهداری -->
+                        <div class="tab-pane fade" id="storage" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-thermometer-quarter text-info me-1"></i>
+                                        حداقل دما (°C)
+                                    </label>
+                                    <input type="number" class="form-control" id="itemTempMin" name="storage_temperature_min"  step="0.01" placeholder="مثال: -5">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-thermometer-three-quarters text-danger me-1"></i>
+                                        حداکثر دما (°C)
+                                    </label>
+                                    <input type="number" class="form-control" id="itemTempMax" name="storage_temperature_max"   step="0.01" placeholder="مثال: 25">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-clipboard-list text-secondary me-1"></i>
+                                        شرایط نگهداری
+                                    </label>
+                                    <textarea class="form-control" id="itemStorageConditions" name="storage_conditions" rows="4"  placeholder="شرایط خاص نگهداری، رطوبت، نور، و..."></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-book text-primary me-1"></i>
+                                        دستورالعمل استفاده
+                                    </label>
+                                    <textarea class="form-control" id="itemUsageInstructions" name="usage_instructions" rows="4"  placeholder="نحوه استفاده، احتیاطات، و..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- سایر اطلاعات -->
+                        <div class="tab-pane fade" id="other" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <h6 class="fw-bold text-primary mb-3">
+                                        <i class="fas fa-cogs me-2"></i>
+                                        ویژگی‌های خاص
+                                    </h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="hasExpiry" name="has_expiry">
+                                        <label class="form-check-label fw-bold" for="hasExpiry">
+                                            <i class="fas fa-calendar-times text-danger me-1"></i>
+                                            دارای تاریخ انقضا
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="hasSerial" name="has_serial">
+                                        <label class="form-check-label fw-bold" for="hasSerial">
+                                            <i class="fas fa-fingerprint text-info me-1"></i>
+                                            دارای شماره سریال
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="hasBatch" name="has_batch" checked>
+                                        <label class="form-check-label fw-bold" for="hasBatch">
+                                            <i class="fas fa-layer-group text-success me-1"></i>
+                                            دارای شماره بچ
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-image text-warning me-1"></i>
+                                        تصویر کالا
+                                    </label>
+                                    <input type="file" class="form-control" id="itemImage" name="image" accept="image/*">
+                                    <div class="form-text">فرمت‌های مجاز: JPG, PNG, GIF - حداکثر 2MB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    انصراف
+                </button>
+                <button type="button" class="btn btn-success btn-lg" onclick="saveItem()">
+                    <i class="fas fa-save me-1"></i>
+                    ذخیره کالا
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% block extra_js %}
+
+{% endblock %}

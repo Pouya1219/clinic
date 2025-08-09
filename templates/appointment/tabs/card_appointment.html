@@ -1,0 +1,45 @@
+ 
+ <h3>جزئیات نوبت</h3>
+  
+  <div class="appointment_info-grid">
+
+    <div><strong>نام:</strong> علی</div>
+    <div><strong>نام خانوادگی:</strong> احمدی</div>
+    <div><strong>کد ملی:</strong> 1234567890</div>
+    <div><strong>شماره تماس:</strong> 09121234567</div>
+    <div><strong>شماره پرونده:</strong> P1234</div>
+    <div><strong>از ساعت:</strong> 09:00</div>
+    <div><strong>تا ساعت:</strong> 09:30</div>
+    <div><strong>تاریخ مراجعه:</strong> ۱۴۰۴/۰۳/۲۵</div>
+    <div><strong>وضعیت:</strong> تأیید شده</div>
+    <div><strong>بیمار ویزیت شده:</strong> بله</div>
+    <div><strong>پرونده ساخته شود:</strong> خیر</div>
+    <div><strong>نوع درمان:</strong> ترمیمی</div>
+    <div><strong>شرح درمان:</strong> پر کردن دندان شماره ۵</div>
+    <div><strong>معرف:</strong> کلینیک سلامت نوین</div>
+    <div><strong>پزشک معالج:</strong> دکتر رضایی</div>
+    <div><strong>شماره یونیت:</strong> A101</div>
+    <div><strong>توضیحات:</strong> بیمار سابقه حساسیت دارد</div>
+    <div><strong>رنگ سفارشی:</strong> <span style="display:inline-block;width:20px;height:20px;background:#4CAF50;border-radius:4px;"></span></div>
+    <div><strong>ثبت توسط:</strong> منشی ۱</div>
+    <div><strong>تاریخ ثبت:</strong> ۱۴۰۴/۰۳/۲۳</div>
+    
+  </div>
+
+  <div class="appointment_actions-panel">
+    <button class="appointment_button appointment_button-info" onclick="editAppointment()">
+      <i class="fas fa-edit"></i> ویرایش
+    </button>
+    <button class="appointment_button appointment_button-danger" onclick="deleteAppointment()">
+      <i class="fas fa-trash-alt"></i> حذف
+    </button>
+    <button class="appointment_button appointment_button-success" onclick="sendSMS()">
+      <i class="fas fa-sms"></i> ارسال پیامک
+    </button>
+    <button class="appointment_button" onclick="window.print()">
+      <i class="fas fa-print"></i> پرینت نوبت
+    </button>
+    <button class="appointment_button" onclick="thermalPrint()">
+      <i class="fas fa-receipt"></i> پرینت حرارتی
+    </button>
+  </div>

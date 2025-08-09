@@ -1,0 +1,1209 @@
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --secondary-color: #2196F3;
+    --danger-color: #f44336;
+    --warning-color: #ff9800;
+    --success-color: #4CAF50;
+    --info-color: #2196F3;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --white-color: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    --green-200: #367f5dc4;
+    /* Shadow Variables */
+    --shadow-sm: 0 .125rem .25rem rgba(0,0,0,.075);
+    --shadow-md: 0 .5rem 1rem rgba(0,0,0,.15);
+    --shadow-lg: 0 1rem 3rem rgba(0,0,0,.175);
+    
+    /* Border Variables */
+    --border-radius: 8px;
+    --border-color: var(--gray-300);
+}
+body.light-mode {
+    background: white; 
+    color:black;
+}
+
+body.dark-mode {
+    background-color: linear-gradient(330deg, #000000, #2b77b3);
+    color:  black;
+}
+
+#mode-toggle {
+    cursor: pointer;
+    background-color: gray;
+    color: white;
+    font-size: 10px;
+    position: relative;
+    padding: 6px;
+    border-radius: 50%;
+}
+
+#mode-toggle:hover::after {
+    content: "تغییر حالت شب و روز";
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+@font-face {
+    font-family: 'F_hamed';
+    src: url('../static/fonts/F_hamed.ttf');
+}
+
+/*
+body {
+    background: linear-gradient(330deg, #000000, #2b77b3);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+*/
+
+
+/* Action Buttons Bar */
+.action-buttons {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 15px;
+    direction: rtl;
+}
+
+.action-button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    border-radius:5px;
+    padding: 4px 10px;
+    background: #4CAF50;
+    color: white;
+    box-shadow: #000000;
+}
+
+.btn-secondary {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    margin-top: 5px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.radio-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radio-custom {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+.radio-custom::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #4CAF50;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s ease;
+}
+
+.radio-input:checked + .radio-custom {
+    border-color: #4CAF50;
+}
+
+.radio-input:checked + .radio-custom::after {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.radio-text {
+    font-size: 14px;
+    color: #333;
+}
+
+/* انیمیشن hover */
+.radio-label:hover .radio-custom {
+    border-color: #4CAF50;
+}
+
+/* حالت focus */
+.radio-input:focus + .radio-custom {
+    box-shadow: 0 0 0 3px rgba(74, 175, 80, 0.1);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--green-200);
+    color: white;
+    padding: 0px;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    z-index: 900;
+    max-height: .7cm;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.footer-section {
+    text-align: center;
+}
+
+/* user_list */
+/* Content Section Styles */
+.content-section {
+    background: #fff;
+    margin: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* Search Section */
+.search-section {
+    padding: 20px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    direction: rtl;
+}
+
+.search-input {
+    flex: 2;
+    min-width: 200px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(74, 175, 80, 0.1);
+    outline: none;
+}
+
+.select-filter {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 10px center;
+    background-size: 20px;
+    appearance: none;
+}
+
+.show-button {
+    padding: 10px 25px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.show-button:hover {
+    background: #45a049;
+}
+
+/* Users Grid */
+.users-grid {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    direction: rtl;
+}
+
+.user-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.user-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(74, 175, 80, 0.1),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.user-card:hover::before {
+    right: 100%;
+}
+
+.edit-button {
+    position: absolute;
+    top: 52px;
+    left: 12px;
+    background: #fff;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 2;
+}
+
+.edit-button:hover {
+    background: #4CAF50;
+    transform: translateY(-2px);
+}
+
+.edit-button:hover i {
+    color: #fff;
+}
+
+.edit-button i {
+    color: #666;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.user-info {
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.avatar-container {
+    position: relative;
+    width: 90px;
+    height: 90px;
+}
+
+.user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid #eee;
+}
+
+.default-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.user-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 12px;
+    min-width: 85px;
+}
+
+.detail-value {
+    color: #333;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-position {
+    color: #4CAF50;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-position i {
+    font-size: 14px;
+}
+
+.gender-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.gender-male {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.gender-female {
+    background: #fce4ec;
+    color: #d81b60;
+}
+
+.user-id {
+    color: #999;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.user-id i {
+    font-size: 12px;
+}
+
+.status-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.status-active {
+    background: #e8f5e9;
+    color: #4CAF50;
+}
+
+.status-inactive {
+    background: #ffebee;
+    color: #f44336;
+}
+/* end user list */
+
+
+/* Content Section Styles */
+.content-section {
+    background: #fff;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* Tab Styles */
+
+.tab-button {
+    padding: 12px 25px;
+    margin-right: 5px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    color: #4CAF50;
+    background: #fff;
+    border-radius: 8px 8px 0 0;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #4CAF50;
+}
+
+
+/* persiandate-picker*/
+
+
+
+.date-inputs {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.input-container {
+    position: relative;
+    width: 200px;
+}
+
+.date-input {
+    width: 100%;
+    padding: 10px 35px 10px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.date-input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(74, 175, 80, 0.1);
+    outline: none;
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 1;
+}
+
+.calendar-icon:hover {
+    color: #4CAF50;
+}
+
+/* تنظیمات ظاهری تقویم */
+
+
+.datepicker-plot-area {
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td span {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td span:hover {
+    background-color: #e8f5e9 !important;
+    color: #4CAF50 !important;
+}
+
+.datepicker-plot-area .datepicker-day-view .table-days td.selected span {
+    background-color: #4CAF50 !important;
+    color: white !important;
+}
+
+.datepicker-plot-area .datepicker-header {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+}
+.current-date-info {
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-size: 13px;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+/* کوچکتر کردن سایز تقویم */
+.datepicker-plot-area .datepicker-day-view .table-days td span {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    font-size: 13px;
+}
+/* end persian-date-picker*/
+
+.preview-image {
+    width: 85.6mm; /* اندازه استاندارد کارت */
+    height: 53.98mm;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+.card-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0px;
+    padding: 15px;
+    border-radius: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    margin-bottom: 20px;
+}
+.card-info p {
+    margin: 0;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.qr-code {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.qr-code img {
+    max-width: 200px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.no-card {
+    text-align: center;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+    @page {
+        size: 86mm 54mm; /* اندازه استاندارد کارت */
+        margin: 0;
+    }
+    
+    .personnel-card-print {
+        width: 86mm;
+        height: 54mm;
+        page-break-after: always;
+    }
+    
+    .no-print {
+        display: none;
+    }
+.personnel-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+
+
+.image-preview {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.card-container {
+    width: 85.6mm; /* اندازه استاندارد کارت */
+    height: 53.98mm;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 3mm;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.card-actions {
+    margin-top: 15px;
+    text-align: center;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .card-container, .card-container * {
+        visibility: visible;
+    }
+    .card-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.patient-form-color-option.selected {
+    border: 3px solid #333;
+}
+
+.pregnancy-section {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin: 0 auto;
+}
+
+.no-records {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.page-link {
+    padding: 8px 12px;
+    margin: 0 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+}
+
+.page-link.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.page-link:hover:not(.active) {
+    background-color: #f8f9fa;
+}
+
+
+.patients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.patient-card {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.patient-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.patient-card__image {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.patient-card__image img {
+    width: 50px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10%;
+    margin: 10px
+}
+
+.patient-card__info {
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.patient-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.patient-card__name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.patient-card__name:hover {
+    color: #2196F3;
+}
+
+.patient-card__actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.edit-btn {
+    background-color: #FFC107;
+}
+
+.view-btn {
+    background-color: #4CAF50;
+}
+
+.patient-card__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.detail-item i {
+    color: #2196F3;
+    width: 16px;
+}
+
+.color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #ddd;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .patients-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-card__image {
+        width: 100px;
+    }
+
+    .patient-card__image img {
+        height: 120px;
+    }
+}
+
+.search-results {
+    /* استایل‌های قبلی */
+    display: none; /* در ابتدا مخفی */
+}
+
+.search-bar:focus-within .search-results {
+    display: block; /* نمایش باکس با focus روی فیلد جستجو */
+}
+
+.search-results:empty {
+    padding: 10px; /* اضافه کردن padding برای نمایش باکس خالی */
+}
+
+.search-results:empty::before {
+    content: "در حال جستجو..."; /* نمایش پیام در باکس خالی */
+    color: #999;
+    display: block;
+    text-align: center;
+}
+
+/* Search Bar Styles */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    display: grid;
+    background-color: azure;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.3s ease;
+    direction: rtl;
+    align-items: center;
+}
+.search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            padding: 5px;
+        }
+.search-bar:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(74, 175, 80, 0.2);
+}
+
+/* Sidebar Search */
+.sidebar-search {
+padding: 15px;
+border-bottom: 1px solid #34495e;
+}
+
+.sidebar-search .search-bar {
+width: 100%;
+background-color: #34495e;
+color: white;
+border: 1px solid #455d75;
+}
+
+.sidebar-search .search-bar::placeholder {
+color: #aaa;
+}
+
+.sidebar-search .search-bar:focus {
+background-color: #455d75;
+border-color: #576d88;
+}
+
+.sidebar-search .search-icon {
+color: #aaa;
+}
+/* استایل‌های قبلی ... */
+
+.search-results {
+    top: calc(72% + 5px);
+    margin-top: 5px;
+    transform: translateY(5px);
+    position: absolute;
+    /* top: auto; */
+    /* left: 0; */
+    /* width: calc(100% - 2px); */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.search-result-item .patient-name {
+    font-weight: bold;
+    margin-right: 10px; /* فاصله بین نام و اطلاعات */
+}
+
+.search-result-item .patient-info {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.no-results {
+    padding: 10px;
+    color: #999;
+    text-align: center;
+}
+.dynamic-patient-search-results {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    z-index: 10;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%; /* یا هر مقدار دیگری که مناسب است */
+}
+
+.dynamic-patient-search-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dynamic-patient-search-results li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.dynamic-patient-search-results li:last-child {
+    border-bottom: none;
+}
+
+.dynamic-patient-search-results a {
+    text-decoration: none;
+    color: #333;
+}
+
+.dynamic-patient-search-results .no-results {
+    text-align: center;
+    padding: 10px;
+    color: #999;
+}
+.messages .alert {
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: opacity 1s ease, transform 1s ease;
+}
+/* Alarm */
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.5s ease;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-alert.success { background-color: #d4edda; color: #155724; }
+.custom-alert.error { background-color: #f8d7da; color: #721c24; }
+.custom-alert.info { background-color: #d1ecf1; color: #0c5460; }
+
+.custom-alert .icon {
+    font-size: 18px;
+}
+
+.custom-alert.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.custom-alert.shake {
+    animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+    0% { transform: translateY(0); }
+    25% { transform: translateY(-3px); }
+    50% { transform: translateY(3px); }
+    75% { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+}
+
+.error {
+    border-color: red !important;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.messages {
+    margin: 20px 0;
+}
+.clinic-logo img{
+    height: 3cm;
+    border-radius: 2px;
+    box-shadow: #367f5dc4;
+}
+.clinic-logo img:hover{
+    box-shadow: #e07721c4;
+    transform: scaleX(1.5);
+    transition: 2s;
+}
+.med-print-dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+    padding: 5px 0;
+    right: 0;
+}
+
+.med-print-dropdown-menu.show {
+    display: block;
+}
+
+.med-print-dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    text-align: right;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.med-print-dropdown-menu button:hover {
+    background-color: #f1f1f1;
+}
+
+.med-print-dropdown {
+    position: relative;
+}
+.zamaem-img img{
+    height: 3cm;
+    border: #007bff solid 1px;
+}
+.zamaem-img img:hover{
+    margin: 5px;
+    border-radius: 5px;
+    box-shadow: #007bff 3px;
+    transition: 1s ease;
+    transform: scaleX(8px);
+}

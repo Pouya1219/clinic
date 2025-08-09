@@ -1,0 +1,15 @@
+body{
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;     
+}
+.login-div{
+    height: 400px;
+    width: 400px;
+    -webkit-box-shadow: 22px 22px 16px -3px #000000; 
+    box-shadow: 22px 22px 16px -3px #000000;
+    
+}

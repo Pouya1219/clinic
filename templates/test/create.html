@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>تقویم شمسی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/jalali/persian-date.js'%}"></script>
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --primary-color: #4CAF50;
+        --primary-hover: #45a049;
+        --secondary-color: #2196F3;
+        --gradient-start: #4CAF50;
+        --gradient-end: #2196F3;
+        --text-color: #333;
+        --label-color: #666;
+        --border-color: #ddd;
+        --bg-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+        --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+        --input-height: 40px;
+        --input-max-width: 300px;
+    }
+    
+    /* Card Styles */
+    .info-card {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        color: var(--white);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .info-card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    .info-card-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+    }
+    
+    .info-card-item h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+        opacity: 0.9;
+    }
+    
+    /* Form Styles */
+    .form-section {
+        background: var(--white);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 30px;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        color: var(--label-color);
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+    
+    .form-input,
+    .form-select {
+        width: 100%;
+        max-width: var(--input-max-width);
+        height: var(--input-height);
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        outline: none;
+    }
+    
+    .form-textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        resize: vertical;
+    }
+    
+    /* Radio Styles */
+    .radio-group {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .radio-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .radio-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        margin-left: 8px;
+        position: relative;
+    }
+    
+    .radio-input:checked + .radio-custom::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    /* Date Input Styles */
+    .date-input-container {
+        position: relative;
+        max-width: var(--input-max-width);
+    }
+    
+    .calendar-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--label-color);
+        cursor: pointer;
+    }
+    
+    /* Submit Button */
+    .submit-button {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 30px;
+    }
+    
+    .submit-button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Specialty List */
+    .specialty-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .specialty-item {
+        background: var(--bg-light);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .specialty-item button {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        cursor: pointer;
+        padding: 0 5px;
+    }
+    
+
+</style>
+
+</head>
+<body>
+    <section class="main-content">
+        <div class="content-section">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="user-info">کاربران</button>
+                <button class="tab-button" data-tab="insurance-info">اطلاعات بیمه</button>
+                <button class="tab-button" data-tab="salary-info">فیش حقوقی</button>
+            </div>
+    
+            <div class="tab-content" id="user-info">
+                <form id="userForm" method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Percentage Section -->
+                    <div class="percentage-card">
+                        <div class="percentage-grid">
+                            <div class="percentage-item">
+                                <h3>درصد کارکرد پزشک</h3>
+                                <input type="number" step="0.01" name="work_percentage" value="0.0">
+                            </div>
+                            <div class="percentage-item">
+                                <h3>درصد هزینه لابراتوار</h3>
+                                <input type="number" step="0.01" name="lab_expense_percentage" value="0.0">
+                            </div>
+                            <div class="percentage-item">
+                                <h3>درصد هزینه مواد</h3>
+                                <input type="number" step="0.01" name="material_expense_percentage" value="0.0">
+                            </div>
+                            <div class="percentage-item">
+                                <h3>درصد مالیات</h3>
+                                <input type="number" step="0.01" name="tax_percentage" value="0.0">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- User Information -->
+                    <div class="form-container">
+                        <form id="userForm" method="post">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">شماره پرسنلی</label>
+                                    <input type="text" class="form-input" placeholder="شماره پرسنلی را وارد کنید" name="personal_number" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">نام</label>
+                                    <input type="text" class="form-input" placeholder="نام را وارد کنید" name="first_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">نام خانوادگی</label>
+                                    <input type="text" class="form-input" placeholder="نام خانوادگی را وارد کنید" name="last_name" required>
+                                </div>
+                            </div>
+                
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">کد نظام پزشکی</label>
+                                    <input type="text" class="form-input" placeholder="کد نظام پزشکی را وارد کنید" name="medical_code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">کد ملی</label>
+                                    <input type="text" class="form-input" placeholder="کد ملی را وارد کنید" name="national_code">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">موبایل</label>
+                                    <input type="tel" class="form-input" placeholder="شماره موبایل را وارد کنید" name="mobile">
+                                </div>
+                            </div>
+                
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">تلفن ثابت</label>
+                                    <input type="tel" class="form-input" placeholder="تلفن ثابت را وارد کنید" name="phone">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">سمت</label>
+                                    <select class="form-select" name="role">
+                                        {% for role in roles %}
+                                            <option value="{{ role.name }}">{{ role.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="birthplace">محل تولد:</label>
+                                    <input type="text" name="birthplace" id="birthplace" placeholder="محل تولد را وارد کنید" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">جنسیت</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="sex" value="male" class="radio-input">
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">مرد</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="sex" value="female" class="radio-input" checked>
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">زن</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">تاهل</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="marital_status" value="single" class="radio-input">
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">مجرد</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="marital_status" value="married" class="radio-input" checked>
+                                            <span class="radio-custom"></span>
+                                            <span class="radio-text">متاهل</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">تخصص پزشک:</label>
+                                        <select name="specialty" id="specialtySelect">
+                                            {% for sp in specialties|dictsort:"id" %}
+                                                {% if sp.id == 1 %}
+                                                    <option value="{{ sp.id }}" selected>{{ sp.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        
+                                            {% for sp in specialties|dictsort:"id" %}
+                                                {% if sp.id != 1 %}
+                                                    <option value="{{ sp.id }}">{{ sp.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <button type="button" onclick="addSpecialty()">افزودن تخصص</button>
+                                    </div>
+                                    
+                                    <!-- لیست تخصص‌های انتخاب‌شده -->
+                                    <div class="selected-specialties">
+                                        <ul id="specialtyList">
+                                            <!-- اینجا تخصص‌ها داینامیک اضافه می‌شوند -->
+                                        </ul>
+                                    </div>
+                
+                                </div>
+                                <div class="form-group">
+                                    <label for="degree">مدرک تحصیلی:</label>
+                                    <select name="degree" id="degree">
+                                        {% for ed in educations %}
+                                            <option value="{{ ed.id }}">{{ ed.degree }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">کد پستی</label>
+                                    <input type="text" class="form-input" placeholder="کد پستی را وارد کنید" name="postal_code">
+                                </div>
+                            </div>
+                            <div class="date-inputs form-group">
+                                <div class="input-container">
+                                    <label class="form-label"> تاریخ تولد</label>
+                                    <input type="text" class="date-input" id="jalali-date" readonly placeholder="تاریخ شمسی">
+                                    <i class="fas fa-calendar-alt calendar-icon"></i>
+                                </div>
+                                <div class="input-container">
+                                    <input type="text" class="date-input" id="gregorian-date" readonly placeholder="تاریخ میلادی">
+                                </div>
+                            </div>
+                            <div class="date-inputs form-group">
+                                <div class="input-container">
+                                    <input type="text" class="date-input" id="gregorian-input" placeholder="تاریخ میلادی (M/D/YYYY)">
+                                    <i class="fas fa-exchange-alt convert-icon"></i>
+                                </div>
+                                <div class="input-container">
+                                    <input type="text" class="date-input" id="jalali-result" readonly placeholder="تاریخ شمسی">
+                                </div>
+                            <div class="form-row">
+                                <div class="form-group form-group" >
+                                    <label class="form-label">آدرس</label>
+                                    <textarea class="form-textarea" placeholder="آدرس را وارد کنید" name="address"></textarea>
+                                </div>
+                            </div>
+    
+                    <!-- Credentials Section -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">نام کاربری</label>
+                            <input type="text" class="form-input" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">رمز عبور</label>
+                            <input type="password" class="form-input" name="password" required>
+                        </div>
+                    </div>
+    
+                    <!-- Dates Section -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">تاریخ اعتبار از</label>
+                            <div class="input-container">
+                                <input type="text" class="date-input" id="start-date" readonly>
+                                <i class="fas fa-calendar-alt calendar-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">تاریخ اعتبار تا</label>
+                            <div class="input-container">
+                                <input type="text" class="date-input" id="end-date" readonly>
+                                <i class="fas fa-calendar-alt calendar-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <button type="submit" class="submit-button">ذخیره اطلاعات</button>
+                </form>
+            </div>
+    
+            <!-- Insurance Tab Content -->
+            <div class="tab-content hidden" id="insurance-info">
+                <!-- محتوای تب بیمه -->
+            </div>
+    
+            <!-- Salary Tab Content -->
+            <div class="tab-content hidden" id="salary-info">
+                <!-- محتوای تب فیش حقوقی -->
+            </div>
+        </div>
+    </section>
+    <script>
+        // Tab Switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+    
+        // Form Submit Animation
+        const form = document.getElementById('userForm');
+        
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitButton = form.querySelector('.submit-button');
+            submitButton.style.pointerEvents = 'none';
+            submitButton.innerHTML = 'در حال ذخیره...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitButton.innerHTML = 'با موفقیت ذخیره شد ✓';
+                submitButton.style.background = '#45a049';
+                
+                setTimeout(() => {
+                    submitButton.innerHTML = 'ذخیره اطلاعات';
+                    submitButton.style.pointerEvents = 'auto';
+                    submitButton.style.background = '#4CAF50';
+                }, 2000);
+            }, 1500);
+        });
+    
+        // Input Animation
+        const inputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+    <script>
+        let selectedSpecialties = [];
+    
+    function addSpecialty() {
+        let selectBox = document.getElementById("specialtySelect");
+        let selectedValue = selectBox.value;
+        let selectedText = selectBox.options[selectBox.selectedIndex].text;
+    
+        // جلوگیری از انتخاب تکراری
+        if (selectedSpecialties.includes(selectedValue)) {
+            alert("این تخصص قبلاً انتخاب شده است!");
+            return;
+        }
+    
+        selectedSpecialties.push(selectedValue);
+    
+        let list = document.getElementById("specialtyList");
+        let listItem = document.createElement("li");
+        listItem.innerHTML = selectedText + " <button onclick='removeSpecialty(\"" + selectedValue + "\")'>❌</button>";
+        listItem.setAttribute("data-id", selectedValue);
+        list.appendChild(listItem);
+    }
+    
+    function removeSpecialty(id) {
+        selectedSpecialties = selectedSpecialties.filter(sp => sp !== id);
+    
+        let list = document.getElementById("specialtyList");
+        let items = list.querySelectorAll("li");
+        items.forEach(item => {
+            if (item.getAttribute("data-id") === id) {
+                list.removeChild(item);
+            }
+        });
+    }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab Switching
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+        
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.add('hidden'));
+        
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    const contentId = tab.dataset.tab;
+                    document.getElementById(contentId).classList.remove('hidden');
+                });
+            });
+        
+            // Hide Gregorian dates
+            const gregorianInputs = document.querySelectorAll('[id^="gregorian-"]');
+            gregorianInputs.forEach(input => {
+                input.style.display = 'none';
+            });
+        });
+        
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab Switching
+        const tabs = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+    
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.add('hidden'));
+    
+                // Add active class
+                tab.classList.add('active');
+                const contentId = tab.dataset.tab;
+                document.getElementById(contentId).classList.remove('hidden');
+            });
+        });
+    
+        // Form Submit Animation
+        const form = document.getElementById('userForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const submitButton = form.querySelector('.submit-button');
+            submitButton.innerHTML = 'در حال ذخیره...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitButton.innerHTML = 'با موفقیت ذخیره شد ✓';
+                setTimeout(() => {
+                    submitButton.innerHTML = 'ذخیره اطلاعات';
+                }, 2000);
+            }, 1500);
+        });
+    
+        // Hide Gregorian dates
+        const gregorianInputs = document.querySelectorAll('[id^="gregorian-"]');
+        gregorianInputs.forEach(input => {
+            input.style.display = 'none';
+        });
+    });
+    
+</script>    
+</body>
+</html>

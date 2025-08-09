@@ -1,0 +1,215 @@
+{% load static %}
+{% load humanize %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرینت درمان</title>
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('/static/fonts/IRANSans.ttf') format('truetype');
+        }
+        body {
+            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .print-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .print-header h2 {
+            margin: 5px 0;
+        }
+        .patient-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .patient-info-group {
+            width: 48%;
+        }
+        .patient-info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .print-footer {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .signature-line {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+        .signature-box {
+            width: 45%;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            text-align: center;
+        }
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-header">
+    {% if clinic_logo %}
+    <img src="{{ clinic_logo }}" alt="{{ clinic_name }}" class="clinic-logo">
+    {% endif %}
+    <h2>گزارش درمان</h2>
+    <p>{{ clinic_name }}</p>
+    <p>تاریخ: {{ print_date }}</p>
+</div>
+    
+    <div class="patient-info">
+        <div class="patient-info-group">
+            <div class="patient-info-item">
+                <span class="info-label">نام بیمار:</span>
+                <span>{{ patient.name }} {{ patient.family }}</span>
+            </div>
+            <div class="patient-info-item">
+                <span class="info-label">شماره پرونده:</span>
+                <span>{{ patient.file_num }}</span>
+            </div>
+            <div class="patient-info-item">
+                <span class="info-label">کد ملی:</span>
+                <span>{{ patient.national_code|default:"-" }}</span>
+            </div>
+        </div>
+        <div class="patient-info-group">
+            <div class="patient-info-item">
+                <span class="info-label">تاریخ درمان:</span>
+                <span>{{ treatment.treatment_date|date:"Y/m/d" }}</span>
+            </div>
+            <div class="patient-info-item">
+                <span class="info-label">پزشک معالج:</span>
+                <span>{{ treatment.doctor.get_full_name }}</span>
+            </div>
+            <div class="patient-info-item">
+                <span class="info-label">تاریخ مراجعه بعدی:</span>
+                <span>{{ treatment.next_visit_date|date:"Y/m/d"|default:"-" }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <h3>جزئیات درمان</h3>
+    <table>
+        <tr>
+            <th>نوع درمان</th>
+            <td>{{ treatment.treatment_type.title }}</td>
+        </tr>
+        <tr>
+            <th>شرح درمان</th>
+            <td>{{ treatment.treatment_detail.description }}</td>
+        </tr>
+        <tr>
+            <th>نواحی درمان</th>
+            <td>{{ treatment.treatment_areas }}</td>
+        </tr>
+        <tr>
+            <th>توضیحات</th>
+            <td>{{ treatment.description|default:"-" }}</td>
+        </tr>
+    </table>
+    
+    <h3>اطلاعات مالی</h3>
+    <table>
+        <tr>
+            <th>تعرفه عمومی</th>
+            <td>{{ treatment.general_fee|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        <tr>
+            <th>تخفیف</th>
+            <td>{{ treatment.discount|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        {% if treatment.insurance_provider %}
+        <tr>
+            <th>بیمه</th>
+            <td>{{ treatment.insurance_provider.name }}</td>
+        </tr>
+        <tr>
+            <th>درصد پوشش بیمه</th>
+            <td>{{ treatment.insurance_percentage }}%</td>
+        </tr>
+        {% if patient_insurance %}
+        <tr>
+            <th>سقف بیمه</th>
+            <td>{{ patient_insurance.coverage_ceiling|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        <tr>
+            <th>مانده سقف بیمه</th>
+            <td>{{ patient_insurance.coverage_ceiling|subtract:patient_insurance.used_coverage|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        {% endif %}
+        {% endif %}
+        <tr>
+            <th>هزینه مواد</th>
+            <td>{{ treatment.material_cost|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        <tr>
+            <th>هزینه لابراتوار</th>
+            <td>{{ treatment.lab_cost|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        <tr>
+            <th>مبلغ قابل پرداخت</th>
+            <td><strong>{{ treatment.payable_amount|floatformat:0|intcomma }} {{ currency_unit }}</strong></td>
+        </tr>
+    </table>
+    
+    <div class="signature-line">
+        <div class="signature-box">
+            <p>امضای پزشک</p>
+        </div>
+        <div class="signature-box">
+            <p>امضای بیمار</p>
+        </div>
+    </div>
+<div class="print-footer">
+    <p>{{ clinic_name }} - تلفن: {{ clinic_phone }}</p>
+    <p>آدرس: {{ clinic_address }}</p>
+</div>
+    
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()">چاپ</button>
+        <button onclick="window.close()">بستن</button>
+    </div>
+</body>
+</html>

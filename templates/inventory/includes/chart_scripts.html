@@ -1,0 +1,248 @@
+<!-- templates/inventory/components/chart_scripts.html -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<script>
+// Chart Configuration and Utilities
+const ChartConfig = {
+    colors: {
+        primary: '#4e73df',
+        success: '#1cc88a',
+        info: '#36b9cc',
+        warning: '#f6c23e',
+        danger: '#e74a3b',
+        secondary: '#858796',
+        light: '#f8f9fc',
+        dark: '#5a5c69'
+    },
+    
+    defaultOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                        family: 'IRANSans, Arial, sans-serif'
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                titleColor: 'white',
+                bodyColor: 'white',
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                displayColors: false,
+                caretPadding: 10,
+                titleFont: {
+                    family: 'IRANSans, Arial, sans-serif'
+                },
+                bodyFont: {
+                    family: 'IRANSans, Arial, sans-serif'
+                }
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: '#e3e6f0',
+                    drawBorder: false
+                },
+                ticks: {
+                    font: {
+                        family: 'IRANSans, Arial, sans-serif'
+                    }
+                }
+            },
+            y: {
+                grid: {
+                    color: '#e3e6f0',
+                    drawBorder: false
+                },
+                ticks: {
+                    font: {
+                        family: 'IRANSans, Arial, sans-serif'
+                    },
+                    callback: function(value) {
+                        return new Intl.NumberFormat('fa-IR').format(value);
+                    }
+                }
+            }
+        }
+    }
+};
+
+// Chart Creation Functions
+function createLineChart(canvasId, data, options = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            ...ChartConfig.defaultOptions,
+            ...options,
+            elements: {
+                line: {
+                    tension: 0.3
+                },
+                point: {
+                    radius: 3,
+                    hoverRadius: 5
+                }
+            }
+        }
+    };
+    
+    return new Chart(ctx, config);
+}
+
+function createBarChart(canvasId, data, options = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            ...ChartConfig.defaultOptions,
+            ...options
+        }
+    };
+    
+    return new Chart(ctx, config);
+}
+
+function createPieChart(canvasId, data, options = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    
+    const config = {
+        type: 'pie',
+        data: data,
+        options: {
+            ...ChartConfig.defaultOptions,
+            ...options,
+            scales: {} // Remove scales for pie chart
+        }
+    };
+    
+    return new Chart(ctx, config);
+}
+
+function createDoughnutChart(canvasId, data, options = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            ...ChartConfig.defaultOptions,
+            ...options,
+            scales: {}, // Remove scales for doughnut chart
+            cutout: '60%'
+        }
+    };
+    
+    return new Chart(ctx, config);
+}
+
+// Utility Functions
+function formatChartData(rawData, labelKey, valueKey) {
+    return {
+        labels: rawData.map(item => item[labelKey]),
+        datasets: [{
+            data: rawData.map(item => item[valueKey]),
+            backgroundColor: [
+                ChartConfig.colors.primary,
+                ChartConfig.colors.success,
+                ChartConfig.colors.warning,
+                ChartConfig.colors.danger,
+                ChartConfig.colors.info,
+                ChartConfig.colors.secondary
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+        }]
+    };
+}
+
+function updateChart(chart, newData) {
+    if (!chart) return;
+    
+    chart.data = newData;
+    chart.update('active');
+}
+
+function destroyChart(chart) {
+    if (chart && typeof chart.destroy === 'function') {
+        chart.destroy();
+    }
+}
+
+// Persian Number Formatter for Charts
+function formatPersianNumbers(value) {
+    const persianDigits = '۰۱۲۳۴۵۶۷۸۹';
+    const englishDigits = '0123456789';
+    
+    return value.toString().replace(/[0-9]/g, function(w) {
+        return persianDigits[englishDigits.indexOf(w)];
+    });
+}
+
+// Chart Export Function
+function exportChart(chart, filename = 'chart') {
+    if (!chart) return;
+    
+    const url = chart.toBase64Image();
+    const link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = url;
+    link.click();
+}
+
+// Responsive Chart Handler
+function handleChartResize() {
+    Chart.helpers.each(Chart.instances, function(instance) {
+        instance.resize();
+    });
+}
+
+// Add resize listener
+window.addEventListener('resize', debounce(handleChartResize, 300));
+</script>
+
+<!-- Chart Templates -->
+<script type="text/template" id="chartCardTemplate">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">{{title}}</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="#" onclick="exportChart({{chartVar}}, '{{filename}}')">
+                        <i class="fas fa-download fa-sm fa-fw mr-2 text-gray-400"></i>
+                        دانلود نمودار
+                    </a>
+                    <a class="dropdown-item" href="#" onclick="refreshChart('{{chartId}}')">
+                        <i class="fas fa-sync fa-sm fa-fw mr-2 text-gray-400"></i>
+                        بروزرسانی
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="chart-area">
+                <canvas id="{{chartId}}" width="100%" height="{{height|default:300}}"></canvas>
+            </div>
+        </div>
+    </div>
+</script>

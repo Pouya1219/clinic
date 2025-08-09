@@ -1,0 +1,137 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <div class="appointment_container">
+        <!-- نوار اول - تنظیمات زمان ملاقات -->
+        <div class="appointment_navbar">
+            <div class="appointment_navbar-group">
+                <label class="appointment_label">مدت زمان ویزیت:</label>
+                <select id="visit_duration" class="appointment_select">
+                    <option value="15">15 دقیقه</option>
+                    <option value="30" selected>30 دقیقه</option>
+                    <option value="45">45 دقیقه</option>
+                </select>
+            </div>
+            <div class="appointment_navbar-group">
+                <input type="checkbox" class="appointment_checkbox" id="prevent-past-edits" checked>
+                <label class="appointment_label">امکان ویرایش روزهای قبل</label>
+            </div>
+            <div class="appointment_navbar-group">
+                <input type="checkbox" id="show_patient_info" class="appointment_checkbox" />
+                <label class="appointment_label">نمایش اطلاعات بیمار</label>
+            </div>
+        </div>
+
+        <!-- نوار دوم - اطلاعات پزشک -->
+        <div class="appointment_navbar">
+            <div class="appointment_navbar-group">
+                <select id="visit_doctor" class="appointment_select">
+                    <option value="" disabled selected>جستجوی پزشک...</option>      
+                </select>
+            </div>
+            <div class="appointment_navbar-group">
+                <select id="visit_schedule" class="appointment_select">
+                    <option value="">انتخاب یونیت</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- نوار سوم - نمایش تقویم -->
+       <!-- اضافه کردن دکمه‌های ناوبری به بالای جدول -->
+<div class="appointment_navbar">
+    <div class="appointment_view-buttons">
+        <button class="appointment_button" onclick="showToday()">
+            <i class="fas fa-calendar-day"></i> امروز
+        </button>
+        <button class="appointment_button" onclick="showWeek()">
+            <i class="fas fa-calendar-week"></i> هفته
+        </button>
+        <button class="appointment_button" onclick="showMonth()">
+            <i class="fas fa-calendar-alt"></i> ماه
+        </button>
+        <button class="appointment_button" onclick="showYear()">
+            <i class="fas fa-calendar"></i> سال
+        </button>
+        <button class="appointment_button appointment_button-emergency" onclick="openAppointmentModal(null, null, true)">
+    <i class="fas fa-plus"></i> وقت ملاقات اضطراری
+</button>
+    </div>
+    <div class="appointment_navigation">
+        <button class="appointment_nav-button" onclick="navigateCalendar('prev')">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <span id="current-date-range" class="appointment_date-range"></span>
+        <button class="appointment_nav-button" onclick="navigateCalendar('next')">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+</div>
+
+        <!-- جدول وقت‌های ملاقات -->
+        <div class="appointment_table-container">
+            <table class="appointment_table">
+                <thead>
+                    <tr id="days-header">
+                        <th class="appointment_header-cell">ساعت</th>
+                    </tr>
+                    <tr id="dates-header">
+                        <th class="appointment_header-cell"></th>
+                    </tr>
+                </thead>
+                <tbody id="appointment-slots">
+                </tbody>
+            </table>
+        </div>
+    </div>
+<!--سایر-->
+<div id="appointment_status" class="status-message" style="display:none;">
+    <i class="fas" id="status_icon"></i>
+    <p id="status_text"></p>
+</div>
+
+    <!-- مودال رزرو وقت -->
+    <div id="appointment-modal" class="appointment_modal">
+        {% includes 'appointment/tabs/model_appointment.html' %}
+    </div>
+<div class="appointment_card">
+{% includes 'appointment/tabs/card_appointment.html'%}
+</div>
+
+<div class="appointment_edit-modal">
+  {% includes 'appointment/tabs/edit_model.html'%}
+</div>
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // راه‌اندازی مدیریت رابط کاربری
+        UIManager.initialize();
+
+        // راه‌اندازی تقویم
+        window.calendarManager = new CalendarManager();
+        await window.calendarManager.initialize();
+
+        // اضافه کردن event listener برای کلیک روی نوبت‌ها
+        document.querySelector('.appointment_table').addEventListener('click', async (e) => {
+            const appointmentCell = e.target.closest('.appointment_item');
+            if (appointmentCell) {
+                const appointmentId = appointmentCell.dataset.appointmentId;
+                if (appointmentId) {
+                    await UIManager.showAppointmentDetails(appointmentId);
+                }
+            }
+        });
+
+        // تنظیم flatpickr برای تاریخ فارسی
+        flatpickr.localize(flatpickr.l10ns.fa);
+        
+    } catch (error) {
+        console.error('Error initializing calendar system:', error);
+        UIManager.showNotification('خطا در راه‌اندازی سیستم', 'error');
+    }
+});
+</script>
+{% endblock javascript %}
+{% endblock content %}

@@ -1,0 +1,40 @@
+<!-- templates/Patient/modals/_transfer_modal.html -->
+<div class="payment_modal-overlay" id="payment_transfer-modal-overlay">
+    <div class="payment_modal-content">
+        <div class="payment_modal-header">
+            <h3>انتقال وجه از کیف پول</h3>
+            <button class="payment_modal-close">×</button>
+        </div>
+        <form id="payment_transfer-form" onsubmit="PaymentManager.handleTransfer(event)">
+            <div class="payment_form-group">
+                <label>موجودی فعلی</label>
+                <input type="text" id="payment_transfer-current-balance" class="payment_input-style" disabled>
+            </div>
+            <div class="payment_form-group">
+                <label for="payment_transfer-amount">مبلغ انتقال</label>
+                <input type="number" id="payment_transfer-amount" name="amount" class="payment_input-style" required>
+            </div>
+
+            {# [کد جدید] کامپوننت جستجوی بیمار #}
+            <div class="payment_form-group">
+                <label for="payment_transfer-recipient-search">جستجوی بیمار گیرنده (نام، فامیل، شماره پرونده)</label>
+                <div class="payment_search-container">
+                    <input type="text" id="payment_transfer-recipient-search" class="payment_input-style" autocomplete="off" placeholder="شروع به تایپ کنید...">
+                    <!-- این فیلد مخفی، شماره پرونده نهایی را برای ارسال به سرور نگه می‌دارد -->
+                    <input type="hidden" name="recipient_file_num" id="payment_transfer-recipient-filenum" required>
+                    <div class="payment_search-results" id="payment_transfer-search-results"></div>
+                </div>
+            </div>
+            {# پایان کد جدید #}
+
+            <div class="payment_form-group">
+                <label for="payment_transfer-description">توضیحات (اختیاری)</label>
+                <input type="text" id="payment_transfer-description" name="description" class="payment_input-style">
+            </div>
+            <div class="payment_modal-footer">
+                <button type="button" class="btn btn-secondary payment_modal-cancel">انصراف</button>
+                <button type="submit" class="btn btn-primary">تایید و انتقال</button>
+            </div>
+        </form>
+    </div>
+</div>

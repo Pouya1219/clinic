@@ -1,0 +1,158 @@
+
+    <div class="appointment_modal-content">
+        <div class="appointment_modal-header">
+            <h3>رزرو وقت ملاقات</h3>
+            <button class="appointment_close-button" onclick="UIManager.closeModal()">&times;</button>
+        </div>
+        <form id="patient_search_form" class="appointment_form" onsubmit="return false;">
+            {% csrf_token %}
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                 <div class="appointment_search-container">
+                    <input type="text" id="visit_patient_search" class="appointment_input"  placeholder="جستجوی بیمار...">
+                 <div id="search_results" class="search-results"></div>
+               </div>
+            </div>
+        <hr>
+        </form>
+        <form id="visit_appointment_form" class="appointment_form">
+            {% csrf_token %}
+            <div class="chideman-modal">
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>نام:</label>
+                    <input type="text" id="visit_first_name" class="appointment_input">
+                </div>
+            <div class="appointment_form-group">
+                <label>نام خانوادگی:</label>
+                <input type="text" id="visit_last_name" class="appointment_input">
+            </div>
+</div>
+<div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <label>کد ملی:</label>
+        <input type="text" id="visit_national_code" class="appointment_input" 
+               placeholder="کد ملی بیمار" maxlength="10" 
+               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <span class="field-error" id="national_code_error"></span>
+    </div>
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>شماره تماس:</label>
+                    <input type="text" id="visit_phone" class="appointment_input">
+                </div>
+                <div class="appointment_form-group">
+                    <label>شماره پرونده:</label>
+                    <input type="text" id="visit_file_number" class="appointment_input" readonly>
+                </div>
+            </div>
+            <!-- اطلاعات درمان -->
+<div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <label>نوع درمان:</label>
+        <select id="visit_treatment_type" class="appointment_select">
+            <option value="">نوع درمان را انتخاب کنید</option>
+        </select>
+    </div>
+    <div class="appointment_form-group">
+        <label>شرح درمان:</label>
+        <select id="visit_treatment_description" class="appointment_input">
+            <option value="">ابتدا نوع درمان را انتخاب کنید</option>
+        </select>
+    </div>
+</div>
+
+<div class="appointment_form-row">
+        <div class="appointment_form-group">
+        <label>پزشک معالج:</label>
+        <select id="visit_treating_doctor" class="appointment_select">
+            <option value="">انتخاب پزشک معالج...</option>
+        </select>
+    </div>
+</div>
+<div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <label>معرف:</label>
+        <input type="text" id="visit_referral" class="appointment_input" 
+               placeholder="نام معرف یا مرکز معرف">
+    </div>
+</div>
+
+            <!-- در مودال، قبل از فیلدهای زمان -->
+        <div class="appointment_form-row">
+            <div class="appointment_form-group">
+                <label> تاریخ : </label>
+                <input type="hidden" id="visit_date" name="date">
+                <span id="visible_visit_date" class="date-display"></span>
+            </div>
+        </div>
+            <div class="appointment_form-row">
+                <div class="appointment_form-group  date-time-fields">
+                    <label>از ساعت:</label>
+                    <input type="text" id="visit_time_from" class="appointment_input  time-picker">
+                </div>
+                <div class="appointment_form-group">
+                    <label>تا ساعت:</label>
+                    <input type="text" id="visit_time_to" class="appointment_input time-picker">
+                </div>
+            </div>
+
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>یونیت:</label>
+                    <select id="visit_unit" class="appointment_select">
+                        <option value="">انتخاب یونیت...</option>
+                    </select>
+                </div>
+                <div class="appointment_form-group">
+                    <label>وضعیت:</label>
+                    <select id="visit_status" class="appointment_select">
+                        <option value="normal">عادی</option>
+                        <option value="emergency">اورژانسی</option>
+                        <option value="pending">در انتظار</option>
+                        <option value="visit">ویزیت</option>
+                        <option value="completed">تکمیل شده</option>
+                        <option value="cancelled">لغو شده</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <input type="checkbox" id="visit_patient_visited">
+                    <label>بیمار ویزیت شده</label>
+                </div>
+                <div class="appointment_form-group">
+                    <input type="checkbox" id="visit_no_file">
+                    <label>بدون پرونده</label>
+                </div>
+            </div>
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>ثبت کننده:</label>
+                    <input type="text" id="visit_created_by_info" class="appointment_input" readonly  value="{{ request.user.get_full_name }}"  data-user-id="{{ request.user.id }}">
+                 </div>
+            </div>
+            <div class="appointment_form-row">
+                <textarea id="visit_description" class="appointment_textarea" 
+                          placeholder="توضیحات"></textarea>
+            </div>
+        </div>
+            <div class="appointment_form-actions">
+                <button type="submit" class="appointment_button appointment_button-success">
+                    <i class="fas fa-save"></i> ثبت نوبت
+                </button>
+                <button type="button" id="deleteAppointmentBtn" 
+                        class="appointment_button appointment_button-danger">
+                    <i class="fas fa-trash"></i> حذف نوبت
+                </button>
+                <button type="button" class="appointment_button appointment_button-info">
+                    <i class="fas fa-sms"></i> ارسال پیامک
+                </button>
+                <button type="button" class="appointment_button appointment_button-danger" 
+                        onclick="UIManager.closeModal()">
+                    <i class="fas fa-times"></i> انصراف
+                </button>
+            </div>
+        </form>
+    </div>

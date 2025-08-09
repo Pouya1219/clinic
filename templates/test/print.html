@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>پرونده پزشکی</title>
+    <style>
+        @media screen {
+            .med-print-preview {
+                max-width: 210mm;
+                margin: 20px auto;
+                padding: 20px;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+        }
+
+        @media print {
+            .med-print-button-container {
+                display: none !important;
+            }
+            
+            body {
+                background: white;
+            }
+            
+            .med-print-preview {
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .med-print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .med-print-logo img {
+            max-height: 100px;
+        }
+
+        .med-print-clinic-info {
+            text-align: center;
+        }
+
+        .med-print-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .med-print-info-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .med-print-label {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .med-print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .med-print-table th,
+        .med-print-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+
+        .med-print-table th {
+            background-color: #f5f5f5;
+        }
+
+        .med-print-section {
+            margin: 20px 0;
+        }
+
+        .med-print-footer {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .med-print-button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .med-print-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .med-print-button:hover {
+            background-color: #45a049;
+        }
+
+        /* اضافه کردن فونت ایران‌سنس */
+    </style>
+</head>
+<body>
+    <div class="med-print-preview" id="printArea">
+        <div class="med-print-page">
+                <div class="med-print-header">
+                        <div class="med-print-logo">
+                            <img src="logo.png" alt="لوگو کلینیک">
+                        </div>
+                    <div class="med-print-clinic-info">
+                        <h2>کلینیک دندانپزشکی</h2>
+                        <p>آدرس: تهران، خیابان ...</p>
+                        <p>تلفن: 021-XXXXXXXX</p>
+                        </div>
+                    </div>
+             <div class="med-print-section">
+            <h3>مشخصات بیمار</h3>
+            <div class="med-print-info-grid">
+                <div class="med-print-info-item">
+                    <span class="med-print-label">شماره پرونده:</span>
+                    <span class="med-print-value" id="print-file-number">12345</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">نام و نام خانوادگی:</span>
+                    <span class="med-print-value" id="print-fullname">علی محمدی</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">کد ملی:</span>
+                    <span class="med-print-value" id="print-national-id">0123456789</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">نام پدر:</span>
+                    <span class="med-print-value" id="print-father-name">محمد</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">تاریخ تولد:</span>
+                    <span class="med-print-value" id="print-birth-date">1370/01/01</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">شماره تماس:</span>
+                    <span class="med-print-value" id="print-phone">09123456789</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">شماره اضطراری:</span>
+                    <span class="med-print-value" id="print-emergency">09187654321</span>
+                </div>
+                <div class="med-print-info-item">
+                    <span class="med-print-label">آدرس:</span>
+                    <span class="med-print-value" id="print-address">تهران، خیابان ...</span>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="med-print-section">
+            <h3>اطلاعات بیمه</h3>
+            <table class="med-print-table" id="print-insurance-table">
+                <thead>
+                    <tr>
+                        <th>نوع بیمه</th>
+                        <th>نام بیمه‌گر</th>
+                        <th>شماره بیمه</th>
+                        <th>تاریخ اعتبار</th>
+                        <th>درصد پوشش</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="med-print-section">
+            <h3>سوابق درمانی</h3>
+            <table class="med-print-table" id="print-treatment-table">
+                <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>نام پزشک</th>
+                        <th>شرح درمان</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="med-print-footer">
+            <div class="med-print-date">تاریخ چاپ: <span id="print-date"></span></div>
+            <div class="med-print-page-number">صفحه <span class="page-num"></span></div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="med-print-button-container">
+        <button onclick="handlePrint()" class="med-print-button">پرینت پرونده پزشکی</button>
+    </div>
+
+    <script>
+        function fillMedicalRecordData() {
+            // پر کردن جدول بیمه
+            const insuranceTableBody = document.querySelector('#print-insurance-table tbody');
+            if(insuranceTableBody) {
+                insuranceTableBody.innerHTML = `
+                    <tr>
+                        <td>پایه</td>
+                        <td>تامین اجتماعی</td>
+                        <td>123456789</td>
+                        <td>1404/12/29</td>
+                        <td>70%</td>
+                        <td>فعال</td>
+                    </tr>
+                    <tr>
+                        <td>تکمیلی</td>
+                        <td>بیمه دانا</td>
+                        <td>987654321</td>
+                        <td>1404/06/31</td>
+                        <td>90%</td>
+                        <td>فعال</td>
+                    </tr>
+                `;
+            }
+
+            // پر کردن جدول سوابق درمانی
+            const treatmentTableBody = document.querySelector('#print-treatment-table tbody');
+            if(treatmentTableBody) {
+                treatmentTableBody.innerHTML = `
+                    <tr>
+                        <td>1403/02/15</td>
+                        <td>دکتر رضایی</td>
+                        <td>معاینه و عکسبرداری</td>
+                    </tr>
+                    <tr>
+                        <td>1403/02/20</td>
+                        <td>دکتر کریمی</td>
+                        <td>جرم‌گیری و ترمیم دندان</td>
+                    </tr>
+                `;
+            }
+
+            // تنظیم تاریخ
+            const printDateElement = document.getElementById('print-date');
+            if(printDateElement) {
+                const today = new Date().toLocaleDateString('fa-IR');
+                printDateElement.textContent = today;
+            }
+        }
+
+        function handlePrint() {
+            fillMedicalRecordData();
+            
+            // ایجاد یک وقفه کوتاه قبل از پرینت
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+        // پر کردن داده‌ها هنگام لود صفحه
+        document.addEventListener('DOMContentLoaded', fillMedicalRecordData);
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!-- templates/Patient/modals/_payment_modal.html -->
+
+<div class="payment_modal-overlay" id="payment_direct-payment-modal-overlay">
+    <div class="payment_modal-content">
+        <div class="payment_modal-header">
+            <h3>ثبت پرداخت مستقیم</h3>
+            <button class="payment_modal-close">×</button>
+        </div>
+        <form id="payment_direct-payment-form" onsubmit="PaymentManager.handleDirectPayment(event)">
+            <input type="hidden" name="treatment_id" id="payment_direct-treatment-id">
+            <div class="payment_form-group">
+                <label for="payment_direct-amount">مبلغ پرداخت</label>
+                <input type="number" id="payment_direct-amount" name="amount" class="payment_input-style" required>
+            </div>
+            <div class="payment_form-group">
+                <label for="payment_direct-description">توضیحات (اختیاری)</label>
+                <input type="text" id="payment_direct-description" name="description" class="payment_input-style">
+            </div>
+            <div class="payment_form-group">
+                <label for="payment_direct-payment-method">روش پرداخت</label>
+                <select id="payment_direct-payment-method" name="payment_method" class="payment_input-style" required>
+                    <option value="pos">کارتخوان</option>
+                    <option value="cash">نقدی</option>
+                    <option value="card">کارت به کارت</option>
+                    <option value="check">چک</option>
+                </select>
+            </div>
+
+            {# بخش اطلاعات چک (در ابتدا مخفی) #}
+            <div id="payment_check-details-group" class="payment_sub-form" style="display: none;">
+                <div class="payment_form-group">
+                    <label for="payment_check-number">شماره چک / صیادی</label>
+                    <input type="text" id="payment_check-number" name="check_number" class="payment_input-style">
+                </div>
+                <div class="payment_form-group">
+                    <label for="payment_check-issuer">صادر کننده چک</label>
+                    <input type="text" id="payment_check-issuer" name="check_issuer" class="payment_input-style">
+                </div>
+                <div class="payment_form-group">
+                    <label for="payment_check-bank">نام بانک</label>
+                    <input type="text" id="payment_check-bank" name="check_bank" class="payment_input-style">
+                </div>
+                <div class="payment_form-group">
+                    <label for="payment_check-issue-date">تاریخ صدور چک</label>
+                    <input class="date-input form-input jalali input-field patient-form-input payment_input-style" id="payment_check-issue-date" data-id="10963" name="check_issue_date">
+                </div>
+                <div class="payment_form-group">
+                    <label for="payment_check-due-date">تاریخ سررسید چک</label>
+                    <input class="date-input form-input jalali input-field patient-form-input payment_input-style" id="payment_check-due-date" data-id="522963" name="check_due_date">
+
+                </div>
+            </div>
+
+            <div class="payment_modal-footer">
+                <button type="button" class="btn btn-secondary payment_modal-cancel">انصراف</button>
+                <button type="submit" class="btn btn-success">ثبت پرداخت</button>
+            </div>
+        </form>
+    </div>
+</div>

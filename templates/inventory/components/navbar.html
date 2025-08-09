@@ -1,0 +1,87 @@
+<!-- templates/inventory/components/navbar.html -->
+ 
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid">
+        <!-- Mobile Menu Toggle -->
+        <button class="btn btn-outline-secondary d-md-none me-2" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Page Title -->
+        <h5 class="mb-0">
+            {% block page_title %}{% endblock %}
+        </h5>
+        
+        <div class="ms-auto d-flex align-items-center">
+<!-- جستجوی سراسری -->
+<div class="input-group">
+    <!-- جستجوی سراسری -->
+<input type="text" class="form-control" placeholder="جستجو..." id="globalSearch" oninput="globalSearch()">
+        <i class="fas fa-search"></i>
+    </button>
+</div>
+<input type="text" class="form-control persian-date" placeholder="انتخاب تاریخ">
+
+<!-- پنجره نتایج جستجوی سراسری -->
+<div id="globalSearchResults" class="global-search-results" oninput="globalSearch()" style="display: none;">
+    <div id="globalSearchResultsContent">
+        <!-- محتوای نتایج جستجو اینجا قرار می‌گیرد -->
+    </div>
+</div>
+
+<!-- دکمه اعلان‌ها -->
+<!-- دکمه اعلان‌ها -->
+<div class="dropdown me-3">
+    <button class="btn btn-link notification-toggle position-relative" type="button" 
+            id="notificationDropdown" onclick="loadNotifications()">
+        <i class="fas fa-bell fa-lg"></i>
+        <span class="notification-badge badge bg-danger position-absolute" style="display: none;">0</span>
+    </button>
+    
+    <!-- منوی دراپ‌داون -->
+    <div class="dropdown-menu dropdown-menu-end notification-dropdown" id="notificationMenu">
+        <div class="dropdown-header d-flex justify-content-between align-items-center">
+            <h6 class="m-0">اعلان‌ها</h6>
+            <button class="btn btn-sm btn-link text-decoration-none" id="markAllReadBtn">
+                <small>خواندن همه</small>
+            </button>
+        </div>
+        
+        <div class="dropdown-divider"></div>
+        
+        <div class="notification-items" id="notificationItems">
+            <!-- اعلان‌ها اینجا لود می‌شوند -->
+            <div class="text-center p-3 text-muted">در حال بارگذاری...</div>
+        </div>
+        
+        <div class="dropdown-divider"></div>
+        
+        <a class="dropdown-item text-center" href="/notifications/">
+            <small>مشاهده همه اعلان‌ها</small>
+        </a>
+    </div>
+</div>
+
+    
+    <!-- شامل کردن تمپلیت اعلان‌ها -->
+    {% include 'inventory/partials/notifications.html' %}
+</div>
+  
+            <!-- User Menu -->
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                        data-bs-toggle="dropdown">
+                    <i class="fas fa-user me-1"></i>
+                    {{ user.get_full_name|default:user.username }}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>پروفایل</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>تنظیمات</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{% url 'admin:logout' %}">
+                        <i class="fas fa-sign-out-alt me-2"></i>خروج</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,52 @@
+<section class="main-content">
+<form id="treatment-detail-form" class="coding_form" data-type="treatment-detail" data-id="{{ detail.id|default:'' }}" data-parent="{{ parent_id|default:'' }}">
+    {% csrf_token %}
+    
+    <div class="coding_form-group">
+        <label for="treatment_type">نوع درمان</label>
+        {% if detail.id %}
+            <!-- فیلد فقط خواندنی برای ویرایش -->
+            <input type="text" class="coding_form-control" value="{{ detail.treatment_type.title }}" readonly>
+            <input type="hidden" id="treatment_type" name="treatment_type" value="{{ detail.treatment_type.id }}">
+        {% else %}
+            <!-- فیلد قابل انتخاب برای ایجاد جدید -->
+            <select id="treatment_type" name="treatment_type" class="coding_form-control" required>
+                {% for type in treatment_types %}
+                <option value="{{ type.id }}" 
+                    {% if parent_id == type.id|stringformat:"i" %}selected{% endif %}>
+                    {{ type.title }}
+                </option>
+                {% endfor %}
+            </select>
+        {% endif %}
+    </div>
+    
+    <div class="coding_form-group">
+        <label for="description">شرح درمان</label>
+        <input type="text" id="description" name="description" class="coding_form-control" value="{{ detail.description|default:'' }}" required>
+    </div>
+    
+    <div class="coding_form-group">
+        <label for="international_code">کد بین‌المللی</label>
+        <input type="text" id="international_code" name="international_code" class="coding_form-control" value="{{ detail.international_code|default:'' }}" required>
+    </div>
+    
+    <div class="coding_form-group">
+        <label for="public_tariff">تعرفه عمومی</label>
+        <input type="number" id="public_tariff" name="public_tariff" class="coding_form-control" value="{{ detail.public_tariff|default:'' }}" required>
+    </div>
+    
+    <div class="coding_form-group">
+        <label for="special_tariff">تعرفه تخصصی</label>
+        <input type="number" id="special_tariff" name="special_tariff" class="coding_form-control" value="{{ detail.special_tariff|default:'' }}" required>
+    </div>
+    
+    <div class="coding_form-actions">
+        <button type="submit" class="coding_btn coding_btn-primary">ذخیره</button>
+        {% if detail.id %}
+        <button type="button" class="coding_btn coding_btn-danger coding_delete-btn" data-id="{{ detail.id }}" data-type="treatment-detail">حذف</button>
+        {% endif %}
+        <button type="button" class="coding_btn coding_btn-secondary coding_cancel-btn">انصراف</button>
+    </div>
+</form>
+</section>

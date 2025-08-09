@@ -1,0 +1,264 @@
+:root {
+    --primary-color: #4CAF50;
+    --primary-hover: #45a049;
+    --secondary-color: #2196F3;
+    --checkbox-bluecolor:hsl(0, 0%, 100%);
+    --checkbox-bgcolor:#000000;
+    --danger-color: #f44336;
+    --success-color: #4CAF50;
+    --warning-color: #ff9800;
+    --text-color: #333;
+    --border-color: #ddd;
+    --bg-light: #f8f9fa;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --border-radius: 4px;
+}
+
+body {
+    background: linear-gradient(330deg, #000000, #2b77b3);
+    direction: rtl;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* Tabs */
+.tabs {
+    
+    color: black;
+    background: linear-gradient(260deg, #072bab, #05815f);
+    display: flex;
+    gap: 10px;
+    /* margin-bottom: 20px; */
+    /* background: var(--white); */
+    /* padding: 15px; */
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    min-width: 80%;
+    padding: 15px 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.tab-button {
+    margin-top: -2px;
+    background: linear-gradient(345deg, #ab9f92, rgba(255, 255, 255, 0.85));
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    /* background: #4ca5ff; */
+    color: var(--text-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tab-button.active {
+    color: black;
+    background: linear-gradient(260deg, #dfe3f1, #1899ff);    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    margin-top: 40px;
+    display: block;
+}
+
+/* Percentage Card */
+.percentage-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    color: var(--white);
+}
+
+.percentage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.percentage-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(5px);
+    max-width: 7cm;
+}
+
+.percentage-input {
+    width: 70%;
+    padding: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+/* User Credentials Card */
+.user-credentials-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+}
+
+/* Insurance Cards */
+.insurance-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.insurance-card {
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    color: var(--text-color);
+}
+
+/* Salary Card */
+.salary-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.salary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    width: fit-content;
+    display: inline-block;
+}
+
+.form-input {
+    text-align: center;
+    width: 4cm;
+    padding: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    outline: none;
+}
+
+/* Date Input Container */
+.date-input-container {
+    position: relative;
+}
+
+.date-input-container i {
+    position: absolute;
+    left: 10px;
+    top: 35%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+/* Buttons */
+.save-button {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.save-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Checkbox Style */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.checkbox-container input {
+    display: none;
+    color: black;
+}
+
+.checkmark {
+    width: 20px;
+    height: 0px;
+    border: 2px solid var(--checkbox-bgcolor);
+    border-radius: 4px;
+    margin-left: 8px;
+    position: relative;
+    background: var( --checkbox-bluecolor);
+}
+
+.checkbox-container input:checked+.checkmark:after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary-color);
+}
+
+.button-specialty {
+    height: .7cm;
+    width: 3cm;
+    border-radius: 8px;
+    background-color: green;
+    color: black;
+
+}
+.active-tick{
+    width: 100px;
+    height: 30px;
+}
+.center {
+    text-align: center;
+    align-items: center;
+    justify-items: center;
+}

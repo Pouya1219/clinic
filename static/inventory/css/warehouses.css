@@ -1,0 +1,169 @@
+/* استایل‌های مربوط به صفحه مدیریت انبارها */
+
+/* کارت آمار */
+.card-body {
+    padding: 1.25rem;
+}
+
+.border-right-primary {
+    border-right: 0.25rem solid #4e73df;
+}
+
+.border-right-success {
+    border-right: 0.25rem solid #1cc88a;
+}
+
+.border-right-info {
+    border-right: 0.25rem solid #36b9cc;
+}
+
+.border-right-warning {
+    border-right: 0.25rem solid #f6c23e;
+}
+
+/* جدول انبارها */
+.table-responsive {
+    position: relative;
+    min-height: 200px;
+}
+
+.table th {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* نشانگر لودینگ */
+#loadingIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* استایل‌های مودال */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* استایل‌های فرم */
+.form-label {
+    font-weight: 500;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+/* استایل‌های جزئیات انبار */
+#warehouseDetailsModal .fw-bold {
+    color: #4e73df;
+}
+
+#warehouseDetailsModal .card {
+    transition: all 0.3s ease;
+}
+
+#warehouseDetailsModal .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* استایل‌های دکمه‌ها */
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.btn-primary:hover {
+    background-color: #2e59d9;
+    border-color: #2653d4;
+}
+
+.btn-info {
+    background-color: #36b9cc;
+    border-color: #36b9cc;
+    color: #fff;
+}
+
+.btn-info:hover {
+    background-color: #2ea7b9;
+    border-color: #2a96a5;
+    color: #fff;
+}
+
+/* استایل‌های پیام‌ها */
+.alert {
+    border-radius: 0.35rem;
+}
+
+/* استایل‌های صفحه‌بندی */
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-item.active .page-link {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.page-link {
+    color: #4e73df;
+}
+
+.page-link:hover {
+    color: #224abe;
+}
+
+/* استایل‌های جستجو */
+#searchResultsTitle {
+    color: #4e73df;
+}
+
+/* استایل‌های چک‌باکس */
+.form-check-input:checked {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+/* استایل‌های نشانگر وضعیت */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+}
+
+/* استایل‌های پاسخگو */
+@media (max-width: 768px) {
+    .btn-group-sm > .btn {
+        padding: 0.25rem 0.4rem;
+    }
+    
+    .table td, .table th {
+        padding: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}

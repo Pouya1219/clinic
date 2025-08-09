@@ -1,0 +1,63 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<section class="main-content">
+    {% if messages %}
+    <div class="shift-messages">
+        {% for message in messages %}
+        <div class="shift-message {% if message.tags %}shift-message-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="shift-page-wrapper">
+        <form id="shiftScheduleForm" method="POST" action="{% url 'schedules:save_schedule' %}">
+            {% csrf_token %}
+            {% include 'schedules/includes/header.html' %}
+            <div class="shift-main-container">
+                {% include 'schedules/includes/tabs.html' %}
+                
+                <div class="shift-content-wrapper">
+                    {% include 'schedules/includes/personnel_select.html' %}
+                    {% include 'schedules/includes/schedule_grid.html' %}
+                    {% include 'schedules/includes/holiday_section.html' %}
+                </div>
+                
+                <div class="shift-tables-container">
+                    {% include 'schedules/includes/schedule_table.html' %}
+                    {% include 'schedules/includes/holidays_table.html' %}
+                </div>
+                
+                <button type="button" class="shift-save-button" onclick="shiftSaveSchedule()">ذخیره برنامه</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'schedules/schedules-config.js' %}"></script>
+<script src="{% static 'schedules/schedules-api.js' %}"></script>
+<script src="{% static 'schedules/schedules-manager.js' %}"></script>
+<script src="{% static 'schedules/schedules-main.js' %}"></script>
+<script>
+    // تعریف مستقیم تابع در صفحه برای اطمینان از دسترسی
+    function shiftSaveSchedule() {
+        if (typeof SchedulesUI !== 'undefined' && SchedulesUI.saveSchedule) {
+            SchedulesUI.saveSchedule();
+        } else {
+            console.error('SchedulesUI is not defined or saveSchedule method is missing');
+            alert('خطا در بارگذاری اسکریپت‌ها. لطفاً صفحه را رفرش کنید.');
+        }
+    }
+    
+    // بررسی بارگذاری فایل‌ها
+    console.log('Config loaded:', typeof SchedulesConfig !== 'undefined');
+    console.log('API loaded:', typeof SchedulesAPI !== 'undefined');
+    console.log('Manager loaded:', typeof SchedulesManager !== 'undefined');
+    console.log('UI loaded:', typeof SchedulesUI !== 'undefined');
+</script>
+{% endblock %}

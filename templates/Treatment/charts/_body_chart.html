@@ -1,0 +1,341 @@
+<!-- _body_chart.html -->
+<div class="body-chart-content">
+    <h4 class="chart-title">چارت اعضای بدن</h4>
+    
+    <div class="body-container">
+        <div class="body-views">
+            <div class="body-view front-view">
+                <h5 class="view-title">نمای جلو</h5>
+                <div class="body-image-container">
+                    {% comment %} <img src="{% static 'img/Treatment/body/body_front.png' %}" alt="نمای جلوی بدن" class="body-outline"> {% endcomment %}
+                    
+                    <div class="body-areas-container">
+                        <!-- سر -->
+                        <div class="body-area" data-area="head" data-name="سر">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">سر</div>
+                        </div>
+                        
+                        <!-- گردن -->
+                        <div class="body-area" data-area="neck" data-name="گردن">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">گردن</div>
+                        </div>
+                        
+                        <!-- شانه راست -->
+                        <div class="body-area" data-area="right_shoulder" data-name="شانه راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">شانه راست</div>
+                        </div>
+                        
+                        <!-- شانه چپ -->
+                        <div class="body-area" data-area="left_shoulder" data-name="شانه چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">شانه چپ</div>
+                        </div>
+                        
+                        <!-- قفسه سینه -->
+                        <div class="body-area" data-area="chest" data-name="قفسه سینه">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">قفسه سینه</div>
+                        </div>
+                        
+                                                <!-- بازوی راست -->
+                        <div class="body-area" data-area="right_arm" data-name="بازوی راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">بازوی راست</div>
+                        </div>
+                        
+                        <!-- بازوی چپ -->
+                        <div class="body-area" data-area="left_arm" data-name="بازوی چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">بازوی چپ</div>
+                        </div>
+                        
+                        <!-- شکم -->
+                        <div class="body-area" data-area="abdomen" data-name="شکم">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">شکم</div>
+                        </div>
+                        
+                        <!-- آرنج راست -->
+                        <div class="body-area" data-area="right_elbow" data-name="آرنج راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">آرنج راست</div>
+                        </div>
+                        
+                        <!-- آرنج چپ -->
+                        <div class="body-area" data-area="left_elbow" data-name="آرنج چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">آرنج چپ</div>
+                        </div>
+                        
+                        <!-- کمر -->
+                        <div class="body-area" data-area="waist" data-name="کمر">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">کمر</div>
+                        </div>
+                        
+                        <!-- دست راست -->
+                        <div class="body-area" data-area="right_hand" data-name="دست راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">دست راست</div>
+                        </div>
+                        
+                        <!-- دست چپ -->
+                        <div class="body-area" data-area="left_hand" data-name="دست چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">دست چپ</div>
+                        </div>
+                        
+                        <!-- لگن -->
+                        <div class="body-area" data-area="hip" data-name="لگن">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">لگن</div>
+                        </div>
+                        
+                        <!-- ران راست -->
+                        <div class="body-area" data-area="right_thigh" data-name="ران راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">ران راست</div>
+                        </div>
+                        
+                        <!-- ران چپ -->
+                        <div class="body-area" data-area="left_thigh" data-name="ران چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">ران چپ</div>
+                        </div>
+                        
+                        <!-- زانوی راست -->
+                        <div class="body-area" data-area="right_knee" data-name="زانوی راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">زانوی راست</div>
+                        </div>
+                        
+                        <!-- زانوی چپ -->
+                        <div class="body-area" data-area="left_knee" data-name="زانوی چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">زانوی چپ</div>
+                        </div>
+                        
+                        <!-- ساق راست -->
+                        <div class="body-area" data-area="right_leg" data-name="ساق راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">ساق راست</div>
+                        </div>
+                        
+                        <!-- ساق چپ -->
+                        <div class="body-area" data-area="left_leg" data-name="ساق چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">ساق چپ</div>
+                        </div>
+                        
+                        <!-- پای راست -->
+                        <div class="body-area" data-area="right_foot" data-name="پای راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پای راست</div>
+                        </div>
+                        
+                        <!-- پای چپ -->
+                        <div class="body-area" data-area="left_foot" data-name="پای چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پای چپ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="body-view back-view">
+                <h5 class="view-title">نمای پشت</h5>
+                <div class="body-image-container">
+                    {% comment %} <img src="{% static 'img/Treatment/body/body_back.png' %}" alt="نمای پشت بدن" class="body-outline"> {% endcomment %}
+                    
+                    <div class="body-areas-container">
+                        <!-- پشت سر -->
+                        <div class="body-area" data-area="back_head" data-name="پشت سر">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت سر</div>
+                        </div>
+                        
+                        <!-- پشت گردن -->
+                        <div class="body-area" data-area="back_neck" data-name="پشت گردن">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت گردن</div>
+                        </div>
+                        
+                        <!-- شانه راست (پشت) -->
+                        <div class="body-area" data-area="back_right_shoulder" data-name="شانه راست (پشت)">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">شانه راست</div>
+                        </div>
+                        
+                        <!-- شانه چپ (پشت) -->
+                        <div class="body-area" data-area="back_left_shoulder" data-name="شانه چپ (پشت)">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">شانه چپ</div>
+                        </div>
+                        
+                        <!-- پشت -->
+                        <div class="body-area" data-area="back" data-name="پشت">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت</div>
+                        </div>
+                        
+                        <!-- کمر -->
+                        <div class="body-area" data-area="lower_back" data-name="کمر">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">کمر</div>
+                        </div>
+                        
+                        <!-- باسن -->
+                        <div class="body-area" data-area="buttocks" data-name="باسن">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">باسن</div>
+                        </div>
+                        
+                        <!-- پشت ران راست -->
+                        <div class="body-area" data-area="back_right_thigh" data-name="پشت ران راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت ران راست</div>
+                        </div>
+                        
+                        <!-- پشت ران چپ -->
+                        <div class="body-area" data-area="back_left_thigh" data-name="پشت ران چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت ران چپ</div>
+                        </div>
+                        
+                        <!-- پشت زانوی راست -->
+                        <div class="body-area" data-area="back_right_knee" data-name="پشت زانوی راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت زانوی راست</div>
+                        </div>
+                        
+                        <!-- پشت زانوی چپ -->
+                        <div class="body-area" data-area="back_left_knee" data-name="پشت زانوی چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت زانوی چپ</div>
+                        </div>
+                        
+                        <!-- پشت ساق راست -->
+                        <div class="body-area" data-area="back_right_leg" data-name="پشت ساق راست">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت ساق راست</div>
+                        </div>
+                        
+                        <!-- پشت ساق چپ -->
+                        <div class="body-area" data-area="back_left_leg" data-name="پشت ساق چپ">
+                            <div class="area-marker">
+                                <i class="fas fa-circle"></i>
+                            </div>
+                            <div class="area-label">پشت ساق چپ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="body-treatments-panel">
+            <h5>درمان‌های بدن</h5>
+            <div class="treatment-options">
+                <div class="treatment-option">
+                    <i class="fas fa-syringe"></i>
+                    <span>تزریق</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-magic"></i>
+                    <span>لیپوماتیک</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-tint"></i>
+                    <span>مزوتراپی</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-sun"></i>
+                    <span>لیزر</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-layer-group"></i>
+                    <span>لیفت</span>
+                </div>
+            </div>
+            
+            <div class="selected-areas-info">
+                <h6>نواحی انتخاب شده</h6>
+                <div class="selected-areas-list">
+                    <!-- اینجا با جاوااسکریپت پر می‌شود -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                

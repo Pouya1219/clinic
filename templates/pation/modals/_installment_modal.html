@@ -1,0 +1,44 @@
+<!-- templates/Patient/modals/_installment_modal.html -->
+
+<div class="payment_modal-overlay" id="payment_installment-modal-overlay">
+    <div class="payment_modal-content large">
+        <div class="payment_modal-header">
+            <h3>ایجاد طرح اقساط</h3>
+            <button class="payment_modal-close">×</button>
+        </div>
+        <form id="payment_installment-form" onsubmit="PaymentManager.handleInstallmentPlan(event)">
+            <input type="hidden" name="treatment_id" id="payment_installment-treatment-id">
+            
+            <div class="payment_form-grid">
+                <div class="payment_form-group">
+                    <label>مبلغ کل بدهی</label>
+                    <input type="text" id="payment_installment-total-amount" name="total_amount" class="payment_input-style" readonly>
+                </div>
+                <div class="payment_form-group">
+                    <label>پیش پرداخت</label>
+                    <input type="text" id="payment_installment-down-payment" name="down_payment" class="payment_input-style" required onkeyup="this.value = this.value.replace(/,/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',')">
+                </div>
+                <div class="payment_form-group">
+                    <label>تعداد اقساط</label>
+                    <input type="number" id="payment_installment-count" name="installment_count" class="payment_input-style" min="1" value="3" required>
+                </div>
+                 <div class="payment_form-group">
+                    <label>فاصله بین اقساط (روز)</label>
+                    <input type="number" id="payment_installment-interval" name="interval_days" class="payment_input-style" min="1" value="30" required>
+                </div>
+            </div>
+            
+            <div class="payment_installment-preview">
+                <h4>پیش‌نمایش اقساط</h4>
+                <div id="payment_installment-preview-container">
+                    <!-- پیش‌نمایش اینجا تولید می‌شود -->
+                </div>
+            </div>
+            
+            <div class="payment_modal-footer">
+                <button type="button" class="btn btn-secondary payment_modal-cancel">انصراف</button>
+                <button type="submit" class="btn btn-primary">ایجاد طرح</button>
+            </div>
+        </form>
+    </div>
+</div>

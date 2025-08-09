@@ -1,0 +1,95 @@
+/* edit tab*/
+/* static/css/edit_user_tabs.css */
+.edit-user-tabs__container {
+    width: 100%;
+    margin: 20px 0;
+}
+
+.edit-user-tabs__nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 0 20px;
+}
+
+.edit-user-tabs__button {
+    padding: 12px 24px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.edit-user-tabs__button:hover {
+    color: #333;
+}
+
+.edit-user-tabs__button--active {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+.edit-user-tabs__button--active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #2196F3;
+}
+
+.edit-user-tabs__content {
+    display: none;
+    padding: 20px;
+    animation: edit-user-tabs-fade 0.3s ease-in-out;
+}
+
+.edit-user-tabs__content--active {
+    display: block;
+}
+
+@keyframes edit-user-tabs-fade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* استایل‌های خاص هر تب */
+.edit-user-tabs__profile-img {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.edit-user-tabs__insurance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.edit-user-tabs__salary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+.preview-image:hover{
+    border-color: aquamarine;
+    border:solid 2px;
+}
+.personnel-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    background: white;
+}

@@ -1,0 +1,687 @@
+{% load static %}
+<!-- pation/tabs/_tab_issue_card.html -->
+<div class="card-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- کارت اصلی -->
+            <div class="card shadow-lg border-0 rounded-lg mb-4">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-id-card mr-2"></i> کارت بیمار
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- اطلاعات کارت -->
+                            <div class="card-info-container">
+                                {% if patient.patient_card %}
+                                    <div class="card-status mb-4">
+                                        {% if patient.patient_card.is_active %}
+                                            <div class="alert alert-success d-flex align-items-center">
+                                                <i class="fas fa-check-circle fa-2x mr-3"></i>
+                                                <div>
+                                                    <h6 class="mb-1">کارت فعال است</h6>
+                                                    <p class="mb-0 small">این کارت در حال حاضر معتبر و قابل استفاده است.</p>
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-danger d-flex align-items-center">
+                                                <i class="fas fa-times-circle fa-2x mr-3"></i>
+                                                <div>
+                                                    <h6 class="mb-1">کارت غیرفعال است</h6>
+                                                    <p class="mb-0 small">این کارت در حال حاضر غیرفعال است و نمی‌توان از آن استفاده کرد.</p>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="card-details">
+                                        <h6 class="text-info mb-3">اطلاعات کارت</h6>
+                                        <div class="info-item d-flex align-items-center mb-3">
+                                            <div class="info-icon mr-3">
+                                                <i class="fas fa-fingerprint fa-lg text-info"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="info-label text-muted small">شماره کارت</div>
+                                                <div class="info-value font-weight-bold" id="card-number">{{ patient.patient_card.card_number }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="info-item d-flex align-items-center mb-3">
+                                            <div class="info-icon mr-3">
+                                                <i class="fas fa-calendar-plus fa-lg text-success"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="info-label text-muted small">تاریخ صدور</div>
+                                                <div class="info-value">{{ patient.patient_card.issue_date|date:"Y/m/d" }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="info-item d-flex align-items-center mb-3">
+                                            <div class="info-icon mr-3">
+                                                <i class="fas fa-calendar-times fa-lg text-danger"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="info-label text-muted small">تاریخ انقضا</div>
+                                                <div class="info-value">{{ patient.patient_card.expiry_date|date:"Y/m/d" }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="info-item d-flex align-items-center">
+                                            <div class="info-icon mr-3">
+                                                <i class="fas fa-clock fa-lg text-warning"></i>
+                                            </div>
+                                            <div class="info-content">
+                                                <div class="info-label text-muted small">وضعیت اعتبار</div>
+                                                <div class="info-value">
+                                                    {% if patient.patient_card.expiry_date|date:"Y-m-d" > now|date:"Y-m-d" %}
+                                                        <span class="badge badge-pill badge-success">معتبر</span>
+                                                        <small class="text-muted ml-2">
+                                                            {{ patient.patient_card.expiry_date|timeuntil }} مانده
+                                                        </small>
+                                                    {% else %}
+                                                        <span class="badge badge-pill badge-danger">منقضی شده</span>
+                                                        <small class="text-muted ml-2">
+                                                            {{ patient.patient_card.expiry_date|timesince }} پیش
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="empty-card-state text-center py-5">
+                                        <i class="fas fa-id-card fa-5x text-muted mb-3"></i>
+                                        <h5>هنوز کارتی صادر نشده است</h5>
+                                        <p class="text-muted mb-4">برای این بیمار هنوز کارتی صادر نشده است. با کلیک روی دکمه زیر، کارت جدیدی صادر کنید.</p>
+                                        <button class="btn btn-primary btn-lg issue-card-btn" data-patient-id="{{ patient.id }}">
+                                            <i class="fas fa-plus-circle mr-2"></i> صدور کارت جدید
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <!-- پیش‌نمایش کارت -->
+                            <div class="card-preview-container">
+                                <h6 class="text-info mb-3">پیش‌نمایش کارت</h6>
+                                <div class="card-preview-wrapper">
+                                    {% if patient.patient_card and patient.patient_card.card_image %}
+                                        <div class="card-preview position-relative">
+                                            <img src="{{ patient.patient_card.card_image.url }}" alt="Patient Card" class="card-image img-fluid rounded shadow-sm">
+                                            {% if not patient.patient_card.is_active %}
+                                                <div class="card-inactive-overlay">
+                                                    <span class="badge badge-danger p-2">غیرفعال</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="card-preview-placeholder d-flex align-items-center justify-content-center bg-light rounded" style="height: 200px;">
+                                            <div class="text-center text-muted">
+                                                <i class="fas fa-image fa-3x mb-2"></i>
+                                                <p>پیش‌نمایش کارت</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if patient.patient_card %}
+                        <hr class="my-4">
+                        
+                        <!-- دکمه‌های عملیات -->
+                        <div class="card-actions">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-wrap">
+                                        {% if patient.patient_card.is_active %}
+                                            <button class="btn btn-warning mr-2 mb-2 deactivate-card-btn" data-patient-id="{{ patient.id }}">
+                                                <i class="fas fa-ban mr-1"></i> غیرفعال کردن کارت
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-success mr-2 mb-2 activate-card-btn" data-patient-id="{{ patient.id }}">
+                                                <i class="fas fa-check mr-1"></i> فعال کردن کارت
+                                            </button>
+                                        {% endif %}
+                                        
+                                        <button class="btn btn-info mr-2 mb-2 regenerate-card-btn" data-patient-id="{{ patient.id }}">
+                                            <i class="fas fa-sync mr-1"></i> تولید مجدد کارت
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="d-flex flex-wrap justify-content-md-end">
+                                        <a href="{{ patient.patient_card.card_image.url }}" download class="btn btn-outline-primary mr-2 mb-2">
+                                            <i class="fas fa-download mr-1"></i> دانلود کارت
+                                        </a>
+                                        
+                                        <button type="button" class="btn btn-outline-info mb-2 print-card-btn">
+                                            <i class="fas fa-print mr-1"></i> چاپ کارت
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- اطلاعات بیمار -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-user mr-2"></i> اطلاعات بیمار در کارت</h6>
+                </div>
+                <div class="card-body">
+                    <div class="patient-info-list">
+                        <div class="info-item d-flex align-items-center mb-3">
+                            <div class="info-icon mr-3">
+                                <i class="fas fa-user fa-lg text-primary"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label text-muted small">نام و نام خانوادگی</div>
+                                <div class="info-value font-weight-bold" id="card-name">{{ patient.name }} {{ patient.family }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item d-flex align-items-center mb-3">
+                            <div class="info-icon mr-3">
+                                <i class="fas fa-folder fa-lg text-warning"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label text-muted small">شماره پرونده</div>
+                                <div class="info-value" id="card-file-num">{{ patient.file_num }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item d-flex align-items-center mb-3">
+                            <div class="info-icon mr-3">
+                                <i class="fas fa-id-card fa-lg text-info"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label text-muted small">کد ملی</div>
+                                <div class="info-value" id="card-national-code">{{ patient.national_code|default:"--" }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item d-flex align-items-center">
+                            <div class="info-icon mr-3">
+                                <i class="fas fa-heartbeat fa-lg text-danger"></i>
+                            </div>
+                            <div class="info-content">
+                                <div class="info-label text-muted small">بیماری‌های خاص</div>
+                                <div class="info-value" id="card-diseases">
+                                    {% if patient.has_heart_disease or patient.has_diabetes or patient.has_blood_pressure or patient.has_hepatitis or patient.is_pregnant %}
+                                        {% if patient.has_heart_disease %}<span class="badge badge-pill badge-danger mr-1">بیماری قلبی</span>{% endif %}
+                                        {% if patient.has_diabetes %}<span class="badge badge-pill badge-warning mr-1">دیابت</span>{% endif %}
+                                        {% if patient.has_blood_pressure %}<span class="badge badge-pill badge-info mr-1">فشار خون</span>{% endif %}
+                                        {% if patient.has_hepatitis %}<span class="badge badge-pill badge-dark mr-1">هپاتیت</span>{% endif %}
+                                        {% if patient.is_pregnant %}<span class="badge badge-pill badge-primary">باردار ({{ patient.pregnancy_month }} ماهه)</span>{% endif %}
+                                    {% else %}
+                                        <span class="text-muted">بدون بیماری خاص</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- راهنمای کارت -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-info-circle mr-2"></i> راهنمای کارت</h6>
+                </div>
+                <div class="card-body">
+                    <div class="guide-item mb-3">
+                        <h6 class="text-primary"><i class="fas fa-check-circle mr-2"></i> مزایای کارت</h6>
+                        <ul class="small pl-3">
+                            <li>شناسایی سریع بیمار در مراجعات بعدی</li>
+                            <li>دسترسی سریع به اطلاعات پزشکی مهم</li>
+                            <li>امکان استفاده از خدمات ویژه کلینیک</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-item mb-3">
+                        <h6 class="text-warning"><i class="fas fa-exclamation-triangle mr-2"></i> نکات مهم</h6>
+                        <ul class="small pl-3">
+                            <li>کارت را همیشه همراه داشته باشید</li>
+                            <li>در صورت مفقود شدن، سریعاً اطلاع دهید</li>
+                            <li>کارت غیرقابل انتقال به دیگران است</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-item">
+                        <h6 class="text-info"><i class="fas fa-sync-alt mr-2"></i> تمدید کارت</h6>
+                        <p class="small">کارت به صورت خودکار هر سال تمدید می‌شود. در صورت نیاز به تمدید زودتر، با پذیرش تماس بگیرید.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- اطلاعات مخفی برای چاپ کارت (در صورت نیاز) -->
+<div style="display: none;">
+    <div id="card-name-hidden">{{ patient.name }} {{ patient.family }}</div>
+    <div id="card-file-num-hidden">{{ patient.file_num }}</div>
+    <div id="card-national-code-hidden">{{ patient.national_code }}</div>
+    <div id="card-diseases-hidden">
+        {% if patient.has_heart_disease %}بیماری قلبی، {% endif %}
+        {% if patient.has_diabetes %}دیابت، {% endif %}
+        {% if patient.has_blood_pressure %}فشار خون، {% endif %}
+        {% if patient.has_hepatitis %}هپاتیت، {% endif %}
+        {% if patient.is_pregnant %}باردار ({{ patient.pregnancy_month }} ماهه)، {% endif %}
+    </div>
+</div>
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .card-container {
+        padding: 15px;
+    }
+    .card-inactive-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.25rem;
+    }
+    .card-preview {
+        transition: transform 0.3s ease;
+    }
+    .card-preview:hover {
+        transform: scale(1.02);
+    }
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .empty-card-state {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+    }
+    .guide-item h6 {
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block extra_javascript %}
+<script>
+ {% comment %} document.addEventListener('DOMContentLoaded', function() {
+    // فعال‌سازی tooltip ها (با JavaScript خالص)
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // دکمه صدور کارت
+    const issueCardBtn = document.querySelector('.issue-card-btn');
+    if (issueCardBtn) {
+        issueCardBtn.addEventListener('click', function() {
+            const patientId = this.dataset.patientId; // استفاده از dataset
+
+            // نمایش لودینگ
+            this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> در حال صدور...';
+            this.disabled = true;
+
+            PatientAPI.issuePatientCard(patientId)
+                .then(response => {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'موفقیت',
+                            text: 'کارت با موفقیت صادر شد.',
+                            confirmButtonText: 'تایید'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        this.innerHTML = '<i class="fas fa-plus-circle mr-2"></i> صدور کارت جدید';
+                        this.disabled = false;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطا',
+                            text: response.error || 'خطا در صدور کارت',
+                            confirmButtonText: 'تایید'
+                        });
+                    }
+                })
+                .catch(error => {
+                    this.innerHTML = '<i class="fas fa-plus-circle mr-2"></i> صدور کارت جدید';
+                    this.disabled = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا',
+                        text: error.message,
+                        confirmButtonText: 'تایید'
+                    });
+                });
+        });
+    }
+        
+        // دکمه غیرفعال کردن کارت
+        const deactivateCardBtn = document.querySelector('.deactivate-card-btn');
+        if (deactivateCardBtn) {
+            deactivateCardBtn.addEventListener('click', function() {
+                const patientId = this.getAttribute('data-patient-id');
+                
+                // نمایش تایید
+                Swal.fire({
+                    title: 'غیرفعال کردن کارت',
+                    text: 'آیا از غیرفعال کردن کارت اطمینان دارید؟',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'بله، غیرفعال شود',
+                    cancelButtonText: 'انصراف'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // نمایش لودینگ
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> در حال پردازش...';
+                        this.disabled = true;
+                        
+                        // درخواست غیرفعال کردن کارت
+                        PatientAPI.deactivateCard(patientId)
+                            .then(response => {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'موفقیت',
+                                        text: 'کارت با موفقیت غیرفعال شد.',
+                                        confirmButtonText: 'تایید'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    // بازگرداندن دکمه به حالت اولیه
+                                    this.innerHTML = '<i class="fas fa-ban mr-1"></i> غیرفعال کردن کارت';
+                                    this.disabled = false;
+                                    
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'خطا',
+                                        text: response.error || 'خطا در غیرفعال کردن کارت',
+                                        confirmButtonText: 'تایید'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                // بازگرداندن دکمه به حالت اولیه
+                                this.innerHTML = '<i class="fas fa-ban mr-1"></i> غیرفعال کردن کارت';
+                                this.disabled = false;
+                                
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'خطا',
+                                    text: error.message,
+                                    confirmButtonText: 'تایید'
+                                });
+                            });
+                    }
+                });
+            });
+        }
+        
+        // دکمه فعال کردن کارت
+        const activateCardBtn = document.querySelector('.activate-card-btn');
+        if (activateCardBtn) {
+            activateCardBtn.addEventListener('click', function() {
+                const patientId = this.getAttribute('data-patient-id');
+                
+                // نمایش لودینگ
+                this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> در حال پردازش...';
+                this.disabled = true;
+                
+                // درخواست فعال کردن کارت
+                PatientAPI.activateCard(patientId)
+                    .then(response => {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'موفقیت',
+                                text: 'کارت با موفقیت فعال شد.',
+                                confirmButtonText: 'تایید'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            // بازگرداندن دکمه به حالت اولیه
+                            this.innerHTML = '<i class="fas fa-check mr-1"></i> فعال کردن کارت';
+                            this.disabled = false;
+                            
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'خطا',
+                                text: response.error || 'خطا در فعال کردن کارت',
+                                confirmButtonText: 'تایید'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        // بازگرداندن دکمه به حالت اولیه
+                        this.innerHTML = '<i class="fas fa-check mr-1"></i> فعال کردن کارت';
+                        this.disabled = false;
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطا',
+                            text: error.message,
+                            confirmButtonText: 'تایید'
+                        });
+                    });
+            });
+        }
+        
+        // دکمه تولید مجدد کارت
+        const regenerateCardBtn = document.querySelector('.regenerate-card-btn');
+        if (regenerateCardBtn) {
+            regenerateCardBtn.addEventListener('click', function() {
+                const patientId = this.getAttribute('data-patient-id');
+                
+                // نمایش تایید
+                Swal.fire({
+                    title: 'تولید مجدد کارت',
+                    text: 'آیا از تولید مجدد کارت اطمینان دارید؟',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'بله، تولید شود',
+                    cancelButtonText: 'انصراف'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // نمایش لودینگ
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> در حال پردازش...';
+                        this.disabled = true;
+                        
+                        // درخواست تولید مجدد کارت
+                        PatientAPI.regenerateCard(patientId)
+                            .then(response => {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'موفقیت',
+                                        text: 'کارت با موفقیت تولید مجدد شد.',
+                                        confirmButtonText: 'تایید'
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    // بازگرداندن دکمه به حالت اولیه
+                                    this.innerHTML = '<i class="fas fa-sync mr-1"></i> تولید مجدد کارت';
+                                    this.disabled = false;
+                                    
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'خطا',
+                                        text: response.error || 'خطا در تولید مجدد کارت',
+                                        confirmButtonText: 'تایید'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                // بازگرداندن دکمه به حالت اولیه
+                                this.innerHTML = '<i class="fas fa-sync mr-1"></i> تولید مجدد کارت';
+                                this.disabled = false;
+                                
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'خطا',
+                                    text: error.message,
+                                    confirmButtonText: 'تایید'
+                                });
+                            });
+                    }
+                });
+            });
+        }
+        
+        // دکمه چاپ کارت
+        const printCardBtn = document.querySelector('.print-card-btn');
+        if (printCardBtn) {
+            printCardBtn.addEventListener('click', function() {
+                const cardImage = document.querySelector('.card-image');
+                if (cardImage) {
+                    const printWindow = window.open('', '_blank');
+                    
+                    // خواندن اطلاعات از تمپلیت
+                    const name = document.getElementById('card-name').textContent;
+                    const fileNum = document.getElementById('card-file-num').textContent;
+                    const nationalCode = document.getElementById('card-national-code').textContent;
+                    
+                    // تبدیل بیماری‌ها به متن ساده
+                    let diseasesText = '';
+                    const diseasesBadges = document.querySelectorAll('#card-diseases .badge');
+                    diseasesBadges.forEach((badge, index) => {
+                        diseasesText += badge.textContent;
+                        if (index < diseasesBadges.length - 1) {
+                            diseasesText += '، ';
+                        }
+                    });
+                    
+                    if (!diseasesText) {
+                        diseasesText = 'بدون بیماری خاص';
+                    }
+                    
+                    // ایجاد صفحه چاپ
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>چاپ کارت</title>
+                            <style>
+                                @page { size: 95mm 74mm; margin: 0; }
+                                body {
+                                    margin: 0;
+                                    padding: 0;
+                                    background-color: rgb(188, 233, 252);
+                                    font-family: Arial, Tahoma, sans-serif;
+                                }
+                                .card-container {
+                                    width: 95mm;
+                                    height: 74mm;
+                                    position: relative;
+                                }
+                                img {
+                                    width: 100%;
+                                    height: auto;
+                                }
+                                .card-data {
+                                    position: absolute;
+                                    top: 23mm;
+                                    right: 20mm;
+                                    font-size: 8pt;
+                                    direction: rtl;
+                                    text-align: right;
+                                    color: #000;
+                                }
+                                .card-data p {
+                                    margin: 4px 0;
+                                }
+                                .card-data strong {
+                                    font-weight: bold;
+                                }
+                            </style>
+                        </head>
+                        <body onload="window.print()">
+                            <div class="card-container">
+                                <img src="${cardImage.src}" alt="Patient Card">
+                                <div class="card-data">
+                                    <p><strong>نام و نام خانوادگی:</strong> ${name}</p>
+                                    <p><strong>شماره پرونده:</strong> ${fileNum}</p>
+                                    <p><strong>کد ملی:</strong> ${nationalCode}</p>
+                                    <p><strong>بیماری‌های خاص:</strong> ${diseasesText}</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    
+                    printWindow.document.close();
+                    
+                    // بستن پنجره بعد از چاپ
+                    printWindow.onafterprint = function() {
+                        printWindow.close();
+                    };
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطا',
+                        text: 'تصویر کارت یافت نشد.',
+                        confirmButtonText: 'تایید'
+                    });
+                }
+            });
+        }
+        
+       // افکت‌های بصری
+    const cardPreview = document.querySelector('.card-preview');
+    if (cardPreview) {
+        cardPreview.addEventListener('mouseenter', () => {
+            this.style.transform = 'scale(1.05)'; // this اینجا درست کار نمی‌کند
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+            this.style.transition = 'all 0.3s ease';
+        });
+
+        cardPreview.addEventListener('mouseleave', () => {
+            this.style.transform = 'scale(1)'; // this اینجا درست کار نمی‌کند
+            this.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+        });
+    }
+
+
+    // حل مشکل this در افکت‌های بصری:
+    if (cardPreview) {
+        cardPreview.addEventListener('mouseenter', function() { // استفاده از function معمولی
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.15)';
+            this.style.transition = 'all 0.3s ease';
+        });
+
+        cardPreview.addEventListener('mouseleave', function() { // استفاده از function معمولی
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+        });
+    }
+}); {% endcomment %}
+</script>
+{% endblock %}
+

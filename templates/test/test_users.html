@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+          
+        </style>
+    </head>
+    <body>
+
+        <div class="content-section">
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-button btn-primary">
+                    <i class="fas fa-plus"></i>
+                    جدید
+                </button>
+                <button class="action-button btn-secondary">
+                    <i class="fas fa-file-export"></i>
+                    خروجی
+                </button>
+                <button class="action-button btn-secondary">
+                    <i class="fas fa-print"></i>
+                    چاپ
+                </button>
+                <button class="action-button btn-secondary">
+                    <i class="fas fa-sync-alt"></i>
+                    بروزرسانی
+                </button>
+            </div>
+        
+            <!-- Search Section -->
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="جستجو...">
+                <select class="select-filter">
+                    <option value="">وضعیت</option>
+                    <option value="all">همه</option>
+                    <option value="active">فعال</option>
+                    <option value="inactive">غیرفعال</option>
+                </select>
+                <select class="select-filter">
+                    <option value="">سمت</option>
+                    <option value="all">همه</option>
+                    <option value="doctor">پزشک</option>
+                    <option value="assistant">دستیار</option>
+                    <option value="reception">پذیرش</option>
+                </select>
+                <button class="show-button">نمایش</button>
+            </div>
+        
+          <!-- Example User Card -->
+<div class="users-grid">
+    <div class="user-card">
+        <span class="status-badge status-active">فعال</span>
+        <button class="edit-button">
+            <i class="fas fa-edit"></i>
+        </button>
+        <div class="user-info">
+            <div class="avatar-container">
+                <!-- Default Avatar (shown when no image is available) -->
+                <div class="default-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <!-- Actual Avatar (uncomment and add src when image is available) -->
+                <!-- <img src="user-avatar.jpg" alt="user" class="user-avatar"> -->
+            </div>
+            <div class="user-details">
+                <div class="detail-row">
+                    <span class="detail-label">نام و نام خانوادگی:</span>
+                    <span class="detail-value">علی محمدی</span>
+                </div>
+                <div class="detail-row">
+                    <span class="gender-badge gender-male">
+                        <i class="fas fa-mars"></i>
+                        مرد
+                    </span>
+                </div>
+                <div class="user-position">
+                    <i class="fas fa-user-md"></i>
+                    سمت: پزشک
+                </div>
+                <div class="user-id">
+                    <i class="fas fa-id-card"></i>
+                    شماره پرسنلی: 1234
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example of another card with female gender -->
+    <div class="user-card">
+        <span class="status-badge status-inactive">غیرفعال</span>
+        <button class="edit-button">
+            <i class="fas fa-edit"></i>
+        </button>
+        <div class="user-info">
+            <div class="avatar-container">
+                <div class="default-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <div class="user-details">
+                <div class="detail-row">
+                    <span class="detail-label">نام و نام خانوادگی:</span>
+                    <span class="detail-value">مریم احمدی</span>
+                </div>
+                <div class="detail-row">
+                    <span class="gender-badge gender-female">
+                        <i class="fas fa-venus"></i>
+                        زن
+                    </span>
+                </div>
+                <div class="user-position">
+                    <i class="fas fa-user-nurse"></i>
+                    سمت: پرستار
+                </div>
+                <div class="user-id">
+                    <i class="fas fa-id-card"></i>
+                    شماره پرسنلی: 1235
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        <script>
+            // Animation for buttons
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.addEventListener('mouseover', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                button.addEventListener('mouseout', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const statusSelect = document.querySelector('.select-filter');
+            const showButton = document.querySelector('.show-button');
+        
+            showButton.addEventListener('click', function() {
+                // Add your search logic here
+                console.log('Searching with:', {
+                    search: searchInput.value,
+                    status: statusSelect.value
+                });
+            });
+        
+            // Card hover effects
+            document.querySelectorAll('.user-card').forEach(card => {
+                card.addEventListener('mouseover', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseout', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        </script>
+    </body>
+</html>

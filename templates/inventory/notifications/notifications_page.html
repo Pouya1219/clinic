@@ -1,0 +1,282 @@
+<!-- templates/inventory/notifications/notifications_page.html -->
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'inventory/css/notifications.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1">
+                        <i class="fas fa-bell me-2 text-primary"></i>
+                        مدیریت اعلان‌ها
+                    </h2>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            {% for breadcrumb in breadcrumbs %}
+                                {% if breadcrumb.url %}
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="breadcrumb-item active">{{ breadcrumb.title }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" id="refreshBtn">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        بروزرسانی
+                    </button>
+                    <button class="btn btn-success" id="markAllReadBtn">
+                        <i class="fas fa-check-double me-1"></i>
+                        علامت‌گذاری همه
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="d-flex gap-2">
+    <div class="dropdown">
+        <button class="btn btn-outline-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-download me-1"></i>
+            صادرات
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="exportNotifications('excel')">
+                <i class="fas fa-file-excel me-2"></i>Excel
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="exportNotifications('pdf')">
+                <i class="fas fa-file-pdf me-2"></i>PDF
+            </a></li>
+        </ul>
+    </div>
+    
+    <button class="btn btn-outline-info" id="shortcutsBtn">
+        <i class="fas fa-keyboard me-1"></i>
+        میانبرها
+    </button>
+    
+    <button class="btn btn-outline-secondary" id="themeToggle">
+        <i class="fas fa-moon me-1"></i>
+    </button>
+    
+    <button class="btn btn-outline-primary" id="refreshBtn">
+        <i class="fas fa-sync-alt me-1"></i>
+        بروزرسانی
+    </button>
+    
+    <button class="btn btn-success" id="markAllReadBtn">
+        <i class="fas fa-check-double me-1"></i>
+        علامت‌گذاری همه
+    </button>
+</div>
+
+<!-- اضافه کردن بخش عملیات دسته‌ای -->
+<div class="alert alert-info d-none" id="bulkActions">
+    <div class="d-flex justify-content-between align-items-center">
+        <span>
+            <i class="fas fa-check-square me-2"></i>
+            <span id="selectedCount">0</span> اعلان انتخاب شده
+        </span>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-primary" id="bulkMarkReadBtn">
+                <i class="fas fa-check me-1"></i>
+                علامت‌گذاری
+            </button>
+            <button class="btn btn-sm btn-danger" id="bulkDeleteBtn">
+                <i class="fas fa-trash me-1"></i>
+                حذف
+            </button>
+        </div>
+    </div>
+</div>
+    <!-- آمار کلی -->
+    <div class="row mb-4" id="statsCards">
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-total">
+                <div class="card-body text-center">
+                    <i class="fas fa-bell fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="totalCount">0</h4>
+                    <small class="text-muted">کل اعلان‌ها</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-danger">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="dangerCount">0</h4>
+                    <small class="text-muted">بحرانی</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-warning">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="warningCount">0</h4>
+                    <small class="text-muted">هشدار</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-info">
+                <div class="card-body text-center">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="infoCount">0</h4>
+                    <small class="text-muted">اطلاعات</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-success">
+                <div class="card-body text-center">
+                    <i class="fas fa-check-circle fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="successCount">0</h4>
+                    <small class="text-muted">موفق</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-sm-4 col-6 mb-3">
+            <div class="card stat-card stat-unread">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <h4 class="mb-1" id="unreadCount">0</h4>
+                    <small class="text-muted">خوانده نشده</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فیلترها -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-filter me-2"></i>
+                فیلترها
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="filtersForm">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">نوع اعلان</label>
+                        <select class="form-select" id="typeFilter">
+                            <option value="all">همه</option>
+                            <option value="danger">بحرانی</option>
+                            <option value="warning">هشدار</option>
+                            <option value="info">اطلاعات</option>
+                            <option value="success">موفق</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">جستجو</label>
+                        <input type="text" class="form-control" id="searchFilter" placeholder="جستجو در اعلان‌ها...">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">از تاریخ</label>
+                        <input type="date" class="form-control" id="dateFromFilter" data-jdp>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">تا تاریخ</label>
+                        <input type="date" class="form-control" id="dateToFilter" data-jdp>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label">تعداد در صفحه</label>
+                        <select class="form-select" id="perPageFilter">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-primary" id="applyFiltersBtn">
+                            <i class="fas fa-search me-1"></i>
+                            اعمال فیلتر
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="clearFiltersBtn">
+                            <i class="fas fa-times me-1"></i>
+                            پاک کردن
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- لیست اعلان‌ها -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>
+                لیست اعلان‌ها
+            </h5>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-2" id="resultCount">0 نتیجه</span>
+                <div class="spinner-border spinner-border-sm d-none" id="loadingSpinner"></div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <!-- لیست اعلان‌ها -->
+            <div id="notificationsList">
+                <!-- اعلان‌ها اینجا لود می‌شوند -->
+            </div>
+            
+            <!-- پیام خالی بودن -->
+            <div class="text-center p-5 d-none" id="emptyMessage">
+                <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">اعلانی یافت نشد</h5>
+                <p class="text-muted">با تغییر فیلترها دوباره تلاش کنید.</p>
+            </div>
+        </div>
+        
+        <!-- صفحه‌بندی -->
+        <div class="card-footer">
+            <nav id="paginationContainer">
+                <!-- صفحه‌بندی اینجا لود می‌شود -->
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal جزئیات اعلان -->
+<div class="modal fade" id="notificationDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2"></i>
+                    جزئیات اعلان
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationDetailContent">
+                <!-- محتوای جزئیات اینجا لود می‌شود -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary" id="markDetailReadBtn">علامت‌گذاری به عنوان خوانده شده</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

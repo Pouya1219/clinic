@@ -1,0 +1,16 @@
+<!-- templates/includes/sr_search_component.html -->
+ <div class="sr_navbar_container">
+<form method="POST" data-id="1004" data-search-url="{% url 'Patient:sr_search_dashboard' %}">
+    {% csrf_token %}
+    <div class="sr_search_container">
+        <i class="fas fa-search"></i>
+        <input type="text" 
+               class="sr_search_input" 
+               data-id="1003" 
+               placeholder="جستجوی بیمار...">
+        <div class="sr_search_results" 
+             data-id="1002" 
+             style="display: none;"></div>
+    </div>
+</form>
+</div>

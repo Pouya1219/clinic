@@ -1,0 +1,601 @@
+    سیستم اطفای حریق
+                                </label>
+                            </div>
+                        </div>
+                                                <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasLoadingDock" name="features" value="loading_dock">
+                                <label class="form-check-label" for="hasLoadingDock">
+                                    سکوی بارگیری
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasRacking" name="features" value="racking_system">
+                                <label class="form-check-label" for="hasRacking">
+                                    سیستم قفسه‌بندی
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasForklift" name="features" value="forklift_access">
+                                <label class="form-check-label" for="hasForklift">
+                                    دسترسی لیفتراک
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasRfid" name="features" value="rfid_system">
+                                <label class="form-check-label" for="hasRfid">
+                                    سیستم RFID
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasBarcode" name="features" value="barcode_system">
+                                <label class="form-check-label" for="hasBarcode">
+                                    سیستم بارکد
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="fas fa-phone me-2"></i>اطلاعات تماس</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="warehousePhone" class="form-label">تلفن:</label>
+                        <input type="tel" 
+                               class="form-control" 
+                               id="warehousePhone" 
+                               name="phone" 
+                               placeholder="021-12345678">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="warehouseEmail" class="form-label">ایمیل:</label>
+                        <input type="email" 
+                               class="form-control" 
+                               id="warehouseEmail" 
+                               name="email" 
+                               placeholder="warehouse@company.com">
+                        <div class="invalid-feedback">
+                            فرمت ایمیل صحیح نیست
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="warehouseManager" class="form-label">مدیر انبار:</label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="warehouseManager" 
+                               name="manager" 
+                               placeholder="نام مدیر انبار...">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operating Hours -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="fas fa-clock me-2"></i>ساعات کاری</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="openingTime" class="form-label">ساعت شروع:</label>
+                        <input type="time" 
+                               class="form-control" 
+                               id="openingTime" 
+                               name="opening_time" 
+                               value="08:00">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="closingTime" class="form-label">ساعت پایان:</label>
+                        <input type="time" 
+                               class="form-control" 
+                               id="closingTime" 
+                               name="closing_time" 
+                               value="17:00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">روزهای کاری:</label>
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workSaturday" name="working_days" value="saturday" checked>
+                            <label class="form-check-label" for="workSaturday">شنبه</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workSunday" name="working_days" value="sunday" checked>
+                            <label class="form-check-label" for="workSunday">یکشنبه</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workMonday" name="working_days" value="monday" checked>
+                            <label class="form-check-label" for="workMonday">دوشنبه</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workTuesday" name="working_days" value="tuesday" checked>
+                            <label class="form-check-label" for="workTuesday">سه‌شنبه</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workWednesday" name="working_days" value="wednesday" checked>
+                            <label class="form-check-label" for="workWednesday">چهارشنبه</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="workThursday" name="working_days" value="thursday" checked>
+                            <label class="form-check-label" for="workThursday">پنج‌شنبه</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Images and Documents -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="fas fa-images me-2"></i>تصاویر و مدارک</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="warehouseImages" class="form-label">تصاویر انبار:</label>
+                        <input type="file" 
+                               class="form-control" 
+                               id="warehouseImages" 
+                               name="images" 
+                               multiple 
+                               accept="image/*">
+                        <div class="form-text">
+                            فرمت‌های مجاز: JPG, PNG, GIF (حداکثر 5 تصویر)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="warehouseDocuments" class="form-label">مدارک:</label>
+                        <input type="file" 
+                               class="form-control" 
+                               id="warehouseDocuments" 
+                               name="documents" 
+                               multiple 
+                               accept=".pdf,.doc,.docx">
+                        <div class="form-text">
+                            فرمت‌های مجاز: PDF, DOC, DOCX
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div id="imagePreview" class="row mt-3" style="display: none;">
+                <div class="col-12">
+                    <label class="form-label">پیش‌نمایش تصاویر:</label>
+                    <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2">
+                        <!-- Image previews will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Settings -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>تنظیمات اضافی</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="allowNegativeStock" name="allow_negative_stock">
+                        <label class="form-check-label" for="allowNegativeStock">
+                            اجازه موجودی منفی
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="autoReorder" name="auto_reorder">
+                        <label class="form-check-label" for="autoReorder">
+                            سفارش خودکار
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="trackBatches" name="track_batches">
+                        <label class="form-check-label" for="trackBatches">
+                            ردیابی بچ
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="trackSerials" name="track_serials">
+                        <label class="form-check-label" for="trackSerials">
+                            ردیابی سریال
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="requireApproval" name="require_approval">
+                        <label class="form-check-label" for="requireApproval">
+                            نیاز به تأیید
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="isDefault" name="is_default">
+                        <label class="form-check-label" for="isDefault">
+                            انبار پیش‌فرض
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" onclick="resetWarehouseForm()">
+            <i class="fas fa-undo me-2"></i>پاک کردن
+        </button>
+        <button type="button" class="btn btn-info" onclick="previewWarehouse()">
+            <i class="fas fa-eye me-2"></i>پیش‌نمایش
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitWarehouseBtn">
+            <i class="fas fa-save me-2"></i>ذخیره انبار
+            <span class="spinner-border spinner-border-sm ms-2" id="warehouseSubmitSpinner" style="display: none;"></span>
+        </button>
+    </div>
+</form>
+
+<!-- Map Modal -->
+<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mapModalLabel">انتخاب موقعیت انبار</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <div id="warehouseMap" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="confirmLocation()">تأیید موقعیت</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeWarehouseForm();
+});
+
+function initializeWarehouseForm() {
+    // Character counter for description
+    const descriptionField = document.getElementById('warehouseDescription');
+    const descriptionCount = document.getElementById('descriptionCount');
+    
+    descriptionField.addEventListener('input', function() {
+        descriptionCount.textContent = this.value.length;
+    });
+
+    // Image preview functionality
+    document.getElementById('warehouseImages').addEventListener('change', handleImagePreview);
+
+    // Form validation
+    document.getElementById('warehouseForm').addEventListener('submit', handleWarehouseSubmit);
+
+    // Code availability check
+    document.getElementById('warehouseCode').addEventListener('blur', checkCodeAvailability);
+
+    // Default warehouse logic
+    document.getElementById('isDefault').addEventListener('change', function() {
+        if (this.checked) {
+            showConfirmDialog(
+                'تنظیم به عنوان انبار پیش‌فرض',
+                'آیا می‌خواهید این انبار را به عنوان انبار پیش‌فرض تنظیم کنید؟ انبار پیش‌فرض قبلی تغییر خواهد کرد.',
+                () => {
+                    // Confirmed
+                },
+                () => {
+                    // Cancelled
+                    this.checked = false;
+                }
+            );
+        }
+    });
+}
+
+function handleImagePreview(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewSection = document.getElementById('imagePreview');
+    
+    // Clear previous previews
+    previewContainer.innerHTML = '';
+    
+    if (files.length > 0) {
+        previewSection.style.display = 'block';
+        
+        Array.from(files).forEach((file, index) => {
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageDiv = document.createElement('div');
+                    imageDiv.className = 'position-relative';
+                    imageDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}" 
+                             class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" 
+                                onclick="removeImagePreview(this, ${index})" style="transform: translate(50%, -50%);">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    previewContainer.appendChild(imageDiv);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    } else {
+        previewSection.style.display = 'none';
+    }
+}
+
+function removeImagePreview(button, index) {
+    const imageDiv = button.parentElement;
+    imageDiv.remove();
+    
+    // Update file input (this is tricky with file inputs)
+    // You might need to implement a more sophisticated solution
+    console.log('Remove image at index:', index);
+}
+
+async function checkCodeAvailability() {
+    const code = document.getElementById('warehouseCode').value;
+    const codeField = document.getElementById('warehouseCode');
+    
+    if (code.length < 2) return;
+    
+    try {
+        const response = await fetch(`/inventory/api/warehouses/check-code/?code=${encodeURIComponent(code)}`);
+        const data = await response.json();
+        
+        if (!data.available) {
+            codeField.setCustomValidity('این کد قبلاً استفاده شده است');
+            codeField.classList.add('is-invalid');
+        } else {
+            codeField.setCustomValidity('');
+            codeField.classList.remove('is-invalid');
+            codeField.classList.add('is-valid');
+        }
+    } catch (error) {
+        console.error('Error checking code availability:', error);
+    }
+}
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                document.getElementById('warehouseLatitude').value = position.coords.latitude.toFixed(6);
+                document.getElementById('warehouseLongitude').value = position.coords.longitude.toFixed(6);
+                showToast('موقعیت با موفقیت دریافت شد', 'success');
+            },
+            function(error) {
+                showToast('خطا در دریافت موقعیت: ' + error.message, 'error');
+            }
+        );
+    } else {
+        showToast('مرورگر شما از GPS پشتیبانی نمی‌کند', 'error');
+    }
+}
+
+function showMap() {
+    const modal = new bootstrap.Modal(document.getElementById('mapModal'));
+    modal.show();
+    
+    // Initialize map (you'll need to implement this based on your map provider)
+    setTimeout(() => {
+        initializeMap();
+    }, 500);
+}
+
+function initializeMap() {
+    // This would integrate with your preferred map service (Google Maps, OpenStreetMap, etc.)
+    console.log('Initialize map for warehouse location selection');
+}
+
+function confirmLocation() {
+    // Get selected location from map and update form fields
+    const modal = bootstrap.Modal.getInstance(document.getElementById('mapModal'));
+    modal.hide();
+    showToast('موقعیت انتخاب شد', 'success');
+}
+
+function resetWarehouseForm() {
+    document.getElementById('warehouseForm').reset();
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('descriptionCount').textContent = '0';
+    
+    // Reset validation states
+    document.querySelectorAll('.is-valid, .is-invalid').forEach(el => {
+        el.classList.remove('is-valid', 'is-invalid');
+    });
+}
+
+function previewWarehouse() {
+    // Show preview modal with warehouse data
+    console.log('Preview warehouse');
+}
+
+async function handleWarehouseSubmit(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const submitBtn = document.getElementById('submitWarehouseBtn');
+    const spinner = document.getElementById('warehouseSubmitSpinner');
+    
+    // Validate form
+    if (!form.checkValidity()) {
+        event.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    spinner.style.display = 'inline-block';
+    
+    try {
+        const formData = new FormData(form);
+        
+        // Add selected features as array
+        const features = [];
+        document.querySelectorAll('input[name="features"]:checked').forEach(checkbox => {
+            features.push(checkbox.value);
+        });
+        formData.set('features', JSON.stringify(features));
+        
+        // Add working days as array
+        const workingDays = [];
+        document.querySelectorAll('input[name="working_days"]:checked').forEach(checkbox => {
+            workingDays.push(checkbox.value);
+        });
+        formData.set('working_days', JSON.stringify(workingDays));
+        
+        // Submit via API
+        const response = await inventoryAPI.createWarehouse(formData);
+        
+        if (response.success) {
+            showToast('انبار با موفقیت ایجاد شد', 'success');
+            resetWarehouseForm();
+            
+            // Close modal if in modal
+            const modal = document.querySelector('.modal.show');
+            if (modal) {
+                bootstrap.Modal.getInstance(modal).hide();
+            }
+            
+            // Refresh data
+            if (typeof refreshWarehousesList === 'function') {
+                refreshWarehousesList();
+            }
+        }
+    } catch (error) {
+        console.error('Warehouse submission error:', error);
+        showToast('خطا در ایجاد انبار', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+    }
+}
+
+function showConfirmDialog(title, message, onConfirm, onCancel) {
+    // Implementation depends on your preferred dialog library
+    if (confirm(message)) {
+        onConfirm();
+    } else {
+        onCancel();
+    }
+}
+</script>
+
+<style>
+.form-check-input:checked {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.card-header h6 {
+    color: #5a5c69;
+}
+
+.img-thumbnail {
+    border: 2px solid #e3e6f0;
+}
+
+.position-relative .btn-danger {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.is-valid {
+    border-color: #28a745;
+}
+
+.is-invalid {
+    border-color: #dc3545;
+}
+
+#warehouseMap {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+</style>

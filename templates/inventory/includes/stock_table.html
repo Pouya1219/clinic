@@ -1,0 +1,408 @@
+<!-- templates/inventory/components/stock_table.html -->
+<div class="table-responsive">
+    <table class="table table-hover" id="{{ table_id|default:'stockTable' }}">
+        <thead class="table-light">
+            <tr>
+                {% if show_select %}
+                <th width="40">
+                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="form-check-input">
+                </th>
+                {% endif %}
+                
+                {% if show_image %}
+                <th width="60">تصویر</th>
+                {% endif %}
+                
+                <th>
+                    <a href="#" onclick="sortTable('name')" class="text-decoration-none text-dark">
+                        نام کالا
+                        <i class="fas fa-sort ms-1"></i>
+                    </a>
+                </th>
+                
+                <th>
+                    <a href="#" onclick="sortTable('code')" class="text-decoration-none text-dark">
+                        کد کالا
+                        <i class="fas fa-sort ms-1"></i>
+                    </a>
+                </th>
+                
+                {% if show_category %}
+                <th>دسته‌بندی</th>
+                {% endif %}
+                
+                {% if show_warehouse %}
+                <th>انبار</th>
+                {% endif %}
+                
+                <th>
+                    <a href="#" onclick="sortTable('current_stock')" class="text-decoration-none text-dark">
+                        موجودی فعلی
+                        <i class="fas fa-sort ms-1"></i>
+                    </a>
+                </th>
+                
+                <th>واحد</th>
+                
+                {% if show_value %}
+                <th>
+                    <a href="#" onclick="sortTable('total_value')" class="text-decoration-none text-dark">
+                        ارزش کل
+                        <i class="fas fa-sort ms-1"></i>
+                    </a>
+                </th>
+                {% endif %}
+                
+                {% if show_batch %}
+                <th>بچ</th>
+                {% endif %}
+                
+                {% if show_expiry %}
+                <th>تاریخ انقضا</th>
+                {% endif %}
+                
+                <th>وضعیت</th>
+                
+                {% if show_actions %}
+                <th width="120">عملیات</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody id="{{ table_id|default:'stockTable' }}Body">
+            {% for item in items %}
+            <tr data-item-id="{{ item.id }}" class="{% if item.current_stock <= item.alert_threshold %}table-warning{% endif %}">
+                {% if show_select %}
+                <td>
+                    <input type="checkbox" name="selectedItems" value="{{ item.id }}" class="form-check-input item-checkbox" onchange="updateBulkActions()">
+                </td>
+                {% endif %}
+                
+                {% if show_image %}
+                <td>
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="fas fa-box text-muted"></i>
+                        </div>
+                    {% endif %}
+                </td>
+                {% endif %}
+                
+                <td>
+                    <div class="fw-bold">{{ item.name }}</div>
+                    {% if item.description %}
+                        <small class="text-muted">{{ item.description|truncatechars:50 }}</small>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <code>{{ item.code }}</code>
+                    {% if item.barcode %}
+                        <br><small class="text-muted">{{ item.barcode }}</small>
+                    {% endif %}
+                </td>
+                
+                {% if show_category %}
+                <td>
+                    <span class="badge bg-secondary">{{ item.category.name }}</span>
+                </td>
+                {% endif %}
+                
+                {% if show_warehouse %}
+                <td>{{ item.warehouse.name }}</td>
+                {% endif %}
+                
+                <td>
+                    <div class="d-flex align-items-center">
+                        <span class="fw-bold {% if item.current_stock <= 0 %}text-danger{% elif item.current_stock <= item.alert_threshold %}text-warning{% else %}text-success{% endif %}">
+                            {{ item.current_stock|floatformat:0 }}
+                        </span>
+                        
+                        <!-- Stock Level Indicator -->
+                        <div class="ms-2">
+                                                        {% if item.current_stock <= 0 %}
+                                <i class="fas fa-exclamation-triangle text-danger" title="ناموجود"></i>
+                            {% elif item.current_stock <= item.alert_threshold %}
+                                <i class="fas fa-exclamation-circle text-warning" title="کم موجودی"></i>
+                            {% else %}
+                                <i class="fas fa-check-circle text-success" title="موجود"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Mini Progress Bar -->
+                    {% if item.max_stock %}
+                    <div class="progress mt-1" style="height: 3px;">
+                        {% with stock_percentage=item.current_stock|div:item.max_stock|mul:100 %}
+                        <div class="progress-bar 
+                            {% if stock_percentage <= 10 %}bg-danger
+                            {% elif stock_percentage <= 30 %}bg-warning
+                            {% else %}bg-success{% endif %}" 
+                            style="width: {{ stock_percentage|floatformat:0 }}%">
+                        </div>
+                        {% endwith %}
+                    </div>
+                    {% endif %}
+                </td>
+                
+                <td>{{ item.unit.name }}</td>
+                
+                {% if show_value %}
+                <td>
+                    <span class="fw-bold">{{ item.total_value|floatformat:0|add_commas }}</span>
+                    <small class="text-muted d-block">ریال</small>
+                </td>
+                {% endif %}
+                
+                {% if show_batch %}
+                <td>
+                    {% if item.batch_number %}
+                        <span class="badge bg-info">{{ item.batch_number }}</span>
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                {% endif %}
+                
+                {% if show_expiry %}
+                <td>
+                    {% if item.expiry_date %}
+                        <span class="{% if item.is_expired %}text-danger{% elif item.near_expiry %}text-warning{% endif %}">
+                            {{ item.expiry_date|date:"Y/m/d" }}
+                        </span>
+                        {% if item.is_expired %}
+                            <br><small class="badge bg-danger">منقضی شده</small>
+                        {% elif item.near_expiry %}
+                            <br><small class="badge bg-warning">نزدیک انقضا</small>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                {% endif %}
+                
+                <td>
+                    {% if item.is_active %}
+                        <span class="badge bg-success">فعال</span>
+                    {% else %}
+                        <span class="badge bg-secondary">غیرفعال</span>
+                    {% endif %}
+                    
+                    {% if item.current_stock <= 0 %}
+                        <br><span class="badge bg-danger mt-1">ناموجود</span>
+                    {% elif item.current_stock <= item.alert_threshold %}
+                        <br><span class="badge bg-warning mt-1">کم موجودی</span>
+                    {% endif %}
+                </td>
+                
+                {% if show_actions %}
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewItemDetail({{ item.id }})" title="جزئیات">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="quickEntry({{ item.id }})">
+                                    <i class="fas fa-plus text-success me-2"></i>ورودی سریع
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="quickExit({{ item.id }})">
+                                    <i class="fas fa-minus text-warning me-2"></i>خروجی سریع
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="editItem({{ item.id }})">
+                                    <i class="fas fa-edit text-primary me-2"></i>ویرایش
+                                </a></li>
+                                <li><a class="dropdown-item" href="#" onclick="viewHistory({{ item.id }})">
+                                    <i class="fas fa-history text-info me-2"></i>تاریخچه
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteItem({{ item.id }})">
+                                    <i class="fas fa-trash me-2"></i>حذف
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="100%" class="text-center p-4">
+                    <div class="text-muted">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <h5>هیچ آیتمی یافت نشد</h5>
+                        <p>لطفا فیلترهای جستجو را تغییر دهید یا کالای جدید اضافه کنید.</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Bulk Actions Bar -->
+{% if show_select %}
+<div class="bulk-actions-bar bg-light p-3 rounded mt-3" id="bulkActionsBar" style="display: none;">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <span id="selectedCount">0</span> آیتم انتخاب شده
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-sm btn-success me-2" onclick="bulkEntry()">
+                <i class="fas fa-plus me-1"></i>ورودی گروهی
+            </button>
+            <button class="btn btn-sm btn-warning me-2" onclick="bulkExit()">
+                <i class="fas fa-minus me-1"></i>خروجی گروهی
+            </button>
+            <button class="btn btn-sm btn-info me-2" onclick="bulkExport()">
+                <i class="fas fa-download me-1"></i>خروجی Excel
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="bulkDelete()">
+                <i class="fas fa-trash me-1"></i>حذف گروهی
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Table Pagination -->
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="pagination-info">
+        <span id="paginationInfo" class="text-muted"></span>
+    </div>
+    
+    <nav aria-label="صفحه‌بندی جدول">
+        <ul class="pagination pagination-sm mb-0" id="paginationList">
+            <!-- Pagination will be generated by JavaScript -->
+        </ul>
+    </nav>
+    
+    <div class="page-size-selector">
+        <select class="form-select form-select-sm" id="pageSizeSelect" onchange="changePageSize()" style="width: auto;">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        <small class="text-muted ms-2">آیتم در صفحه</small>
+    </div>
+</div>
+
+<style>
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+.table th a {
+    color: inherit;
+}
+
+.table th a:hover {
+    color: #4e73df;
+}
+
+.bulk-actions-bar {
+    border: 1px solid #e3e6f0;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.item-checkbox:checked {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+.table-warning {
+    --bs-table-accent-bg: rgba(255, 193, 7, 0.1);
+}
+
+.btn-group .dropdown-menu {
+    font-size: 0.875rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+</style>
+
+<script>
+// Table functionality
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+    });
+    
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const checkedBoxes = document.querySelectorAll('.item-checkbox:checked');
+    const bulkActionsBar = document.getElementById('bulkActionsBar');
+    const selectedCount = document.getElementById('selectedCount');
+    
+    if (checkedBoxes.length > 0) {
+        bulkActionsBar.style.display = 'block';
+        selectedCount.textContent = checkedBoxes.length;
+    } else {
+        bulkActionsBar.style.display = 'none';
+    }
+    
+    // Update select all checkbox state
+    const selectAll = document.getElementById('selectAll');
+    const totalCheckboxes = document.querySelectorAll('.item-checkbox');
+    
+    if (checkedBoxes.length === 0) {
+        selectAll.indeterminate = false;
+        selectAll.checked = false;
+    } else if (checkedBoxes.length === totalCheckboxes.length) {
+        selectAll.indeterminate = false;
+        selectAll.checked = true;
+    } else {
+        selectAll.indeterminate = true;
+        selectAll.checked = false;
+    }
+}
+
+function sortTable(column) {
+    // This will be implemented in the main JavaScript file
+    console.log('Sorting by:', column);
+}
+
+function changePageSize() {
+    const pageSize = document.getElementById('pageSizeSelect').value;
+    // This will be implemented in the main JavaScript file
+    console.log('Page size changed to:', pageSize);
+}
+
+// Initialize table
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to checkboxes
+    document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateBulkActions);
+    });
+});
+</script>
+

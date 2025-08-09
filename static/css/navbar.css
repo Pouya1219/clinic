@@ -1,0 +1,106 @@
+
+/* Navbar 1 */
+.navbar-1 {
+    background: linear-gradient(291deg, #141523, var(--secondary-color));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1000;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-btn {
+    
+    border-radius: 2px;
+    /*background: linear-gradient(150deg, #4854c2, var(--secondary-color));*/
+    color:white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    border-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.profile-img {
+    margin-right:60px;
+    width: 100px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+/* Navbar 2 */
+.navbar-2 {
+    background: linear-gradient(323deg, #141523, var(--secondary-color));
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    margin-top: 2px;
+    position: relative;
+    z-index: 900;
+}
+
+.nav-button {
+    background:  #0e1c4d;
+    max-height: 37px;
+    width: 140px;
+    padding: 3px 3px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.nav-button.light-mode {
+    background:  #d6dbec;
+    max-height: 37px;
+    width: 140px;
+    padding: 3px 3px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    transition: 0.3s;
+}
+.nav-button:hover{
+    background: linear-gradient(135deg, #5d6ac1,#1ba7c7);
+    border: solid .5px;
+}
+
+/* Navbar 3 */
+.navbar-3 {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: linear-gradient(217deg, #e2e3f1, #0f89eb);
+    margin-top: 2px;
+    position: relative;
+    z-index: 900;
+}
+
+.alert-label {
+    font-weight: bold;
+    font-size: 12px;
+    width: 120px;
+    color: #f5f5f5;
+    background: linear-gradient(0deg, #5d6ac1, #035163);
+    padding: 4px;
+    /* background-color: #f8f9fa; */
+    border-radius: 3px;
+    min-width: 20px;
+    text-align: center;
+}

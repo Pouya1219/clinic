@@ -1,0 +1,167 @@
+
+{% load static %}
+<!-- _face_chart.html -->
+<div class="facial-chart-content">
+    <h4 class="chart-title">چارت زیبایی صورت</h4>
+    
+    <div class="face-container">
+        <div class="face-image-container">
+            <img src="{% static 'img/face_outline.jpg' %}" alt="نمای صورت" class="face-outline">
+            
+            <div class="face-areas-container">
+                <!-- پیشانی -->
+                <div class="facial-area" data-area="forehead" data-name="پیشانی">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">پیشانی</div>
+                </div>
+                
+                <!-- بین ابروها -->
+                <div class="facial-area" data-area="glabella" data-name="بین ابروها">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">بین ابروها</div>
+                </div>
+                
+                <!-- ابروی راست -->
+                <div class="facial-area" data-area="right_eyebrow" data-name="ابروی راست">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">ابروی راست</div>
+                </div>
+                
+                <!-- ابروی چپ -->
+                <div class="facial-area" data-area="left_eyebrow" data-name="ابروی چپ">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">ابروی چپ</div>
+                </div>
+                
+                <!-- چشم راست -->
+                <div class="facial-area" data-area="right_eye" data-name="چشم راست">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">چشم راست</div>
+                </div>
+                
+                <!-- چشم چپ -->
+                <div class="facial-area" data-area="left_eye" data-name="چشم چپ">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">چشم چپ</div>
+                </div>
+                
+                <!-- بینی -->
+                <div class="facial-area" data-area="nose" data-name="بینی">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">بینی</div>
+                </div>
+                
+                <!-- گونه راست -->
+                <div class="facial-area" data-area="right_cheek" data-name="گونه راست">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">گونه راست</div>
+                </div>
+                
+                <!-- گونه چپ -->
+                <div class="facial-area" data-area="left_cheek" data-name="گونه چپ">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">گونه چپ</div>
+                </div>
+                
+                <!-- لب بالا -->
+                <div class="facial-area" data-area="upper_lip" data-name="لب بالا">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">لب بالا</div>
+                </div>
+                
+                <!-- لب پایین -->
+                <div class="facial-area" data-area="lower_lip" data-name="لب پایین">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">لب پایین</div>
+                </div>
+                
+                <!-- چانه -->
+                <div class="facial-area" data-area="chin" data-name="چانه">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">چانه</div>
+                </div>
+                
+                <!-- فک راست -->
+                <div class="facial-area" data-area="right_jaw" data-name="فک راست">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">فک راست</div>
+                </div>
+                
+                <!-- فک چپ -->
+                <div class="facial-area" data-area="left_jaw" data-name="فک چپ">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">فک چپ</div>
+                </div>
+                
+                <!-- گردن -->
+                <div class="facial-area" data-area="neck" data-name="گردن">
+                    <div class="area-marker">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="area-label">گردن</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="face-treatments-panel">
+            <h5>درمان‌های زیبایی</h5>
+            <div class="treatment-options">
+                <div class="treatment-option">
+                    <i class="fas fa-syringe"></i>
+                    <span>تزریق بوتاکس</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-magic"></i>
+                    <span>فیلر</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-tint"></i>
+                    <span>مزوتراپی</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-sun"></i>
+                    <span>لیزر</span>
+                </div>
+                <div class="treatment-option">
+                    <i class="fas fa-layer-group"></i>
+                    <span>لیفت</span>
+                </div>
+            </div>
+            
+            <div class="selected-areas-info">
+                <h6>نواحی انتخاب شده</h6>
+                <div class="selected-areas-list">
+                    <!-- اینجا با جاوااسکریپت پر می‌شود -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

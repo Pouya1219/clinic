@@ -1,0 +1,62 @@
+{% load  static %}
+<div class="navbar-1">
+    <div class="right-section">
+        <img src="{% static 'img/logo.png'%}" alt="profile" class="profile-img">
+    </div>
+</div>
+
+</div>
+    <div class="left-section">
+        <span class="nav-btn" id="persian-date"></span>
+        <button class="nav-btn" id="mode-toggle" title="تغییر حالت">🌞</button>
+        <form method="post" action="/logout/">
+            {% csrf_token %}
+            <button id="logout-btn" onclick="logoutUser()">خروج</button>
+        </form>
+    </div>
+</div>
+<!-- Navbar 2 -->
+<div class="navbar-2">
+{% if request.user.is_authenticated %}
+    <button class="nav-button">{{ request.user.last_name }} ✅</button>
+{% endif %}
+
+  {% if request.user.is_authenticated and request.user.is_superuser %}
+    <button class="nav-button">{{ request.user.last_name }} ✅ (ادمین)</button>
+{% else %}
+<button class="nav-button">کاربر عادی ❌ </button>
+{% endif %}  
+    <button class="nav-button">  وقت ملاقات </button>
+    <button class="nav-button"> لیست بیماران </button>
+    <button class="nav-button"> آموزش نرم افزار </button>
+    <button class="nav-button"> همه گزارشات </button>
+</div>
+
+<!-- Navbar 3 -->
+<div class="navbar-3">
+    <div class="alert-label">وقت ملاقات امروز: 5</div>
+    <div class="alert-label">بیماران در انتظار: 3</div>
+    <div class="alert-label">وقت های درخواستی  : 1</div>
+    <div class="alert-label">چک ها : 2</div>
+</div>
+
+<div class="navbar-2">      
+
+{% if notifications_count > 0 %}
+{# [ID جدید] به کانتینر اصلی یک ID بدهید تا بتوانیم کل نوار را محو کنیم #}
+<div class="animated-navbar" id="notification-navbar">
+    <a href="{% url 'Patient:reminders_center' %}" class="animated-notification-link">
+        <i class="fas fa-bell"></i>
+        شما 
+        {# [مهم] عدد را داخل یک span با ID قرار می‌دهیم #}
+        <span id="notification-counter">{{ notifications_count }}</span> 
+        یادآوری جدید دارید! (مشاهده جزئیات)
+        <i class="fas fa-arrow-circle-left"></i>
+    </a>
+</div>
+{% endif %}
+    </div>
+<!-- Main Content -->
+<div class="main-content">
+    <!-- محتوای اصلی اینجا قرار می‌گیرد -->
+</div>

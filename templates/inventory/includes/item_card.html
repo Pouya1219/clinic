@@ -1,0 +1,179 @@
+<!-- templates/inventory/components/item_card.html -->
+<div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-{{ card_color|default:'primary' }} shadow h-100 py-2 item-card" data-item-id="{{ item.id }}">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <!-- Item Image -->
+                    <div class="text-center mb-2">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="item-image rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                        {% else %}
+                            <div class="item-placeholder bg-light rounded d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-box text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Item Name -->
+                    <div class="text-xs font-weight-bold text-{{ card_color|default:'primary' }} text-uppercase mb-1">
+                        {{ item.name|truncatechars:20 }}
+                    </div>
+                    
+                    <!-- Item Code -->
+                    <div class="text-xs text-muted mb-2">
+                        کد: {{ item.code }}
+                    </div>
+                    
+                    <!-- Stock Info -->
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        {{ item.current_stock|floatformat:0 }}
+                        <small class="text-muted">{{ item.unit.name }}</small>
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    <div class="mt-2">
+                        {% if item.current_stock <= 0 %}
+                            <span class="badge bg-danger">ناموجود</span>
+                        {% elif item.current_stock <= item.alert_threshold %}
+                            <span class="badge bg-warning">کم موجودی</span>
+                        {% else %}
+                            <span class="badge bg-success">موجود</span>
+                        {% endif %}
+                        
+                        {% if item.has_expiry and item.near_expiry %}
+                            <span class="badge bg-warning">نزدیک انقضا</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="mt-3">
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewItemDetail({{ item.id }})" title="جزئیات">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="quickEntry({{ item.id }})" title="ورودی سریع">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-warning" onclick="quickExit({{ item.id }})" title="خروجی سریع">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="editItem({{ item.id }})" title="ویرایش">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stock Level Indicator -->
+                <div class="col-auto">
+                    <div class="stock-level-indicator">
+                        {% if item.current_stock <= 0 %}
+                            <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                        {% elif item.current_stock <= item.alert_threshold %}
+                            <i class="fas fa-exclamation-circle fa-2x text-warning"></i>
+                        {% else %}
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar for Stock Level -->
+            <div class="progress mt-2" style="height: 4px;">
+                {% with stock_percentage=item.current_stock|div:item.max_stock|mul:100 %}
+                <div class="progress-bar 
+                    {% if stock_percentage <= 10 %}bg-danger
+                    {% elif stock_percentage <= 30 %}bg-warning
+                    {% else %}bg-success{% endif %}" 
+                    role="progressbar" 
+                    style="width: {{ stock_percentage|floatformat:0 }}%"
+                    aria-valuenow="{{ stock_percentage|floatformat:0 }}" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+        
+        <!-- Card Footer with Last Activity -->
+        <div class="card-footer bg-transparent">
+            <small class="text-muted">
+                <i class="fas fa-clock me-1"></i>
+                آخرین تغییر: {{ item.updated_at|timesince }} پیش
+            </small>
+        </div>
+    </div>
+</div>
+
+<style>
+.item-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.item-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.item-image {
+    border: 2px solid #e3e6f0;
+}
+
+.item-placeholder {
+    border: 2px dashed #e3e6f0;
+}
+
+.stock-level-indicator {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid #e74a3b !important;
+}
+</style>
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // تنظیم مقادیر پیش‌فرض برای دسته‌بندی و واحد اصلی
+    const categorySelect = document.getElementById('itemCategory');
+    const unitSelect = document.getElementById('itemPrimaryUnit');
+    
+    // اگر دسته‌بندی‌ها وجود دارند، اولین مورد را انتخاب کن
+    if (categorySelect && categorySelect.options.length > 1) {
+        categorySelect.selectedIndex = 1; // اولین گزینه بعد از "انتخاب دسته‌بندی"
+    }
+    
+    // اگر واحدها وجود دارند، اولین مورد را انتخاب کن
+    if (unitSelect && unitSelect.options.length > 1) {
+        unitSelect.selectedIndex = 1; // اولین گزینه بعد از "انتخاب واحد"
+    }
+});
+</script>
+
+{% endblock %}

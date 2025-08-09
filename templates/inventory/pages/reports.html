@@ -1,0 +1,539 @@
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+<style>
+.report-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.report-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.report-card.inventory { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+.report-card.entry { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.report-card.exit { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.report-card.financial { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.report-card.movement { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+.report-card.analysis { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+
+.report-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.report-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.report-desc {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.filter-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid #e9ecef;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-left: 4px solid #007bff;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .report-card {
+        margin-bottom: 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="page-title mb-1">
+                        <i class="fas fa-chart-bar me-2 text-primary"></i>
+                        {{ page_title }}
+                    </h2>
+                    <p class="text-muted mb-0">گزارشات جامع از وضعیت انبار و حرکات کالاها</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-outline-primary" onclick="refreshReports()">
+                        <i class="fas fa-sync-alt me-1"></i>
+                        بروزرسانی
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فیلترهای کلی -->
+    <div class="filter-section">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="form-label">بازه زمانی:</label>
+                <input type="text" id="dateRange" class="form-control" placeholder="انتخاب بازه زمانی">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">انبار:</label>
+                <select id="warehouseFilter" class="form-select">
+                    <option value="">همه انبارها</option>
+                    {% for warehouse in warehouses %}
+                    <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">دسته‌بندی:</label>
+                <select id="categoryFilter" class="form-select">
+                    <option value="">همه دسته‌ها</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"> </label>
+                <button class="btn btn-primary w-100" onclick="applyFilters()">
+                    <i class="fas fa-filter me-1"></i>
+                    اعمال فیلتر
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- آمار سریع -->
+    <div class="stats-grid" id="quickStats">
+        <div class="stat-item">
+            <div class="stat-value" id="totalValue">0</div>
+            <div class="stat-label">ارزش کل موجودی</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="totalItems">0</div>
+            <div class="stat-label">تعداد کل کالاها</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="monthlyEntry">0</div>
+            <div class="stat-label">ورودی ماهانه</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="monthlyExit">0</div>
+            <div class="stat-label">خروجی ماهانه</div>
+        </div>
+    </div>
+
+    <!-- انواع گزارشات -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="mb-3">
+                <i class="fas fa-file-alt me-2"></i>
+                انواع گزارشات
+            </h4>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card inventory" onclick="showInventoryReport()">
+                <div class="report-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="report-title">گزارش موجودی</div>
+                <div class="report-desc">
+                    وضعیت فعلی موجودی کالاها در انبارها
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card entry" onclick="showEntryReport()">
+                <div class="report-icon">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="report-title">گزارش ورودی</div>
+                <div class="report-desc">
+                    تمام ورودی‌های انبار در بازه زمانی مشخص
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card exit" onclick="showExitReport()">
+                <div class="report-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="report-title">گزارش خروجی</div>
+                <div class="report-desc">
+                    تمام خروجی‌های انبار در بازه زمانی مشخص
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card financial" onclick="showFinancialReport()">
+                <div class="report-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="report-title">گزارش مالی</div>
+                <div class="report-desc">
+                    ارزش ریالی موجودی و حرکات مالی
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card movement" onclick="showMovementReport()">
+                <div class="report-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="report-title">گزارش حرکات</div>
+                <div class="report-desc">
+                    تمام حرکات ورود و خروج کالاها
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="report-card analysis" onclick="showAnalysisReport()">
+                <div class="report-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="report-title">تحلیل و نمودار</div>
+                <div class="report-desc">
+                    نمودارها و تحلیل‌های آماری انبار
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نمایش گزارش -->
+    <div class="chart-container" id="reportContainer" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 id="reportTitle">عنوان گزارش</h5>
+            <div>
+                <button class="btn btn-outline-success btn-sm me-2" onclick="exportExcel()">
+                    <i class="fas fa-file-excel me-1"></i>
+                    Excel
+                </button>
+                <button class="btn btn-outline-danger btn-sm me-2" onclick="exportPDF()">
+                    <i class="fas fa-file-pdf me-1"></i>
+                    PDF
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="printReport()">
+                    <i class="fas fa-print me-1"></i>
+                    چاپ
+                </button>
+            </div>
+        </div>
+        
+        <!-- محتوای گزارش -->
+        <div id="reportContent">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-3 text-muted">در حال بارگذاری گزارش...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نمودارها -->
+    <div class="row" id="chartsSection" style="display: none;">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h6 class="mb-3">نمودار ورودی و خروجی ماهانه</h6>
+                <canvas id="monthlyChart" height="300"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h6 class="mb-3">توزیع کالاها بر اساس دسته‌بندی</h6>
+                <canvas id="categoryChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+$(document).ready(function() {
+    initializeDatePicker();
+    loadQuickStats();
+});
+
+function initializeDatePicker() {
+    $('#dateRange').daterangepicker({
+        locale: {
+            format: 'YYYY/MM/DD',
+            separator: ' تا ',
+            applyLabel: 'اعمال',
+            cancelLabel: 'انصراف',
+            fromLabel: 'از',
+            toLabel: 'تا',
+            customRangeLabel: 'سفارشی',
+            weekLabel: 'ه',
+            daysOfWeek: ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'],
+            monthNames: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+            firstDay: 6
+        },
+        ranges: {
+            'امروز': [moment(), moment()],
+            'دیروز': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            '7 روز گذشته': [moment().subtract(6, 'days'), moment()],
+            '30 روز گذشته': [moment().subtract(29, 'days'), moment()],
+            'این ماه': [moment().startOf('month'), moment().endOf('month')],
+            'ماه گذشته': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+}
+
+function loadQuickStats() {
+    // فعلاً مقادیر نمونه
+    $('#totalValue').text('۱۲۵,۰۰۰,۰۰۰ تومان');
+    $('#totalItems').text('۲۴۸');
+    $('#monthlyEntry').text('۱۲۳');
+    $('#monthlyExit').text('۸۹');
+}
+
+function refreshReports() {
+    loadQuickStats();
+    showSuccess('گزارشات بروزرسانی شد');
+}
+
+function applyFilters() {
+    showSuccess('فیلترها اعمال شد');
+}
+
+function showInventoryReport() {
+    $('#reportTitle').text('گزارش موجودی انبار');
+    $('#reportContainer').show();
+    
+    const sampleData = `
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>کد کالا</th>
+                        <th>نام کالا</th>
+                        <th>انبار</th>
+                        <th>موجودی</th>
+                        <th>واحد</th>
+                        <th>قیمت واحد</th>
+                        <th>ارزش کل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ITM001</td>
+                        <td>دستکش لاتکس</td>
+                        <td>انبار اصلی</td>
+                        <td>500</td>
+                        <td>جفت</td>
+                        <td>15,000 تومان</td>
+                        <td>7,500,000 تومان</td>
+                    </tr>
+                    <tr>
+                        <td>ITM002</td>
+                        <td>ماسک سه لایه</td>
+                        <td>انبار اصلی</td>
+                        <td>1000</td>
+                        <td>عدد</td>
+                        <td>5,000 تومان</td>
+                        <td>5,000,000 تومان</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        $('#reportContent').html(sampleData);
+    }, 1000);
+}
+
+function showEntryReport() {
+    $('#reportTitle').text('گزارش ورودی انبار');
+    $('#reportContainer').show();
+    
+    setTimeout(() => {
+        $('#reportContent').html('<p class="text-center text-muted">گزارش ورودی در حال توسعه است...</p>');
+    }, 1000);
+}
+
+function showExitReport() {
+    $('#reportTitle').text('گزارش خروجی انبار');
+    $('#reportContainer').show();
+    
+    setTimeout(() => {
+        $('#reportContent').html('<p class="text-center text-muted">گزارش خروجی در حال توسعه است...</p>');
+    }, 1000);
+}
+
+function showFinancialReport() {
+    $('#reportTitle').text('گزارش مالی انبار');
+    $('#reportContainer').show();
+    
+    setTimeout(() => {
+        $('#reportContent').html('<p class="text-center text-muted">گزارش مالی در حال توسعه است...</p>');
+    }, 1000);
+}
+
+function showMovementReport() {
+    $('#reportTitle').text('گزارش حرکات انبار');
+    $('#reportContainer').show();
+    
+    setTimeout(() => {
+        $('#reportContent').html('<p class="text-center text-muted">گزارش حرکات در حال توسعه است...</p>');
+    }, 1000);
+}
+
+function showAnalysisReport() {
+    $('#reportTitle').text('تحلیل و نمودارهای انبار');
+    $('#reportContainer').show();
+    $('#chartsSection').show();
+    
+    setTimeout(() => {
+        $('#reportContent').html('<p class="text-center text-success">نمودارها در پایین صفحه نمایش داده شده‌اند.</p>');
+        initializeCharts();
+    }, 1000);
+}
+
+function initializeCharts() {
+    // نمودار ماهانه
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
+            datasets: [{
+                label: 'ورودی',
+                data: [12, 19, 3, 5, 2, 3],
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }, {
+                label: 'خروجی',
+                data: [8, 15, 7, 3, 6, 4],
+                borderColor: 'rgb(255, 99, 132)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+    
+    // نمودار دسته‌بندی
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['دستکش', 'ماسک', 'دارو', 'تجهیزات'],
+            datasets: [{
+                data: [30, 25, 20, 25],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+function exportExcel() {
+    showSuccess('صادرات Excel در حال توسعه است');
+}
+
+function exportPDF() {
+    showSuccess('صادرات PDF در حال توسعه است');
+}
+
+function printReport() {
+    window.print();
+}
+
+function showSuccess(message) {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            icon: 'success',
+            title: 'موفق!',
+            text: message,
+            timer: 2000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false
+        });
+    } else {
+        alert(message);
+    }
+}
+</script>
+{% endblock %}

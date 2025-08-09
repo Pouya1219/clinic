@@ -1,0 +1,23 @@
+<tbody>
+    {% for record in records %}
+        <tr class="patient-row">
+            <td>{{ record.file_num }}</td>
+            <td><img src="{{ record.profile_picture.url }}" alt="تصویر بیمار" class="patient-image"></td>
+            <td>{{ record.name }} {{ record.family }}</td>
+            <td>{{ record.contact_info }}</td>
+            <td>{{ record.national_code }}</td>
+            <td>{{ record.file_num }}</td>
+            <td>{% if record.sex %}مرد{% else %}زن{% endif %}</td>
+            <td>{{ record.color }}</td>
+            <td>
+                <a href="{% url 'Patient:patient_detail' record.id %}" class="toolbar-button">مشاهده</a>
+                <a href="{% url 'Patient:edit_patient' record.id %}" class="toolbar-button">ویرایش</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="9" class="no-records">هیچ پرونده‌ای یافت نشد.</td>
+        </tr>
+    {% endfor %}
+</tbody>
+

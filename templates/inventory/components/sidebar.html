@@ -1,0 +1,68 @@
+<!-- templates/inventory/components/sidebar.html -->
+<div class="sidebar">
+    <div class="p-3">
+        <h4 class="text-white mb-4">
+            <i class="fas fa-warehouse me-2"></i>
+            سیستم انبار
+        </h4>
+    </div>
+    
+    <nav class="nav flex-column">
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" 
+           href="{% url 'inventory:dashboard' %}">
+            <i class="fas fa-tachometer-alt me-2"></i>
+            داشبورد
+        </a>
+        
+        <a class="nav-link {% if 'item' in request.resolver_match.url_name %}active{% endif %}" 
+           href="{% url 'inventory:item_list_page' %}">
+            <i class="fas fa-boxes me-2"></i>
+            مدیریت کالاها
+        </a>
+        
+        <a class="nav-link {% if 'entry' in request.resolver_match.url_name %}active{% endif %}" 
+           href="{% url 'inventory:stock_entry_list_page' %}">
+            <i class="fas fa-arrow-down me-2"></i>
+            ورودی انبار
+        </a>
+        
+        <a class="nav-link {% if 'exit' in request.resolver_match.url_name %}active{% endif %}" 
+           href="{% url 'inventory:stock_exit_list_page' %}">
+            <i class="fas fa-arrow-up me-2"></i>
+            خروجی انبار
+        </a>
+        
+        <a class="nav-link {% if request.resolver_match.url_name == 'inventory_list_page' %}active{% endif %}" 
+           href="{% url 'inventory:inventory_list_page' %}">
+            <i class="fas fa-list me-2"></i>
+            موجودی انبار
+        </a>
+        
+        <a class="nav-link {% if 'warehouse' in request.resolver_match.url_name %}active{% endif %}" 
+           href="{% url 'inventory:warehouse_list' %}">
+            <i class="fas fa-building me-2"></i>
+            مدیریت انبارها
+        </a>
+        <a href="{% url 'inventory:notifications_page' %}" class="btn btn-outline-primary">
+                <i class="fas fa-bell me-2"></i>
+                صفحه اعلان‌ها
+        </a>
+        <a class="nav-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}" 
+           href="{% url 'inventory:reports_page' %}">
+            <i class="fas fa-chart-bar me-2"></i>
+            گزارشات
+        </a>
+        
+        <hr class="text-white-50">
+        
+        <a class="nav-link" href="#" onclick="showSettings()">
+            <i class="fas fa-cog me-2"></i>
+            تنظیمات
+        </a>
+        
+        <a class="nav-link" href="{% url 'admin:logout' %}">
+            <i class="fas fa-sign-out-alt me-2"></i>
+            خروج
+        </a>
+    </nav>
+</div>

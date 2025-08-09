@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>تقویم شمسی</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Persian Date Picker -->
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('path-to-your-font/IRANSans.ttf');
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'IRANSans', sans-serif;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .input-container {
+            position: relative;
+            width: 200px;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: 10px 35px 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .date-input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(74, 175, 80, 0.1);
+            outline: none;
+        }
+
+        .calendar-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            z-index: 1;
+        }
+
+        .calendar-icon:hover {
+            color: #4CAF50;
+        }
+
+        /* تنظیمات ظاهری تقویم */
+        .persian-datepicker {
+            font-family: 'IRANSans' !important;
+        }
+
+        .datepicker-plot-area {
+            font-family: 'IRANSans' !important;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td span:hover {
+            background-color: #e8f5e9 !important;
+            color: #4CAF50 !important;
+        }
+
+        .datepicker-plot-area .datepicker-day-view .table-days td.selected span {
+            background-color: #4CAF50 !important;
+            color: white !important;
+        }
+
+        .datepicker-plot-area .datepicker-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+        .current-date-info {
+            text-align: center;
+            padding: 10px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 13px;
+            background: #f8f9fa;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        /* کوچکتر کردن سایز تقویم */
+        .datepicker-plot-area .datepicker-day-view .table-days td span {
+            width: 32px !important;
+            height: 32px !important;
+            line-height: 32px !important;
+            font-size: 13px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="date-inputs">
+        <div class="input-container">
+            <input type="text" class="date-input" id="jalali-date" readonly placeholder="تاریخ شمسی">
+            <i class="fas fa-calendar-alt calendar-icon"></i>
+        </div>
+        <div class="input-container">
+            <input type="text" class="date-input" id="gregorian-date" readonly placeholder="تاریخ میلادی">
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+          // استفاده از تاریخ فعلی جاوا اسکریپت به همراه new Date() برای جلوگیری از اختلاف تایم زون
+          const today = new persianDate(new Date());
+      
+          // تابع تبدیل روز هفته به فارسی با استفاده از getDay() جاوااسکریپت
+          function getPersianWeekDay(weekDay) {
+            const weekDays = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+            return weekDays[weekDay];
+          }
+      
+          // تنظیمات تقویم persianDatepicker
+          $('#jalali-date').persianDatepicker({
+            initialValue: true,
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            calendar: {
+              persian: {
+                locale: 'fa'
+              }
+            },
+            dayPicker: {
+              onSelect: function(unix) {
+                // تبدیل تاریخ انتخاب شده به میلادی
+                const gregorianDate = new Date(unix);
+                $('#gregorian-date').val(gregorianDate.toLocaleDateString('en-US'));
+              }
+            },
+            toolbox: {
+              enabled: true,
+              calendarSwitch: {
+                enabled: false
+              }
+            },
+            navigator: {
+              scroll: {
+                enabled: false
+              }
+            },
+            onShow: function() {
+              // اضافه کردن اطلاعات روز به تقویم
+              if (!$('.current-date-info').length) {
+                const dateInfo = $('<div class="current-date-info"></div>');
+                // استفاده از تاریخ جاری به صورت صریح
+                const pd = new persianDate(new Date());
+                // به دست آوردن روز هفته با استفاده از JS
+                const jsWeekDay = new Date().getDay();
+                dateInfo.html(`
+                  ${getPersianWeekDay(jsWeekDay)}، 
+                  ${pd.date()} 
+                  ${pd.format('MMMM')} 
+                  ${pd.year()}
+                `);
+                $('.datepicker-plot-area').append(dateInfo);
+              }
+              // اگر نیاز به تنظیم تعداد روز صحیح (مثلاً اصلاح روزهای ماه اسفند) دارید، می‌توانید اینجا تابع مربوطه را فراخوانی کنید.
+            },
+            onSelect: function(unix) {
+              $(this).persianDatepicker('hide');
+            }
+          });
+      
+          // باز کردن تقویم با کلیک روی آیکون
+          $('.calendar-icon').click(function() {
+            $('#jalali-date').persianDatepicker('show');
+          });
+      
+          // بستن تقویم با کلیک بیرون از آن
+          $(document).on('click', function(e) {
+            if (!$(e.target).closest('.datepicker-plot-area').length &&
+                !$(e.target).is('#jalali-date') &&
+                !$(e.target).is('.calendar-icon')) {
+              $('#jalali-date').persianDatepicker('hide');
+            }
+          });
+      
+          // تنظیم تاریخ امروز به صورت پیش‌فرض
+          $('#jalali-date').persianDatepicker('setDate', today);
+          const gregorianToday = new Date();
+          $('#gregorian-date').val(gregorianToday.toLocaleDateString('en-US'));
+        });
+      </script>
+</body>
+</html>

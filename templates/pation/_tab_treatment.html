@@ -1,0 +1,314 @@
+{% load static %}
+{% load humanize %}
+
+<div class="treatment-container">
+    <!-- اطلاعات بیمار -->
+    <div class="patient-info-card">
+        <div class="patient-info-header">
+            <h3>اطلاعات بیمار</h3>
+        </div>
+        <div class="patient-info-body">
+            <div class="patient-info-row">
+                <div class="patient-info-item">
+                    <span class="info-label">نام و نام خانوادگی:</span>
+                    <span class="info-value">{{ patient.name }} {{ patient.family }}</span>
+                    <input type="hidden" id="patient-name" value="{{ patient.name }} {{ patient.family }}">
+                    <input type="hidden" id="patient-id" value="{{ patient.id }}">
+                </div>
+                <div class="patient-info-item">
+                    <span class="info-label">شماره پرونده:</span>
+                    <span class="info-value">{{ patient.file_num }}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="info-label">کد ملی:</span>
+                    <span class="info-value">{{ patient.national_code }}</span>
+                </div>
+            </div>
+            <div class="patient-info-row">
+                <div class="patient-info-item">
+                    <span class="info-label">سن:</span>
+                    <span class="info-value">{{ patient.get_age }} سال</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="info-label">جنسیت:</span>
+                    <span class="info-value">{% if patient.sex %}مرد{% else %}زن{% endif %}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="info-label">تلفن تماس:</span>
+                    <span class="info-value">{{ patient.contant_info }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- انتخاب نوع چارت -->
+<div class="chart-type-selector">
+    <button class="chart-type-btn active" data-chart="adult_teeth">
+        <i class="fas fa-tooth"></i>
+        <span>دندان بزرگسال</span>
+    </button>
+    <button class="chart-type-btn" data-chart="child_teeth">
+        <i class="fas fa-baby"></i>
+        <span>دندان کودک</span>
+    </button>
+    <button class="chart-type-btn" data-chart="face">
+        <i class="fas fa-smile-beam"></i>
+        <span>زیبایی صورت</span>
+    </button>
+    <button class="chart-type-btn" data-chart="body">
+        <i class="fas fa-child"></i>
+        <span>اعضای بدن</span>
+    </button>
+</div>
+
+{% comment %} <!-- سیستم شماره‌گذاری دندان -->
+    <div class="dental-numbering-system">
+        <label class="dental-radio-label">
+            <input type="radio" name="numberingSystem" value="iranian" checked>
+            سیستم شماره‌گذاری ایرانی
+        </label>
+        <label class="dental-radio-label">
+            <input type="radio" name="numberingSystem" value="american">
+            سیستم شماره‌گذاری آمریکایی
+        </label>
+    </div> {% endcomment %}
+
+    <!-- دکمه‌های انتخاب سریع -->
+    <div class="dental-quick-select">
+        <button class="dental-select-btn" data-select="all">انتخاب همه</button>
+        <button class="dental-select-btn" data-select="upper">انتخاب فک بالا</button>
+        <button class="dental-select-btn" data-select="lower">انتخاب فک پایین</button>
+        <button class="dental-select-btn" data-select="none">حذف انتخاب‌ها</button>
+    </div>
+    <!-- انتخاب نوع چارت -->
+    <div class="charts-container">
+        <div class="dental-chart active" data-type="adult_teeth" style="display:block;">
+            {% include 'pation/charts/_adult_teeth_chart.html' %}
+        </div>
+        <div class="dental-chart" data-type="child_teeth" style="display:none;">
+            {% include 'pation/charts/_child_teeth_chart.html' %}
+        </div>
+        <div class="dental-chart" data-type="face" style="display:none;">
+            {% include 'pation/charts/_face_chart.html' %}
+        </div>
+        <div class="dental-chart" data-type="body" style="display:none;">
+            {% include 'pation/charts/_body_chart.html' %}
+        </div>
+    </div>
+
+    <!-- [کد جدید] بخش انتخاب نوع درمان با دکمه‌ها -->
+        <div class="treatment-group full-width">
+            <label class="treatment-label">نوع درمان</label>
+                <div class="treatment-type-buttons" id="treatment-type-buttons">
+                {% for type in treatment_types %}
+                <button type="button" class="treatment-type-btn" data-type-id="{{ type.id }}">
+                {{ type.title }}
+                </button>
+                {% endfor %}
+                </div>
+    <!-- یک فیلد مخفی برای نگهداری مقدار انتخاب شده -->
+            <input type="hidden" name="treatment_type" id="treatment-type" required>
+        </div>
+
+    <!-- گزینه‌های درمان -->
+    <div class="treatment-options">
+        <div class="checkbox-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" id="is-treatment-plan">
+                <span class="checkmark"></span>
+                ثبت به عنوان طرح درمان
+            </label>
+        </div>
+    </div>
+
+    <!-- فرم درمان -->
+    {% include 'pation/forms/_treatment_form.html' %}
+
+    <!-- دکمه تنظیمات ستون‌ها -->
+    <div class="table-settings">
+        <button class="settings-btn" onclick="TreatmentUI.openColumnSettings()">
+            <i class="fas fa-cog"></i>
+            تنظیمات نمایش ستون‌ها
+        </button>
+    </div>
+
+    <!-- جدول درمان‌ها -->
+    <div class="treatment-table-container">
+    <table class="treatment-table" id="treatment-plan-list">
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>تاریخ</th>
+                <th>نواحی درمان</th>
+                <th>نوع درمان</th>
+                <th>شرح درمان</th>
+                <th>پزشک معالج</th>
+                <th>دستیار</th>
+                <th>بیمه</th>
+                <th>درصد بیمه</th>
+                <th>سقف بیمه</th>
+                <th>مانده سقف بیمه</th>
+                <th>تعرفه عمومی</th>
+                <th>تعرفه تخصصی</th>
+                <th>تخفیف</th>
+                <th>هزینه مواد</th>
+                <th>هزینه لابراتور</th>
+                <th>مبلغ قابل پرداخت</th>
+                <th>وضعیت بیمه</th>
+                <th>وضعیت درمان</th>
+                <th>تاریخ مراجعه بعدی</th>
+                <th>نوع مراجعه</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treatment in patient.treatments.all %}
+            <tr data-id="{{ treatment.id }}" data-amount="{{ treatment.payable_amount }}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ treatment.treatment_date|date:"Y/m/d" }}</td>
+                <td>{{ treatment.treatment_areas }}</td>
+                <td>{{ treatment.treatment_type.title }}</td>
+                <td>{{ treatment.treatment_detail.description }}</td>
+                <td>{{ treatment.doctor.get_full_name }}</td>
+                <td>{{ treatment.assistant.get_full_name|default:"-" }}</td>
+                <td>{{ treatment.insurance_provider.name|default:"-" }}</td>
+                <td>{{ treatment.insurance_percentage }}%</td>
+                <td>
+    {% if treatment.insurance_provider %}
+        {% if treatment.insurance_ceiling != None %}
+            {{ treatment.insurance_ceiling|floatformat:0|intcomma }} ریال
+        {% else %}
+            -
+        {% endif %}
+    {% else %}
+        -
+    {% endif %}
+    <!-- DEBUG: {{ treatment.insurance_ceiling }} -->
+</td>
+<td>
+    {% if treatment.insurance_provider %}
+        {% if treatment.insurance_remaining != None %}
+            {{ treatment.insurance_remaining|floatformat:0|intcomma }} ریال
+        {% else %}
+            -
+        {% endif %}
+    {% else %}
+        -
+    {% endif %}
+    <!-- DEBUG: {{ treatment.insurance_remaining }} -->
+</td>
+                <td>{{ treatment.general_fee|floatformat:0|intcomma }} ریال</td>
+                <td>{{ treatment.special_fee|floatformat:0|intcomma }} ریال</td>
+                <td>{{ treatment.discount|floatformat:0|intcomma }} ریال</td>
+                <td>{{ treatment.material_cost|floatformat:0|intcomma }} ریال</td>
+                <td>{{ treatment.lab_cost|floatformat:0|intcomma }} ریال</td>
+                <td>{{ treatment.payable_amount|floatformat:0|intcomma }} ریال</td>
+                <td>
+                    {% if treatment.insurance_sent %}
+                        {% if treatment.insurance_paid %}
+                            <span class="status-badge success">پرداخت شده</span>
+                        {% else %}
+                            <span class="status-badge warning">ارسال شده</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="status-badge danger">ارسال نشده</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if treatment.is_completed %}
+                        <span class="status-badge success">انجام شده</span>
+                    {% else %}
+                        <span class="status-badge warning">در انتظار</span>
+                    {% endif %}
+                </td>
+                <td>{{ treatment.next_visit_date|date:"Y/m/d"|default:"-" }}</td>
+                <td>
+                    <span class="status-badge {% if treatment.is_treatment_plan %}info{% else %}primary{% endif %}">
+                        {% if treatment.is_treatment_plan %}طرح درمان{% else %}درمان{% endif %}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn edit" title="ویرایش" data-id="{{ treatment.id }}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" title="حذف" data-id="{{ treatment.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-btn payment" title="پرداخت" onclick="PaymentUI.showPaymentModal('{{ treatment.id }}', '{{ treatment.payable_amount }}')">
+                            <i class="fas fa-money-bill"></i>
+                        </button>
+                        <button class="action-btn installment" title="اقساط" onclick="PaymentUI.showInstallmentModal('{{ treatment.id }}', '{{ treatment.payable_amount }}')">
+                            <i class="fas fa-calendar-alt"></i>
+                        <button class="action-btn print" title="پرینت" data-id="{{ treatment.id }}" onclick="TreatmentUI.printTreatment('{{ treatment.id }}')">
+                            <i class="fas fa-print"></i>
+                        </button>
+
+                        <button class="action-btn invoice" title="صدور فاکتور" data-id="{{ treatment.id }}" onclick="TreatmentUI.generateInvoice('{{ treatment.id }}')">
+                            <i class="fas fa-file-invoice"></i>
+                        </button>
+
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="20" class="empty-table">هیچ درمانی ثبت نشده است</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+    <!-- مودال تنظیمات ستون‌ها -->
+    <div class="settings-modal" id="columnSettingsModal">
+        <div class="settings-modal-content">
+            <div class="settings-modal-header">
+                <h3>تنظیمات نمایش ستون‌ها</h3>
+                <button class="modal-close" onclick="TreatmentUI.closeColumnSettings()">×</button>
+            </div>
+            <div class="settings-modal-body">
+                <div class="columns-list">
+                    <div class="column-item">
+                        <label class="column-checkbox-label">
+                            <input type="checkbox" class="column-checkbox" data-column="0" checked>
+                            <span class="column-name">ردیف</span>
+                        </label>
+                    </div>
+                    <!-- سایر ستون‌ها -->
+                </div>
+            </div>
+            <div class="settings-modal-footer">
+                <button class="save-settings" onclick="TreatmentUI.saveColumnSettings()">ذخیره تنظیمات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تغییر وضعیت دندان -->
+    {% include 'pation/modals/_tooth_modal.html' %}
+</div>
+{% block extra_scripts%}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof TreatmentUI !== 'undefined') {
+            TreatmentUI.initialize();
+        } else {
+            console.error("TreatmentUI is not defined. Make sure treatment-ui.js is loaded.");
+        }
+    });
+    tooth.addEventListener('click', function() {
+    console.log(`[LOG] Tooth clicked: ${this.dataset.number}`);
+    console.log(`[LOG] Before toggle - Has selected class: ${this.classList.contains('selected')}`);
+    this.classList.toggle('selected');
+    console.log(`[LOG] After toggle - Has selected class: ${this.classList.contains('selected')}`);
+    
+    // بررسی وضعیت DOM بعد از تغییر کلاس
+    setTimeout(() => {
+        console.log(`[LOG] After timeout - Has selected class: ${this.classList.contains('selected')}`);
+        TreatmentUI.updateSelectedAreasDisplay();
+    }, 10);
+}); 
+
+</script>
+{% endblock %}

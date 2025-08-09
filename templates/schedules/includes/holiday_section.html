@@ -1,0 +1,21 @@
+<!-- templates/schedules/includes/holiday_section.html -->
+<div id="shift-schedule2" class="shift-schedule-wrapper" style="display: none;">
+    <div class="shift-holiday-section">
+        <h3 class="shift-section-title">افزودن تعطیلی</h3>
+        <div class="shift-holiday-form">
+            <div class="shift-form-group">
+                <label for="shift-holiday-date">تاریخ:</label>
+                <input class="date-input form-input jalali input-field shift-date-input" id="shift-holiday-date" data-id="52333695" name="holidaye">
+            </div>
+            <div class="shift-form-group">
+                <label for="shift-holiday-desc">توضیحات:</label>
+                <input type="text" id="shift-holiday-desc" class="shift-text-input" placeholder="توضیحات تعطیلی">
+            </div>
+            <button type="button" id="shift-add-holiday-btn" class="shift-add-holiday-btn" onclick="shiftAddHoliday()">افزودن</button>
+        </div>
+        
+        <div id="shift-holiday-list" class="shift-holiday-list">
+            <!-- لیست تعطیلات اینجا اضافه می‌شود -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+{% load static %}
+{% load patient_tags %}
+<div class="med-add-info-container" id="additional-info">
+    <div class="med-add-info-section">
+        <h3>سوابق درمانی قبلی</h3>
+        <form class="med-add-info-form" method="post" action="{% url 'Patient:add_previous_treatment' patient.id  %}">
+            {% csrf_token %}
+            <input type="hidden" name="patient_id" value="{{ patient.id }}">
+            <div class="med-add-info-form-row">
+                <div class="med-add-info-form-group">
+                    <label>نام پزشک قبلی</label>
+                    <input type="text" name="doctor_name" class="med-add-info-input" placeholder="نام پزشک معالج قبلی را وارد کنید">
+                </div>
+                <div class="med-add-info-form-group">
+                    <label>تاریخ مراجعه</label>
+                    <input class="med-add-info-input med-add-info-date date-input form-input jalali input-field patient-form-input" 
+                       id="birthday" name="visit_date" value="" placeholder="تاریخ مراجعه را وارد کنید">
+                       <i class="fas fa-calendar-alt"></i>
+                </div>
+            </div>
+            <div class="med-add-info-form-group">
+                <label>شرح درمان‌های انجام شده</label>
+                <textarea name="description" class="med-add-info-input med-add-info-textarea" rows="4" placeholder="توضیحات مربوط به درمان‌های انجام شده را وارد کنید"></textarea>
+            </div>
+            <button type="submit" class="med-add-info-submit">
+                <i class="fas fa-plus"></i> ثبت اطلاعات
+            </button>
+        </form>
+    </div>
+
+    <div class="med-add-info-history">
+        <h3>سوابق درمانی ثبت شده</h3>
+        <div class="med-add-info-table-wrapper">
+            <table class="med-add-info-table">
+                <thead>
+                    <tr>
+                        <th>تاریخ مراجعه</th>
+                        <th>نام پزشک</th>
+                        <th>شرح درمان</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for treatment in previous_treatments %}
+                    <tr>
+                        <td>{{ treatment.visit_date|to_jalali }}</td>
+                        <td>{{ treatment.doctor_name }}</td>
+                        <td class="med-add-info-details">
+                            <div class="med-add-info-text">{{ treatment.description }}</div>
+                        </td>
+                        <td class="med-add-info-actions-cell">
+                            <button class="med-add-info-btn med-add-info-delete"  title="حذف"   data-id="{{ treatment.id }}"
+                                onclick="deletePreviousTreatment({{ treatment.id }})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% block extra_javascript %}
+<script>
+function deletePreviousTreatment(treatmentId) {
+    if (confirm('آیا از حذف این سابقه درمان اطمینان دارید؟')) {
+        fetch(`/Patient/patient/delete_previous_treatment/${treatmentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}'  // اگر از CSRF استفاده می‌کنید
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // حذف ردیف از جدول یا رفرش صفحه
+                location.reload(); // یا هر روش دیگری برای به‌روزرسانی صفحه
+            } else {
+                alert(data.error || 'خطا در حذف سابقه درمان');
+            }
+        })
+        .catch(error => {
+            alert('خطا در حذف سابقه درمان');
+            console.error('Error deleting treatment:', error);
+        });
+    }
+}
+</script>
+{% endblock %}

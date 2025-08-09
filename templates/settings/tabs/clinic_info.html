@@ -1,0 +1,92 @@
+<!-- templates/settings/tabs/clinic_info.html -->
+
+<div class="card card-primary card-outline">
+    <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-cogs"></i> ویرایش اطلاعات و تنظیمات کلینیک</h3>
+    </div>
+    <form method="post" enctype="multipart/form-data"> {# enctype برای آپلود فایل ضروری است #}
+        {% csrf_token %}
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>اطلاعات اصلی</h5>
+                    <div class="form-group">
+                        <label for="{{ form.clinic_name.id_for_label }}">{{ form.clinic_name.label }}</label>
+                        {{ form.clinic_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.clinic_logo.id_for_label }}">{{ form.clinic_logo.label }}</label>
+                        {% if form.instance.clinic_logo %}
+                            <p class="mb-1">لوگوی فعلی: <img src="{{ form.instance.clinic_logo.url }}" alt="Logo" height="40" class="img-thumbnail"></p>
+                        {% endif %}
+                        {{ form.clinic_logo }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>اطلاعات تماس</h5>
+                    <div class="form-group">
+                        <label for="{{ form.phone_number1.id_for_label }}">{{ form.phone_number1.label }}</label>
+                        {{ form.phone_number1 }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.phone_number2.id_for_label }}">{{ form.phone_number2.label }}</label>
+                        {{ form.phone_number2 }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.website.id_for_label }}">{{ form.website.label }}</label>
+                        {{ form.website }}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>آدرس</h5>
+                    <div class="form-group">
+                        <label for="{{ form.province.id_for_label }}">{{ form.province.label }}</label>
+                        {{ form.province }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+                        {{ form.city }}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">{{ form.address.label }}</label>
+                        {{ form.address }}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>تنظیمات سیستمی</h5>
+                    <div class="form-group">
+                        <label for="{{ form.currency_unit.id_for_label }}">{{ form.currency_unit.label }}</label>
+                        {{ form.currency_unit }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5>تنظیمات یادآوری‌ها</h5>
+                    <div class="form-group">
+                        <label for="{{ form.notification_days_before.id_for_label }}">{{ form.notification_days_before.label }}</label>
+                        {{ form.notification_days_before }}
+                        <small class="form-text text-muted">{{ form.notification_days_before.help_text }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>

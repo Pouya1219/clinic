@@ -1,0 +1,74 @@
+{% load humanize %}
+{% load static %}
+{# templates/Patient/prints/thermal_print_statement.html #}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>صورتحساب بیمار</title>
+    <style>
+        @font-face {
+            font-family: 'Vazir Mono';
+            src: url('/static/fonts/Vazirmatn-Regular.ttf'); /* یک فونت ساده و خوانا */
+        }
+        body {
+            font-family: 'Vazir Mono', monospace;
+            width: 78mm; /* عرض استاندارد رول پرینتر حرارتی */
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #000;
+            background-color: #fff;
+            padding: 0;
+            margin: 0;
+        }
+        .receipt { padding: 5mm; }
+        h3 { text-align: center; margin: 0 0 10px 0; }
+        p { margin: 2px 0; }
+        hr { border: none; border-top: 1px dashed #000; margin: 10px 0; }
+        .summary-table { width: 100%; margin-top: 10px; }
+        .summary-table td { padding: 2px 0; }
+        .summary-table .label { text-align: right; }
+        .summary-table .value { text-align: left; font-weight: bold; }
+        .print-button {
+            display: block; width: 100%; padding: 10px; background: #007bff; color: white;
+            border: none; font-size: 16px; cursor: pointer; margin-top: 20px;
+        }
+        @media print {
+            .print-button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <h3> کلینیک </h3>
+        <p>تاریخ: {{ today }}</p>
+        <p>بیمار: {{ patient.get_full_name }}</p>
+        <p>شماره پرونده: {{ patient.file_num }}</p>
+        <hr>
+        <p><strong>گردش حساب:</strong></p>
+        {% for tx in transaction_history %}
+            <p>{{ tx }}</p>
+        {% empty %}
+            <p>هیچ تراکنشی ثبت نشده است.</p>
+        {% endfor %}
+        <hr>
+        <table class="summary-table">
+            <tr>
+                <td class="label">جمع هزینه‌ها:</td>
+                <td class="value">{{ total_treatment_cost|intcomma }}</td>
+            </tr>
+            <tr>
+                <td class="label">جمع پرداختی‌ها:</td>
+                <td class="value">{{ total_paid_amount|intcomma }}</td>
+            </tr>
+            <tr>
+                <td class="label"><strong>مانده نهایی:</strong></td>
+                <td class="value"><strong>{{ patient_balance|intcomma }}</strong></td>
+            </tr>
+        </table>
+        <hr>
+        <p style="text-align: center;">از مراجعه شما سپاسگزاریم</p>
+    </div>
+    <button class="print-button" onclick="window.print();">چاپ صورتحساب</button>
+</body>
+</html>

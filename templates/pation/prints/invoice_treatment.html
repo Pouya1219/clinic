@@ -1,0 +1,279 @@
+{% load static %}
+{% load humanize %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاکتور درمان</title>
+    <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('/static/fonts/IRANSans.ttf') format('truetype');
+        }
+        body {
+            font-family: 'IRANSans', Tahoma, Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .invoice-header h2 {
+            margin: 5px 0;
+        }
+        .invoice-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .invoice-info-left, .invoice-info-right {
+            width: 48%;
+        }
+        .invoice-info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+                table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .invoice-summary {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .invoice-total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .invoice-footer {
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .signature-line {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+        .signature-box {
+            width: 45%;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            text-align: center;
+        }
+        .payment-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .status-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-partial {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-unpaid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-header">
+    {% if clinic_logo %}
+    <img src="{{ clinic_logo }}" alt="{{ clinic_name }}" class="clinic-logo">
+    {% endif %}
+    <h2>فاکتور درمان</h2>
+    <p>{{ clinic_name }}</p>
+</div>
+    
+    <div class="invoice-info">
+        <div class="invoice-info-left">
+            <div class="invoice-info-item">
+                <span class="info-label">شماره فاکتور:</span>
+                <span>{{ invoice_number }}</span>
+            </div>
+            <div class="invoice-info-item">
+                <span class="info-label">تاریخ فاکتور:</span>
+                <span>{{ invoice_date }}</span>
+            </div>
+            <div class="invoice-info-item">
+                <span class="info-label">تاریخ درمان:</span>
+                <span>{{ treatment.treatment_date|date:"Y/m/d" }}</span>
+            </div>
+        </div>
+        <div class="invoice-info-right">
+            <div class="invoice-info-item">
+                <span class="info-label">نام بیمار:</span>
+                <span>{{ patient.name }} {{ patient.family }}</span>
+            </div>
+            <div class="invoice-info-item">
+                <span class="info-label">شماره پرونده:</span>
+                <span>{{ patient.file_num }}</span>
+            </div>
+            <div class="invoice-info-item">
+                <span class="info-label">پزشک معالج:</span>
+                <span>{{ treatment.doctor.get_full_name }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <h3>جزئیات درمان</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>شرح درمان</th>
+                <th>نواحی درمان</th>
+                <th>تعرفه عمومی</th>
+                <th>تخفیف</th>
+                <th>هزینه مواد</th>
+                <th>هزینه لابراتوار</th>
+                <th>مبلغ قابل پرداخت</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>{{ treatment.treatment_detail.description }}</td>
+                <td>{{ treatment.treatment_areas }}</td>
+                <td>{{ treatment.general_fee|floatformat:0|intcomma }} {{ currency_unit }}</td>
+                <td>{{ treatment.discount|floatformat:0|intcomma }} {{ currency_unit }}</td>
+                <td>{{ treatment.material_cost|floatformat:0|intcomma }} {{ currency_unit }}</td>
+                <td>{{ treatment.lab_cost|floatformat:0|intcomma }} {{ currency_unit }}</td>
+                <td>{{ treatment.payable_amount|floatformat:0|intcomma }} {{ currency_unit }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    {% if treatment.insurance_provider %}
+    <h3>اطلاعات بیمه</h3>
+    <table>
+        <tr>
+            <th>بیمه</th>
+            <td>{{ treatment.insurance_provider.name }}</td>
+        </tr>
+        <tr>
+            <th>درصد پوشش بیمه</th>
+            <td>{{ treatment.insurance_percentage }}%</td>
+        </tr>
+        {% if patient_insurance %}
+        <tr>
+            <th>سقف بیمه</th>
+            <td>{{ patient_insurance.coverage_ceiling|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        <tr>
+            <th>مانده سقف بیمه</th>
+            <td>{{ patient_insurance.coverage_ceiling|subtract:patient_insurance.used_coverage|floatformat:0|intcomma }} {{ currency_unit }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    {% endif %}
+    
+    {% if payments %}
+    <h3>سوابق پرداخت</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>تاریخ پرداخت</th>
+                <th>روش پرداخت</th>
+                <th>مبلغ</th>
+                <th>توضیحات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ payment.payment_date|date:"Y/m/d" }}</td>
+                <td>{{ payment.get_payment_method_display }}</td>
+                <td>{{ payment.amount|floatformat:0|intcomma }} {{ currency_unit }}</td>
+                <td>{{ payment.description|default:"-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    
+    <div class="invoice-summary">
+        <div class="invoice-info-item">
+            <span class="info-label">مبلغ کل:</span>
+            <span>{{ treatment.payable_amount|floatformat:0|intcomma }} {{ currency_unit }}</span>
+        </div>
+        <div class="invoice-info-item">
+            <span class="info-label">مبلغ پرداخت شده:</span>
+            <span>{{ total_paid|floatformat:0|intcomma }} {{ currency_unit }}</span>
+        </div>
+        <div class="invoice-info-item">
+            <span class="info-label">مانده قابل پرداخت:</span>
+            <span>{{ remaining|floatformat:0|intcomma }} {{ currency_unit }}</span>
+        </div>
+        <div class="invoice-info-item">
+            <span class="info-label">وضعیت پرداخت:</span>
+            {% if remaining <= 0 %}
+                <span class="payment-status status-paid">پرداخت شده</span>
+            {% elif total_paid > 0 %}
+                <span class="payment-status status-partial">پرداخت ناقص</span>
+            {% else %}
+                <span class="payment-status status-unpaid">پرداخت نشده</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="signature-line">
+        <div class="signature-box">
+            <p>مهر و امضای کلینیک</p>
+        </div>
+        <div class="signature-box">
+            <p>امضای بیمار</p>
+        </div>
+    </div>
+    
+<div class="invoice-footer">
+    <p>{{ clinic_name }} - تلفن: {{ clinic_phone }}</p>
+    <p>آدرس: {{ clinic_address }}</p>
+</div>
+    
+    <div class="no-print" style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()">چاپ</button>
+        <button onclick="window.close()">بستن</button>
+    </div>
+</body>
+</html>

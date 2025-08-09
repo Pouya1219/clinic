@@ -1,0 +1,135 @@
+<div class="appointment_modal-content">
+            <div class="appointment_modal-header">
+                <h3>رزرو وقت ملاقات</h3>
+                <button class="appointment_close-button" onclick="closeModal()">×</button>
+            </div>
+            <form id="visit_appointment_form" class="appointment_form">
+
+            <div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <div class="appointment_search-container">
+            <input type="text" id="visit_patient_search" class="appointment_input" placeholder="جستجوی پرونده بیمار..." />
+            <button type="button" class="appointment_button appointment_button-primary" onclick="searchPatient()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div id="search_results" class="appointment_search-results" style="display:none;"></div>
+    </div>
+</div>
+                <div class="appointment_form-row">
+                    <div class="appointment_form-group">
+                        <label>از ساعت:</label>
+                       <input type="text" id="visit_time_from" class="appointment_input timepicker" />
+                       
+                    </div>
+                    <div class="appointment_form-group">
+                        <label>تا ساعت:</label>
+                       <input type="text" id="visit_time_to" class="appointment_input time-picker" />
+                    </div>
+                </div>
+
+                <div class="appointment_form-row">
+                    <div class="appointment_form-group">
+                        <input type="checkbox" id="visit_patient_visited" />
+                        <label> بیمار ویزیت </label>
+                    </div>
+                    <div class="appointment_form-group">
+                        <input type="checkbox" id="visit_no_file" />
+                        <label>پرونده ساخته شود</label>
+                    </div>
+                </div>
+
+
+<div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <input type="text" id="visit_file_number" class="appointment_input" placeholder="شماره پرونده" readonly />
+    </div>
+<div class="appointment_form-row">
+     <!-- نوع درمان و شرح درمان -->
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>نوع درمان:</label>
+                    <select id="visit_treatment_type" class="appointment_select">
+                        <option value="">انتخاب نوع درمان</option>
+                        <option value="ترمیمی">ترمیمی</option>
+                        <option value="ارتودنسی">ارتودنسی</option>
+                        <option value="جراحی">جراحی</option>
+                        <option value="دندانپزشکی زیبایی">دندانپزشکی زیبایی</option>
+                    </select>
+                </div>
+                <div class="appointment_form-group">
+                    <label>شرح درمان:</label>
+                    <textarea id="visit_treatment_description" class="appointment_textarea" placeholder="شرح درمان"></textarea>
+                </div>
+            </div>
+
+            <!-- معرفی‌شده توسط -->
+            <div class="appointment_form-row">
+                <div class="appointment_form-group">
+                    <label>معرف:</label>
+                    <input type="text" id="visit_referrer" class="appointment_input" placeholder="نام معرف یا مرکز معرفی‌کننده" />
+                </div>
+                <div class="appointment_form-group">
+                    <label>پزشک معالج:</label>
+                    <input type="text" id="visit_treating_doctor" class="appointment_input" placeholder="نام پزشک معالج" />
+                </div>
+            </div>
+
+
+    <div class="appointment_form-group">
+        <input type="text" id="visit_unit" class="appointment_input" placeholder="شماره یونیت" readonly />
+    </div>
+</div>
+
+                <div class="appointment_form-row">
+                    <div class="appointment_form-group">
+                        <input type="text" id="visit_first_name" class="appointment_input" placeholder="نام" />
+                    </div>
+                    <div class="appointment_form-group">
+                        <input type="text" id="visit_last_name" class="appointment_input" placeholder="نام خانوادگی" />
+                    </div>
+                </div>
+
+                <div class="appointment_form-row">
+                    <div class="appointment_form-group">
+                        <input type="text" id="visit_national_code" class="appointment_input" placeholder="کد ملی" />
+                    </div>
+                    <div class="appointment_form-group">
+                        <input type="tel" id="visit_phone" class="appointment_input" placeholder="شماره تماس" />
+                    </div>
+                </div>
+
+                <div class="appointment_form-row">
+                    <div class="appointment_form-group">
+                        <select id="visit_status" class="appointment_select">
+                            <option value="">وضعیت</option>
+                            <option value="در انتظار">در انتظار</option>
+                            <option value="تایید شده">تایید شده</option>
+                            <option value="لغو شده">لغو شده</option>
+                        </select>
+                    </div>
+                    <div class="appointment_form-group">
+                        <i class="fas fa-calendar-alt calendar-icon icon-left"></i>
+                        <input type="text" name="end_date" class="date-input form-input jalali input-field" placeholder="تاریخ مراجعه" data-id="856" readonly>
+                    </div>
+                </div>
+
+                <div class="appointment_form-row">
+                    <textarea id="visit_description" class="appointment_textarea" placeholder="توضیحات"></textarea>
+                </div>
+<div class="appointment_form-row">
+    <div class="appointment_form-group">
+        <label class="appointment_label">رنگ سفارشی:</label>
+        <input type="color" id="visit_color_picker" class="appointment_color-picker" value="#ffffff" />
+    </div>
+</div>
+                <div class="appointment_form-actions">
+                    <button type="button" class="appointment_button appointment_button-success" onclick="saveAppointment()">
+                        <i class="fas fa-save"></i> ثبت نوبت
+                    </button>
+                    <button type="button" class="appointment_button appointment_button-danger" onclick="closeModal()">
+                        <i class="fas fa-times"></i> انصراف
+                    </button>
+                </div>
+            </form>
+        </div>

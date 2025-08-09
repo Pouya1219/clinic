@@ -1,0 +1,13 @@
+{% if patients %}
+    <ul>
+        {% for patient in patients %}
+            <li>
+                <a href="{% url 'Patient:patient_detail' patient.id %}">
+                    {{ patient.get_full_name }} - {{ patient.file_num }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="no-results">نتیجه‌ای یافت نشد.</p>
+{% endif %}

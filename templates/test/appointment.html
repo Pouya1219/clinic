@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>سیستم نوبت‌دهی کلینیک</title>
+    
+    <!-- CDN Links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: #f1f5f9;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* نوبار اصلی */
+        .apo_topbar {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 1rem;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .apo_container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* کنترل‌های اصلی */
+        .apo_controls {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .apo_view_buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .apo_btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .apo_btn_primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .apo_btn_primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .apo_btn_light {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .apo_btn_light:hover {
+            background: #e2e8f0;
+        }
+
+        .apo_btn_light.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* تقویم */
+        .apo_calendar {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .apo_calendar_header {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .apo_header_cell {
+            padding: 1rem;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .apo_day_name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .apo_day_date {
+            font-size: 0.8rem;
+            color: var(--secondary);
+        }
+
+        .apo_time_grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+
+        .apo_time_column {
+            border-right: 1px solid var(--border);
+        }
+
+        .apo_time_slot {
+            height: 40px;
+            border-bottom: 1px solid var(--border);
+            padding: 0.25rem;
+            position: relative;
+        }
+
+        /* نوبت‌ها */
+        .apo_appointment {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            background: var(--info);
+            color: white;
+            border-radius: 6px;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1;
+        }
+
+        .apo_appointment:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow);
+        }
+
+        .apo_appointment.emergency {
+            background: var(--danger);
+        }
+
+        .apo_appointment.overlap {
+            background: var(--warning);
+        }
+
+        /* خط زمان فعلی */
+        .apo_current_time {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--danger);
+            z-index: 2;
+        }
+
+        .apo_time_marker {
+            position: absolute;
+            right: -60px;
+            top: -10px;
+            background: var(--danger);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        /* مودال */
+        .apo_modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .apo_modal_content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .apo_modal_header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .apo_modal_body {
+            padding: 1.5rem;
+        }
+
+        .apo_form_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .apo_input_group {
+            margin-bottom: 1rem;
+        }
+
+        .apo_label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .apo_input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .apo_input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="apo_topbar">
+        <div class="apo_container">
+            <h1>سیستم نوبت‌دهی کلینیک</h1>
+        </div>
+    </div>
+
+    <div class="apo_container">
+        <!-- کنترل‌های اصلی -->
+        <div class="apo_controls">
+            <div class="apo_view_buttons">
+                <button class="apo_btn apo_btn_light active" data-view="day">
+                    <i class="fas fa-calendar-day"></i>
+                    روز
+                </button>
+                <button class="apo_btn apo_btn_light" data-view="week">
+                    <i class="fas fa-calendar-week"></i>
+                    هفته
+                </button>
+                <button class="apo_btn apo_btn_light" data-view="month">
+                    <i class="fas fa-calendar-alt"></i>
+                    ماه
+                </button>
+            </div>
+
+            <div class="apo_duration_select">
+                <select class="apo_input" onchange="apo_changeDuration(this.value)">
+                    <option value="15">15 دقیقه</option>
+                    <option value="30" selected>30 دقیقه</option>
+                    <option value="45">45 دقیقه</option>
+                    <option value="60">60 دقیقه</option>
+                </select>
+            </div>
+
+            <button class="apo_btn apo_btn_primary" onclick="apo_showModal()">
+                <i class="fas fa-plus"></i>
+                نوبت جدید
+            </button>
+        </div>
+
+        <!-- تقویم -->
+        <div class="apo_calendar">
+            <div class="apo_calendar_header" id="apo_calendarHeader">
+                <!-- با JavaScript پر می‌شود -->
+            </div>
+            <div class="apo_time_grid" id="apo_timeGrid">
+                <!-- با JavaScript پر می‌شود -->
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال نوبت -->
+    <div class="apo_modal" id="apo_appointmentModal">
+        <div class="apo_modal_content">
+            <div class="apo_modal_header">
+                <h3>ثبت نوبت جدید</h3>
+                <button class="apo_btn apo_btn_light" onclick="apo_hideModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="apo_modal_body">
+                <form id="apo_appointmentForm" onsubmit="apo_saveAppointment(event)">
+                    <div class="apo_form_grid">
+                        <div class="apo_input_group">
+                            <label class="apo_label">نام بیمار</label>
+                            <input type="text" class="apo_input" id="apo_patientName" required>
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">نام خانوادگی</label>
+                            <input type="text" class="apo_input" id="apo_patientFamily" required>
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">کد ملی</label>
+                            <input type="text" class="apo_input" id="apo_nationalCode">
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">شماره پرونده</label>
+                            <input type="text" class="apo_input" id="apo_fileNumber">
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">شماره تماس</label>
+                            <input type="tel" class="apo_input" id="apo_phone">
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">نوع نوبت</label>
+                            <select class="apo_input" id="apo_appointmentType">
+                                <option value="regular">عادی</option>
+                                <option value="emergency">اورژانسی</option>
+                            </select>
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">یونیت</label>
+                            <select class="apo_input" id="apo_unit">
+                                <option value="1">یونیت 1</option>
+                                <option value="2">یونیت 2</option>
+                                <option value="3">یونیت 3</option>
+                            </select>
+                        </div>
+                        <div class="apo_input_group">
+                            <label class="apo_label">توضیحات</label>
+                            <textarea class="apo_input" id="apo_notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="apo_modal_footer">
+                        <button type="button" class="apo_btn apo_btn_light" onclick="apo_hideModal()">انصراف</button>
+                        <button type="submit" class="apo_btn apo_btn_primary">ثبت نوبت</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // متغیرهای سراسری
+        let apo_currentView = 'day';
+        let apo_currentDate = new Date();
+        let apo_slotDuration = 30;
+        let apo_workingHours = { start: 8, end: 20 };
+
+        // راه‌اندازی اولیه
+        document.addEventListener('DOMContentLoaded', function() {
+            apo_initializeCalendar();
+            apo_updateCurrentTimeLine();
+            setInterval(apo_updateCurrentTimeLine, 60000);
+        });
+
+        function apo_initializeCalendar() {
+            apo_updateHeader();
+            apo_updateTimeGrid();
+        }
+
+        function apo_updateHeader() {
+            const header = document.getElementById('apo_calendarHeader');
+            let html = '<div class="apo_header_cell">ساعت</div>';
+            
+            for(let i = 0; i < 7; i++) {
+                const date = new Date(apo_currentDate);
+                date.setDate(date.getDate() + i);
+                html += `
+                    <div class="apo_header_cell">
+                        <div class="apo_day_name">${apo_getDayName(i)}</div>
+                        <div class="apo_day_date">${apo_formatDate(date)}</div>
+                    </div>
+                `;
+            }
+            header.innerHTML = html;
+        }
+
+        function apo_updateTimeGrid() {
+            const grid = document.getElementById('apo_timeGrid');
+            grid.innerHTML = '';
+
+            // ستون زمان
+            const timeColumn = document.createElement('div');
+            timeColumn.className = 'apo_time_column';
+            
+            for(let hour = apo_workingHours.start; hour < apo_workingHours.end; hour++) {
+                for(let min = 0; min < 60; min += apo_slotDuration) {
+                    const slot = document.createElement('div');
+                    slot.className = 'apo_time_slot';
+                    slot.textContent = `${hour}:${min.toString().padStart(2, '0')}`;
+                    timeColumn.appendChild(slot);
+                }
+            }
+            grid.appendChild(timeColumn);
+
+            // ستون‌های روزها
+            for(let day = 0; day < 7; day++) {
+                const dayColumn = document.createElement('div');
+                dayColumn.className = 'apo_time_column';
+                
+                for(let hour = apo_workingHours.start; hour < apo_workingHours.end; hour++) {
+                    for(let min = 0; min < 60; min += apo_slotDuration) {
+                        const slot = document.createElement('div');
+                        slot.className = 'apo_time_slot';
+                        slot.onclick = () => apo_showModal(hour, min, day);
+                        dayColumn.appendChild(slot);
+                    }
+                }
+                grid.appendChild(dayColumn);
+            }
+        }
+
+        function apo_updateCurrentTimeLine() {
+            const now = new Date();
+            const minutes = now.getHours() * 60 + now.getMinutes();
+            const startMinutes = apo_workingHours.start * 60;
+            
+            if (minutes < startMinutes || minutes > apo_workingHours.end * 60) return;
+            
+            const position = ((minutes - startMinutes) / apo_slotDuration) * 40; // 40px height per slot
+            
+            const timeline = document.querySelector('.apo_current_time') || document.createElement('div');
+            timeline.className = 'apo_current_time';
+            timeline.style.top = `${position}px`;
+            
+            const marker = document.createElement('div');
+            marker.className = 'apo_time_marker';
+            marker.textContent = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+            timeline.appendChild(marker);
+            
+            document.querySelector('.apo_time_grid').appendChild(timeline);
+        }
+
+        // Utility functions
+        function apo_getDayName(index) {
+            const days = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+            return days[index];
+        }
+
+        function apo_formatDate(date) {
+            return `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+        }
+
+        // Modal functions
+        function apo_showModal(hour, min, day) {
+            document.getElementById('apo_appointmentModal').style.display = 'block';
+        }
+
+        function apo_hideModal() {
+            document.getElementById('apo_appointmentModal').style.display = 'none';
+        }
+
+        function apo_saveAppointment(event) {
+            event.preventDefault();
+            // اینجا کد ذخیره‌سازی نوبت اضافه می‌شود
+            alert('نوبت با موفقیت ثبت شد');
+            apo_hideModal();
+        }
+
+        function apo_changeDuration(duration) {
+            apo_slotDuration = parseInt(duration);
+            apo_initializeCalendar();
+        }
+    </script>
+</body>
+</html>

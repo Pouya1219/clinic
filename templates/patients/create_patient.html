@@ -1,0 +1,300 @@
+{% extends 'dashboard.html'%}
+{% load static %}
+{% block title %}کاربران{% endblock %}
+{% block content %}
+    <section class="main-content">
+{% if messages %}
+        <div class="alert-container">
+        {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+                </div>
+        {% endfor %}
+        </div>
+{% endif %}
+    <div class="patient-form-container">
+        <h1 class="patient-form-title">فرم ثبت اطلاعات بیمار</h1>
+        <form id="patient-form" action="{% url 'Patient:create_patient' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="patient-file-num">شماره پرونده<span class="span-red-color">*</span></label>
+                    <input class="patient-form-input" type="text" id="patient-file-num" name="file_num" required>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="patient-name">نام<span class="span-red-color">*</span></label>
+                    <input class="patient-form-input" type="text" id="patient-name" name="name" required>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="patient-family">نام خانوادگی<span class="span-red-color">*</span></label>
+                    <input class="patient-form-input" type="text" id="patient-family" name="family" required>
+                </div>
+            </div>
+<div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="contant_info">تلفن تماس<span class="span-red-color">*</span</label>
+                    <input class="patient-form-input" type="tel" id="contant_info" name="contant_info" required>
+                </div>
+                <div class="patient-form-group">
+                    <label for="Natinal_code">کد ملی</label>
+                    <input class="patient-form-input" type="text" id="national_code" name="national_code" required>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Name_of_fader">نام پدر</label>
+                    <input class="patient-form-input" type="text" id="name_of_father" name="name_of_father">
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="email">ایمیل</label>
+                    <input class="patient-form-input" type="email" id="email" name="email">
+                </div>
+            </div>
+
+            <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Emergency_contant">شماره اضطراری</label>
+                    <input class="patient-form-input" type="tel" id="emergency_contact" name="emergency_contact">
+                </div>
+                    <div class="patient-form-group">
+                        <label class="patient-form-label" for="birthday">تاریخ تولد</label>
+                        <input class="date-input form-input jalali input-field patient-form-input"  id="birthday" data-id="10003" name="birthday">
+                    </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="sex">جنسیت<span class="span-red-color">*</span</label>
+                    <select class="patient-form-select" id="sex" name="sex" required>
+                        <option value="">انتخاب کنید</option>
+                        <option value="male">مرد</option>
+                        <option value="female">زن</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="insurance">بیمه</label>
+                    <input class="patient-form-input" type="text" id="insurance" name="insurance">
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="category">دسته بندی</label>
+                    <input class="patient-form-input" type="text" id="category" name="category">
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="family_number">تلفن سرپرست</label>
+                    <input class="patient-form-input" type="tel" id="family_number" name="family_number">
+                </div>
+            </div>
+
+            <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Medications_info">سابقه بیماری‌های خاص</label>
+                    <textarea class="patient-form-textarea" id="medications_info" name="medications_info"></textarea>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="alergy">حساسیت‌های دارویی یا غذایی</label>
+                    <textarea class="patient-form-textarea" id="alergy" name="allergy"></textarea>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Medicin_use">داروهای مصرفی فعلی</label>
+                    <textarea class="patient-form-textarea" id="medicine_use" name="medicine_use"></textarea>
+                </div>
+            </div>
+            <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label  class="patient-form-label" for="patient-height">قد (سانتی‌متر)</label>
+                    <input class="patient-form-input" type="number" id="patient-height" name="height" min="0" max="250">
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="patient-weight">وزن (کیلوگرم)</label>
+                    <input class="patient-form-input" type="number" id="patient-weight" name="weight" min="0" max="200">
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="patient-referral">معرف</label>
+                    <input class="patient-form-input" type="text" id="patient-referral" name="introducer">
+                </div>
+            </div>
+
+            <!-- سایر فیلدها با همین الگو -->
+            
+            <div class="patient-form-row">
+                <div class="patient-form-color-picker-group">
+                    <label class="patient-form-label">رنگ</label>
+                    <div class="patient-form-color-picker">
+                        <div class="patient-form-color-option" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                        <div class="patient-form-color-option" data-color="#00FF00" style="background-color: #00FF00;"></div>
+                        <div class="patient-form-color-option" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                        <div class="patient-form-color-option" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                        <div class="patient-form-color-option" data-color="#FF00FF" style="background-color: #FF00FF;"></div>
+                        <div class="patient-form-color-option" data-color="#00FFFF" style="background-color: #00FFFF;"></div>
+                        <div class="patient-form-color-option" data-color="#FFA500" style="background-color: #FFA500;"></div>
+                        <div class="patient-form-color-option" data-color="#800080" style="background-color: #800080;"></div>
+                        <div class="patient-form-color-option" data-color="#008000" style="background-color: #008000;"></div>
+                        <div class="patient-form-color-option" data-color="#000000" style="background-color: #000000;"></div>
+                    </div>
+                    <input type="hidden" id="patient-selected-color" name="color" value="">
+                </div>
+            </div>
+             <div class="patient-form-row">
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Afrade_of_dental">میزان استرس یا ترس از دندان‌پزشکی</label>
+                    <select class="patient-form-select" id="afraid_of_dental" name="afraid_of_dental">
+                        <option value="">انتخاب کنید</option>
+                        <option value="low">کم</option>
+                        <option value="medium">متوسط</option>
+                        <option value="high">زیاد</option>
+                    </select>
+                </div>
+                
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Etiad_be_alkol">اعتیاد</label>
+                    <select class="patient-form-select" id="addiction_to_alcohol" name="addiction_to_alcohol">
+                        <option value="">انتخاب کنید</option>
+                        <option value="yes">بله</option>
+                        <option value="no">خیر</option>
+                    </select>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="Status">وضعیت</label>
+                    <select class="patient-form-select" id="Status" name="Status">
+                        <option value="">انتخاب کنید</option>
+                        <option value="active">فعال</option>
+                        <option value="inactive">غیرفعال</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="patient-form-row">
+                <div class="patient-form-group" style="grid-column: span 1;">
+                    <label class="patient-form-label" for="addres">آدرس</label>
+                    <textarea class="patient-form-textarea" id="addres" name="addres"></textarea>
+                </div>
+
+                 <div class="patient-form-group" style="grid-column: span 1;">
+                    <label class="patient-form-label" for="Description">شرح</label>
+                    <textarea class="patient-form-textarea" id="Description" name="Description"></textarea>
+                </div>
+                <div class="patient-form-group">
+                    <label class="patient-form-label" for="profile_picture">انتخاب تصویر پروفایل:</label>
+                    <input class="patient-form-input" type="file" name="profile_picture" id="profile_picture">
+                </div>
+            </div>
+                <div class="patient-form-row">
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="marital_status">وضعیت تاهل</label>
+        <select class="patient-form-select" id="marital_status" name="marital_status">
+            <option value="">انتخاب کنید</option>
+            <option value="single">مجرد</option>
+            <option value="married">متاهل</option>
+        </select>
+    </div>
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="occupation">شغل</label>
+        <input class="patient-form-input" type="text" id="occupation" name="occupation">
+    </div>
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="blood_type">گروه خونی</label>
+        <select class="patient-form-select" id="blood_type" name="blood_type">
+            <option value="">انتخاب کنید</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+    </div>
+</div>
+<div class="patient-form-row">
+    <div class="patient-form-group">
+        <label class="patient-form-label">بیماری‌های خاص</label>
+        <div class="checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" name="has_heart_disease"> بیماری قلبی
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="has_diabetes"> دیابت
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="has_blood_pressure"> فشار خون
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" name="has_hepatitis"> هپاتیت
+            </label>
+        </div>
+    </div>
+    <div class="patient-form-group pregnancy-section" style="display: none;">
+        <label class="patient-form-label">وضعیت بارداری</label>
+        <div class="checkbox-group">
+            <label class="checkbox-label">
+                <input type="checkbox" name="is_pregnant" id="is_pregnant"> باردار
+            </label>
+        </div>
+        <div id="pregnancy_month_section" style="display: none;">
+            <label class="patient-form-label" for="pregnancy_month">ماه بارداری</label>
+            <input class="patient-form-input" type="number" id="pregnancy_month" name="pregnancy_month" min="1" max="9">
+        </div>
+    </div>
+</div>
+<div class="patient-form-row">
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="insurance_type">نوع بیمه</label>
+        <select class="patient-form-select" id="insurance_type" name="insurance_type">
+            <option value="">انتخاب کنید</option>
+            <option value=">تامین اجتماع">تامین اجتماعی</option>
+            <option value="سلامت">سلامت</option>
+            <option value=">نیروهای مسل">نیروهای مسلح</option>
+            <option value=" بیمه های درصدی "> بیمه های درصدی</option>
+            <option value="سایر">سایر</option>
+        </select>
+    </div>
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="insurance_number">شماره بیمه</label>
+        <input class="patient-form-input" type="text" id="insurance_number" name="insurance_number">
+    </div>
+    <div class="patient-form-group">
+        <label class="patient-form-label" for="insurance_expiry_date">تاریخ انقضای بیمه</label>
+                        <i class="fas fa-calendar-alt calendar-icon icon-left"></i>
+                        <input type="text" name="insurance_expiry_date" class="date-input form-input jalali input-field patient-form-input" data-id="10002" readonly>
+    </div>
+</div>
+            <button type="submit" class="patient-form-submit-btn">ذخیره اطلاعات</button>
+        </form>
+    </div>
+
+
+</section>
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // نمایش/مخفی کردن بخش بارداری براساس جنسیت
+    const sexSelect = document.getElementById('sex');
+    const pregnancySection = document.querySelector('.pregnancy-section');
+    
+    sexSelect.addEventListener('change', function() {
+        pregnancySection.style.display = this.value === 'female' ? 'block' : 'none';
+    });
+
+    // نمایش/مخفی کردن ماه بارداری
+    const isPregnantCheckbox = document.getElementById('is_pregnant');
+    const pregnancyMonthSection = document.getElementById('pregnancy_month_section');
+    
+    isPregnantCheckbox.addEventListener('change', function() {
+        pregnancyMonthSection.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // انتخاب رنگ
+    const colorOptions = document.querySelectorAll('.patient-form-color-option');
+    const selectedColorInput = document.getElementById('patient-selected-color');
+    
+    colorOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            colorOptions.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedColorInput.value = this.dataset.color;
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% endblock content %}

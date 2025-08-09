@@ -1,0 +1,89 @@
+<!-- templates/Patient/reminders_center.html -->
+{% extends 'dashboard.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<section class="main-content">
+    <div class="container-fluid">
+        <div class="card reminder-center-card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-bullhorn icon-gradient"></i> مرکز پیگیری‌ها</h3>
+            </div>
+            <div class="card-body">
+                <!-- فرم فیلتر -->
+                <form method="get" class="reminder-filters">
+                    <div class="filter-group">
+                        <label for="filter-type">نوع یادآوری</label>
+                        <select name="type" id="filter-type" class="custom-select">
+                            <option value="all" {% if filter_type == 'all' %}selected{% endif %}>همه موارد</option>
+                            <option value="check" {% if filter_type == 'check' %}selected{% endif %}>فقط چک‌ها</option>
+                            <option value="installment" {% if filter_type == 'installment' %}selected{% endif %}>فقط اقساط</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-seen">وضعیت پیگیری</label>
+                        <select name="seen" id="filter-seen" class="custom-select">
+                            <option value="all" {% if filter_seen == 'all' %}selected{% endif %}>همه</option>
+                            <option value="unseen" {% if filter_seen == 'unseen' %}selected{% endif %}>پیگیری نشده</option>
+                            <option value="seen" {% if filter_seen == 'seen' %}selected{% endif %}>پیگیری شده</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary filter-btn"><i class="fas fa-filter"></i> اعمال فیلتر</button>
+                </form>
+
+                <!-- جدول یادآوری‌ها -->
+                <div class="table-responsive">
+                    <table class="table table-hover reminder-table">
+                        <thead>
+                            <tr>
+                                <th>نوع</th>
+                                <th>بیمار</th>
+                                <th>تلفن تماس</th>
+                                <th>مبلغ</th>
+                                <th>تاریخ سررسید</th>
+                                <th class="text-center">عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reminder in reminders %}
+                            <tr id="reminder-row-{{ reminder.type_code }}-{{ reminder.reminder_id }}" class="{% if reminder.is_seen %}reminder-seen{% endif %}">
+                                <td>
+                                    <span class="badge-custom {% if reminder.type_code == 'check' %}badge-check{% else %}badge-installment{% endif %}">
+                                        <i class="fas {% if reminder.type_code == 'check' %}fa-money-check-alt{% else %}fa-calendar-alt{% endif %}"></i>
+                                        {{ reminder.type_name }}
+                                    </span>
+                                </td>
+                                <td><a href="{% url 'Patient:patient_detail' reminder.patient_id %}" target="_blank">{{ reminder.patient_name }}</a></td>
+                                <td dir="ltr">{{ reminder.patient_phone }}</td>
+                                <td>{{ reminder.amount|intcomma }} ریال</td>
+                                <td>{{ reminder.due_date|date:"Y/m/d" }}</td>
+                                <td class="text-center action-cell">
+                                    {% if not reminder.is_seen %}
+                                    <button class="btn-action btn-seen" onclick="NotificationManager.markAsSeen('{{ reminder.type_code }}', '{{ reminder.reminder_id }}')">
+                                        <i class="fas fa-eye"></i> پیگیری شد
+                                    </button>
+                                    {% else %}
+                                    <span class="action-status-seen"><i class="fas fa-check-circle"></i> پیگیری شده</span>
+                                    {% endif %}
+                                    <button class="btn-action btn-sms" onclick="NotificationManager.sendSmsReminder('{{ reminder.patient_id }}', '{{ reminder.type_name }}')">
+                                        <i class="fas fa-sms"></i> پیامک
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center text-muted p-4">هیچ یادآوری مطابق با فیلتر شما یافت نشد.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{% static 'js/notification-api.js' %}"></script>
+    <script src="{% static 'js/notification-manager.js' %}"></script>
+{% endblock %}
+

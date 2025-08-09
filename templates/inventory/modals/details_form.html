@@ -1,0 +1,294 @@
+<!-- مودال جزئیات کالا -->
+<div class="modal fade" id="itemDetailsModal" tabindex="-1" aria-labelledby="itemDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="itemDetailsModalLabel">
+                    <i class="fas fa-info-circle me-2"></i>
+                    جزئیات کالا
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4" id="itemDetailsLoading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">در حال بارگذاری...</span>
+                    </div>
+                    <p class="mt-2">در حال دریافت اطلاعات...</p>
+                </div>
+                
+                <div id="itemDetailsContent" style="display: none;">
+                    <!-- اطلاعات اصلی کالا -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-tag text-primary me-2"></i>
+                                        <span id="itemDetailsName">نام کالا</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">کد کالا:</p>
+                                            <p class="fw-bold" id="itemDetailsCode">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">بارکد:</p>
+                                            <p class="fw-bold" id="itemDetailsBarcode">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">دسته‌بندی:</p>
+                                            <p class="fw-bold" id="itemDetailsCategory">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">واحد اصلی:</p>
+                                            <p class="fw-bold" id="itemDetailsPrimaryUnit">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">برند:</p>
+                                            <p class="fw-bold" id="itemDetailsBrand">-</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1 text-muted">مدل:</p>
+                                            <p class="fw-bold" id="itemDetailsModel">-</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="mb-1 text-muted">توضیحات:</p>
+                                            <p class="fw-bold" id="itemDetailsDescription">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-warehouse text-success me-2"></i>
+                                        موجودی
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <div class="display-4 fw-bold" id="itemDetailsTotalStock">0</div>
+                                        <p class="text-muted">موجودی کل</p>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="border rounded p-2 text-center">
+                                                <div class="fw-bold" id="itemDetailsMinStock">0</div>
+                                                <small class="text-muted">حداقل موجودی</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="border rounded p-2 text-center">
+                                                <div class="fw-bold" id="itemDetailsMaxStock">0</div>
+                                                <small class="text-muted">حداکثر موجودی</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-light">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">آستانه هشدار:</span>
+                                        <span class="badge bg-warning" id="itemDetailsAlertThreshold">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- تب‌ها برای اطلاعات بیشتر -->
+                    <ul class="nav nav-tabs" id="itemDetailsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button">
+                                <i class="fas fa-boxes me-1"></i>
+                                موجودی در انبارها
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="entries-tab" data-bs-toggle="tab" data-bs-target="#entries" type="button">
+                                <i class="fas fa-sign-in-alt me-1"></i>
+                                ورودی‌ها
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="exits-tab" data-bs-toggle="tab" data-bs-target="#exits" type="button">
+                                <i class="fas fa-sign-out-alt me-1"></i>
+                                خروجی‌ها
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties" type="button">
+                                <i class="fas fa-cogs me-1"></i>
+                                ویژگی‌ها
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content p-3 border border-top-0 rounded-bottom" id="itemDetailsTabContent">
+                        <!-- موجودی در انبارها -->
+                        <div class="tab-pane fade show active" id="inventory" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>انبار</th>
+                                            <th>شماره بچ</th>
+                                            <th>مقدار</th>
+                                            <th>ارزش</th>
+                                            <th>میانگین قیمت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemInventoriesTable">
+                                        <tr>
+                                            <td colspan="5" class="text-center">موجودی یافت نشد</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- ورودی‌ها -->
+                        <div class="tab-pane fade" id="entries" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>شماره ورود</th>
+                                            <th>تاریخ</th>
+                                            <th>انبار</th>
+                                            <th>مقدار</th>
+                                            <th>واحد</th>
+                                            <th>قیمت واحد</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemEntriesTable">
+                                        <tr>
+                                            <td colspan="6" class="text-center">ورودی یافت نشد</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- خروجی‌ها -->
+                        <div class="tab-pane fade" id="exits" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>شماره خروج</th>
+                                            <th>تاریخ</th>
+                                            <th>انبار</th>
+                                            <th>مقدار</th>
+                                            <th>واحد</th>
+                                            <th>تحویل گیرنده</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemExitsTable">
+                                        <tr>
+                                            <td colspan="6" class="text-center">خروجی یافت نشد</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- ویژگی‌ها -->
+                        <div class="tab-pane fade" id="properties" role="tabpanel">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-light">
+                                            <h6 class="card-title mb-0">
+                                                <i class="fas fa-cog text-primary me-1"></i>
+                                                تنظیمات کالا
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    روش قیمت‌گذاری
+                                                    <span class="badge bg-secondary" id="itemDetailsCostMethod">-</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    دارای تاریخ انقضا
+                                                    <span id="itemDetailsHasExpiry">
+                                                        <i class="fas fa-times-circle text-danger"></i>
+                                                    </span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    دارای شماره سریال
+                                                    <span id="itemDetailsHasSerial">
+                                                        <i class="fas fa-times-circle text-danger"></i>
+                                                    </span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    دارای شماره بچ
+                                                    <span id="itemDetailsHasBatch">
+                                                        <i class="fas fa-check-circle text-success"></i>
+                                                    </span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    هشدار کمبود موجودی
+                                                    <span id="itemDetailsLowStockAlert">
+                                                        <i class="fas fa-check-circle text-success"></i>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-light">
+                                            <h6 class="card-title mb-0">
+                                                <i class="fas fa-thermometer-half text-danger me-1"></i>
+                                                شرایط نگهداری
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    حداقل دما
+                                                    <span class="badge bg-info" id="itemDetailsTempMin">-</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    حداکثر دما
+                                                    <span class="badge bg-danger" id="itemDetailsTempMax">-</span>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="mb-1">شرایط نگهداری:</div>
+                                                    <p class="mb-0 text-muted" id="itemDetailsStorageConditions">-</p>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="mb-1">دستورالعمل استفاده:</div>
+                                                    <p class="mb-0 text-muted" id="itemDetailsUsageInstructions">-</p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>
+                    بستن
+                </button>
+                {% comment %} <button type="button" class="btn btn-primary" onclick="InventoryManager.editItem(document.getElementById('itemDetailsId').value)">
+                    <i class="fas fa-edit me-1"></i>
+                    ویرایش کالا
+                </button> {% endcomment %}
+                <!-- فیلد مخفی برای ذخیره ID کالا -->
+                <input type="hidden" id="itemDetailsId" value="">
+            </div>
+        </div>
+    </div>
+</div>

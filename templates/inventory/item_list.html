@@ -1,0 +1,278 @@
+<!-- templates/inventory/pages/item_list.html -->
+{% extends 'inventory/base/base.html' %}
+{% load static %}
+{% block title %}مدیریت کالاها - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-boxes me-2"></i>
+مدیریت کالاها
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Header Actions -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="page-actions">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addItemModal">
+        <i class="fas fa-plus me-1"></i>
+        افزودن کالای جدید
+    </button>
+    {% comment %} <button class="btn btn-info" onclick="importItems()">
+        <i class="fas fa-upload me-1"></i>
+        ایمپورت
+    </button>
+    <button class="btn btn-secondary" onclick="printItems()">
+        <i class="fas fa-print me-1"></i>
+        پرینت
+    </button> {% endcomment %}
+</div>
+
+<!-- چک‌باکس انتخاب همه: -->
+        </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="جستجوی کالا..." id="itemSearch" data-search-target="items">
+                <button class="btn btn-outline-secondary" type="button" onclick="searchItems()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+<!-- نمایش نتایج جستجو -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 id="searchResultsTitle" class="mb-0" style="display: none;">نتایج جستجو</h5>
+    <button id="clearSearch" class="btn btn-sm btn-outline-secondary" onclick="clearSearch()" style="display: none;">
+        <i class="fas fa-times me-1"></i>
+        پاک کردن جستجو
+    </button>
+</div>
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">همه دسته‌بندی‌ها</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="stockFilter">
+                        <option value="">همه کالاها</option>
+                        <option value="in_stock">موجود</option>
+                        <option value="low_stock">کم موجودی</option>
+                        <option value="out_of_stock">ناموجود</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="statusFilter">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="active">فعال</option>
+                        <option value="inactive">غیرفعال</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-secondary w-100" onclick="resetFilters()">
+                        <i class="fas fa-undo me-2"></i>
+                        پاک کردن فیلترها
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">لیست کالاها</h6>
+            <div>
+                <button class="btn btn-sm btn-outline-primary" onclick="exportItems()">
+                    <i class="fas fa-download me-1"></i>
+                    خروجی Excel
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="printItems()">
+                    <i class="fas fa-print me-1"></i>
+                    چاپ
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+    <!-- تنظیمات نمایش -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <label class="me-2">نمایش:</label>
+            <select class="form-select form-select-sm" id="itemsPerPageSelect" onchange="changeItemsPerPage(this.value)">
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="1000">1000</option>
+            </select>
+            <span class="ms-2">مورد</span>
+        </div>
+        <div>
+            <span>تعداد کل: </span>
+            <span id="itemsCount">0</span>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover" id="itemsTable">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                    </th>
+                    <th>تصویر</th>
+                    <th>نام کالا</th>
+                    <th>کد کالا</th>
+                    <th>دسته‌بندی</th>
+                    <th>موجودی فعلی</th>
+                    <th>واحد</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody id="itemsTableBody">
+                <tr>
+                    <td colspan="9" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">در حال بارگذاری...</span>
+                        </div>
+                        <p class="mt-2">در حال بارگذاری داده‌ها...</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <span id="itemsRange">نمایش 0 تا 0 از 0 مورد</span>
+        </div>
+        <nav aria-label="صفحه‌بندی">
+            <ul class="pagination justify-content-center mb-0" id="pagination">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">قبلی</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">بعدی</a>
+                </li>
+            </ul>
+        </nav>
+        <div>
+            <span id="pageInfo">صفحه 1 از 1</span>
+        </div>
+    </div>
+</div>
+
+
+
+
+    <!-- Bulk Actions -->
+    <div class="card mt-3" id="bulkActions" style="display: none;">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span id="selectedCount">0</span> کالا انتخاب شده
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-warning btn-sm" onclick="bulkEdit()">
+                        <i class="fas fa-edit me-1"></i>
+                        ویرایش گروهی
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="bulkDelete()">
+                        <i class="fas fa-trash me-1"></i>
+                        حذف گروهی
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Item Modal -->
+{% include 'inventory/modals/item_form.html' %}
+{% include 'inventory/modals/details_form.html' %}
+<!-- Import Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">وارد کردن کالاها از Excel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">فایل Excel:</label>
+                    <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls">
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    فایل باید شامل ستون‌های: نام، کد، دسته‌بندی، واحد باشد.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-primary" onclick="processImport()">وارد کردن</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block module_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // اطمینان از اینکه InventoryManager تعریف شده است
+    if (typeof InventoryManager !== 'undefined') {
+        console.log('Initializing InventoryManager from page script');
+        
+        // ثبت گوش‌دهنده برای رویداد دریافت لیست کالاها
+        if (window.inventoryWebSocket) {
+            console.log('Adding event listener for items_list_received');
+            window.inventoryWebSocket.addEventListener('items_list_received', function(data) {
+                console.log('Items list received event triggered:', data);
+                
+                // بروزرسانی لیست کالاها
+                if (InventoryManager && typeof InventoryManager.updateItemsList === 'function') {
+                    console.log('Calling InventoryManager.updateItemsList');
+                    InventoryManager.updateItemsList(data.items, data.pagination);
+                } else {
+                    console.error('InventoryManager.updateItemsList is not available', InventoryManager);
+                }
+            });
+        } else {
+            console.warn('inventoryWebSocket is not available');
+        }
+    } else {
+        console.error('InventoryManager is not defined');
+    }
+});
+</script>
+<script>
+$(document).ready(function() {
+    // تنظیم مقادیر پیش‌فرض برای دسته‌بندی و واحد اصلی
+    const categorySelect = document.getElementById('itemCategory');
+    const unitSelect = document.getElementById('itemPrimaryUnit');
+    
+    // اگر دسته‌بندی‌ها وجود دارند، اولین مورد را انتخاب کن
+    if (categorySelect && categorySelect.options.length > 1) {
+        categorySelect.selectedIndex = 1; // اولین گزینه بعد از "انتخاب دسته‌بندی"
+    }
+    
+    // اگر واحدها وجود دارند، اولین مورد را انتخاب کن
+    if (unitSelect && unitSelect.options.length > 1) {
+        unitSelect.selectedIndex = 1; // اولین گزینه بعد از "انتخاب واحد"
+    }
+});
+</script>
+
+{% endblock %}

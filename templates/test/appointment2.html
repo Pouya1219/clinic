@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>سیستم وقت‌دهی پزشکی</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <style>
+        /* استایل‌های اضافی */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+}
+
+body {
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.appointment-table {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+.appointment-table th {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.time-slot {
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.time-slot:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.modal-content {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.visit_button {
+    transition: all 0.3s ease;
+}
+
+.visit_button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* فرم استایل */
+#visit_appointment_form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+}
+
+#visit_appointment_form input,
+#visit_appointment_form select,
+#visit_appointment_form textarea {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+}
+
+#visit_appointment_form textarea {
+    grid-column: span 2;
+    resize: vertical;
+}
+
+.button-group {
+    grid-column: span 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* انیمیشن‌ها */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal {
+    animation: fadeIn 0.3s ease;
+}
+        /* استایل‌های پایه */
+        * {
+            box-sizing: border-box;
+            font-family: Tahoma, Arial;
+        }
+
+        .navbar {
+            padding: 10px;
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+        }
+
+        .appointment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .appointment-table th,
+        .appointment-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .time-slot {
+            cursor: pointer;
+            height: 30px;
+        }
+
+        .time-slot:hover {
+            background-color: #e9ecef;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 70%;
+            border-radius: 5px;
+        }
+
+        .visit_button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- نوار اول - تنظیمات زمان ملاقات -->
+    <div class="navbar">
+        <label>مدت زمان وقت ملاقات:</label>
+        <select id="visit_duration">
+            <option value="15">15 دقیقه</option>
+            <option value="30" selected>30 دقیقه</option>
+            <option value="45">45 دقیقه</option>
+        </select>
+        <input type="checkbox" id="visit_edit_previous" />
+        <label>امکان ویرایش روزهای قبل</label>
+    </div>
+
+    <!-- نوار دوم - اطلاعات پزشک -->
+    <div class="navbar">
+        <select id="visit_doctor">
+            <option>انتخاب پزشک</option>
+        </select>
+        <input type="text" id="visit_unit" placeholder="شماره یونیت" />
+        <input type="date" id="visit_date" />
+        <button class="visit_button" onclick="filterAppointments()">فیلتر</button>
+    </div>
+
+    <!-- نوار سوم - نمایش تقویم -->
+    <div class="navbar">
+        <button class="visit_button" onclick="showToday()">روز جاری</button>
+        <button class="visit_button" onclick="showWeek()">هفته</button>
+        <button class="visit_button" onclick="showMonth()">ماه</button>
+        <button class="visit_button" onclick="showYear()">سال</button>
+    </div>
+
+    <!-- جدول وقت‌های ملاقات -->
+    <table class="appointment-table">
+        <thead>
+            <tr id="days-header">
+                <th>ساعت</th>
+                <!-- روزهای هفته اینجا اضافه می‌شوند -->
+            </tr>
+            <tr id="dates-header">
+                <th></th>
+                <!-- تاریخ‌ها اینجا اضافه می‌شوند -->
+            </tr>
+        </thead>
+        <tbody id="appointment-slots">
+            <!-- بازه‌های زمانی اینجا اضافه می‌شوند -->
+        </tbody>
+    </table>
+
+    <!-- مودال رزرو وقت -->
+    <div id="appointment-modal" class="modal">
+        <div class="modal-content">
+            <h3>رزرو وقت ملاقات</h3>
+            <form id="visit_appointment_form">
+                <div>
+                    <label>وقت ملاقات از:</label>
+                    <input type="time" id="visit_time_from" readonly />
+                    <label>تا:</label>
+                    <input type="time" id="visit_time_to" readonly />
+                </div>
+                <div>
+                    <input type="checkbox" id="visit_patient_visited" />
+                    <label>بیمار ویزیت شده</label>
+                    <input type="checkbox" id="visit_no_file" />
+                    <label>پرونده ساخته نشود</label>
+                </div>
+                <input type="text" id="visit_firstname" placeholder="نام" />
+                <input type="text" id="visit_lastname" placeholder="نام خانوادگی" />
+                <input type="text" id="visit_national_code" placeholder="کد ملی" />
+                <input type="tel" id="visit_phone" placeholder="شماره تماس" />
+                <select id="visit_status">
+                    <option>وضعیت</option>
+                </select>
+                <input type="date" id="visit_appointment_date" />
+                <input type="time" id="visit_entry_time" />
+                <input type="text" id="visit_unit_number" placeholder="شماره یونیت" />
+                <input type="number" id="visit_duration" placeholder="مدت زمان ویزیت" />
+                <textarea id="visit_description" placeholder="توضیحات"></textarea>
+                
+                <button type="button" class="visit_button" onclick="sendSMS()">ارسال پیامک</button>
+                <button type="button" class="visit_button" onclick="saveAppointment()">ثبت نوبت</button>
+                <button type="button" class="visit_button" onclick="closeModal()">انصراف</button>
+            </form>
+        </div>
+    </div>
+    
+// این کد را در تگ script در انتهای body قرار دهید
+<script>
+// متغیرهای سراسری
+let currentView = 'week'; // نمای پیش‌فرض
+let selectedTimeSlot = null;
+let appointmentDuration = 30; // مدت زمان پیش‌فرض ویزیت
+
+// تنظیم ساعات کاری
+const workingHours = {
+    start: '08:00',
+    end: '20:00'
+};
+
+// تابع راه‌اندازی اولیه
+function initialize() {
+    setupCalendar();
+    setupEventListeners();
+    loadDoctors(); // بارگذاری لیست پزشکان
+}
+
+// تنظیم تقویم
+function setupCalendar() {
+    const today = new Date();
+    updateCalendarHeader(today);
+    generateTimeSlots();
+}
+
+// به‌روزرسانی هدر تقویم
+function updateCalendarHeader(date) {
+    const daysHeader = document.getElementById('days-header');
+    const datesHeader = document.getElementById('dates-header');
+    
+    // پاک کردن هدرهای قبلی به جز ستون ساعت
+    while(daysHeader.children.length > 1) {
+        daysHeader.removeChild(daysHeader.lastChild);
+        datesHeader.removeChild(datesHeader.lastChild);
+    }
+
+    const days = ['یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه', 'شنبه'];
+    const numberOfDays = getNumberOfDaysToShow();
+
+    for(let i = 0; i < numberOfDays; i++) {
+        const currentDate = new Date(date);
+        currentDate.setDate(date.getDate() + i);
+
+        const dayTh = document.createElement('th');
+        dayTh.textContent = days[currentDate.getDay()];
+        daysHeader.appendChild(dayTh);
+
+        const dateTh = document.createElement('th');
+        dateTh.textContent = `${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/${currentDate.getDate()}`;
+        datesHeader.appendChild(dateTh);
+    }
+}
+
+// ایجاد اسلات‌های زمانی
+function generateTimeSlots() {
+    const tbody = document.getElementById('appointment-slots');
+    tbody.innerHTML = '';
+
+    const startTime = new Date(`2000-01-01 ${workingHours.start}`);
+    const endTime = new Date(`2000-01-01 ${workingHours.end}`);
+    const numberOfDays = getNumberOfDaysToShow();
+
+    while(startTime < endTime) {
+        const row = document.createElement('tr');
+        
+        // ستون ساعت
+        const timeCell = document.createElement('td');
+        timeCell.textContent = startTime.toTimeString().slice(0, 5);
+        row.appendChild(timeCell);
+
+        // ایجاد سلول‌های وقت ملاقات
+        for(let i = 0; i < numberOfDays; i++) {
+            const cell = document.createElement('td');
+            cell.className = 'time-slot';
+            cell.dataset.time = timeCell.textContent;
+            cell.dataset.day = i;
+            cell.addEventListener('click', () => openAppointmentModal(cell));
+            row.appendChild(cell);
+        }
+
+        tbody.appendChild(row);
+        startTime.setMinutes(startTime.getMinutes() + appointmentDuration);
+    }
+}
+
+// تعیین تعداد روزهای نمایش بر اساس نما
+function getNumberOfDaysToShow() {
+    switch(currentView) {
+        case 'day':
+            return 1;
+        case 'week':
+            return 7;
+        case 'month':
+            return new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+        default:
+            return 7;
+    }
+}
+
+// باز کردن مودال رزرو وقت
+function openAppointmentModal(cell) {
+    const modal = document.getElementById('appointment-modal');
+    selectedTimeSlot = cell;
+
+    const startTime = cell.dataset.time;
+    const endTime = new Date(`2000-01-01 ${startTime}`);
+    endTime.setMinutes(endTime.getMinutes() + appointmentDuration);
+
+    document.getElementById('visit_time_from').value = startTime;
+    document.getElementById('visit_time_to').value = endTime.toTimeString().slice(0, 5);
+
+    modal.style.display = 'block';
+}
+
+// ذخیره وقت ملاقات
+function saveAppointment() {
+    const appointmentData = {
+        firstName: document.getElementById('visit_firstname').value,
+        lastName: document.getElementById('visit_lastname').value,
+        nationalCode: document.getElementById('visit_national_code').value,
+        phone: document.getElementById('visit_phone').value,
+        status: document.getElementById('visit_status').value,
+        timeFrom: document.getElementById('visit_time_from').value,
+        timeTo: document.getElementById('visit_time_to').value,
+        visited: document.getElementById('visit_patient_visited').checked,
+        noFile: document.getElementById('visit_no_file').checked,
+        description: document.getElementById('visit_description').value
+    };
+
+    // اینجا می‌توانید کد ذخیره‌سازی در دیتابیس را اضافه کنید
+    
+    updateAppointmentSlot(appointmentData);
+    closeModal();
+}
+
+// به‌روزرسانی ظاهر اسلات وقت ملاقات
+function updateAppointmentSlot(data) {
+    if(selectedTimeSlot) {
+        selectedTimeSlot.textContent = `${data.firstName} ${data.lastName}`;
+        selectedTimeSlot.style.backgroundColor = getStatusColor(data.status);
+    }
+}
+
+// تعیین رنگ بر اساس وضعیت
+function getStatusColor(status) {
+    const colors = {
+        'در انتظار': '#fff3cd',
+        'تایید شده': '#d4edda',
+        'لغو شده': '#f8d7da'
+    };
+    return colors[status] || '#ffffff';
+}
+
+// بستن مودال
+function closeModal() {
+    document.getElementById('appointment-modal').style.display = 'none';
+    selectedTimeSlot = null;
+}
+
+// تغییر نمای تقویم
+function showToday() {
+    currentView = 'day';
+    setupCalendar();
+}
+
+function showWeek() {
+    currentView = 'week';
+    setupCalendar();
+}
+
+function showMonth() {
+    currentView = 'month';
+    setupCalendar();
+}
+
+function showYear() {
+    // نمایش مودال انتخاب ماه
+    // این بخش باید پیاده‌سازی شود
+}
+
+// ارسال پیامک
+function sendSMS() {
+    // پیاده‌سازی سیستم ارسال پیامک
+    alert('سیستم ارسال پیامک در حال پیاده‌سازی است');
+}
+
+// راه‌اندازی اولیه در زمان لود صفحه
+document.addEventListener('DOMContentLoaded', initialize);
+</script>
+
+</body>
+</html>
+<script>
+// داده‌های تستی
+const testData = {
+    doctors: [
+        { id: 1, name: 'دکتر رضایی', workHours: { start: '09:00', end: '14:00' } },
+        { id: 2, name: 'دکتر محمدی', workHours: { start: '14:00', end: '20:00' } }
+    ],
+    appointments: [
+        {
+            id: 1,
+            patientName: 'علی احمدی',
+            nationalCode: '1234567890',
+            phone: '09123456789',
+            date: '2024-06-01',
+            timeFrom: '09:30',
+            timeTo: '10:00',
+            status: 'تایید شده',
+            description: 'ویزیت عادی'
+        }
+        // می‌توانید داده‌های تستی بیشتری اضافه کنید
+    ]
+};
+
+let currentDoctor = null;
+let showPatientInfo = false;
+
+// آپدیت تابع initialize
+function initialize() {
+    loadTestData();
+    setupCalendar();
+    setupEventListeners();
+    setupTimePickers();
+}
+
+function loadTestData() {
+    const doctorSelect = document.getElementById('visit_doctor');
+    doctorSelect.innerHTML = '<option value="">انتخاب پزشک</option>';
+    testData.doctors.forEach(doctor => {
+        const option = document.createElement('option');
+        option.value = doctor.id;
+        option.textContent = doctor.name;
+        doctorSelect.appendChild(option);
+    });
+}
+
+// تنظیم Time Picker
+function setupTimePickers() {
+    flatpickr('.time-picker', {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minuteIncrement: 5
+    });
+}
+
+// آپدیت تابع generateTimeSlots
+function generateTimeSlots() {
+    const tbody = document.getElementById('appointment-slots');
+    tbody.innerHTML = '';
+
+    const doctor = currentDoctor ? testData.doctors.find(d => d.id === parseInt(currentDoctor)) : null;
+    const startTime = doctor ? 
+        new Date(`2000-01-01 ${doctor.workHours.start}`) :
+        new Date(`2000-01-01 ${workingHours.start}`);
+    const endTime = doctor ? 
+        new Date(`2000-01-01 ${doctor.workHours.end}`) :
+        new Date(`2000-01-01 ${workingHours.end}`);
+
+    while(startTime < endTime) {
+        const row = document.createElement('tr');
+        
+        const timeCell = document.createElement('td');
+        timeCell.textContent = startTime.toTimeString().slice(0, 5);
+        row.appendChild(timeCell);
+
+        for(let i = 0; i < getNumberOfDaysToShow(); i++) {
+            const cell = document.createElement('td');
+            cell.className = 'appointment_time-slot';
+            cell.dataset.time = timeCell.textContent;
+            cell.dataset.day = i;
+            
+            // اضافه کردن قابلیت drag برای تغییر مدت زمان
+            cell.draggable = true;
+            cell.addEventListener('dragstart', handleDragStart);
+            cell.addEventListener('dragover', handleDragOver);
+            cell.addEventListener('drop', handleDrop);
+            
+            cell.addEventListener('click', () => openAppointmentModal(cell));
+            row.appendChild(cell);
+        }
+
+        tbody.appendChild(row);
+        startTime.setMinutes(startTime.getMinutes() + parseInt(document.getElementById('visit_duration').value));
+    }
+
+    // نمایش داده‌های تستی
+    showTestAppointments();
+}
+
+// نمایش اطلاعات وقت‌های ملاقات تستی
+function showTestAppointments() {
+    testData.appointments.forEach(appointment => {
+        const cell = findCellForAppointment(appointment);
+        if(cell) {
+            cell.textContent = appointment.patientName;
+            cell.style.backgroundColor = getStatusColor(appointment.status);
+            cell.dataset.appointmentId = appointment.id;
+            
+            if(showPatientInfo) {
+                cell.title = `
+                    نام: ${appointment.patientName}
+                    کد ملی: ${appointment.nationalCode}
+                    تلفن: ${appointment.phone}
+                    توضیحات: ${appointment.description}
+                `;
+            }
+        }
+    });
+}
+
+// پیدا کردن سلول مناسب برای وقت ملاقات
+function findCellForAppointment(appointment) {
+    const cells = document.querySelectorAll('.appointment_time-slot');
+    return Array.from(cells).find(cell => 
+        cell.dataset.time === appointment.timeFrom &&
+        new Date(appointment.date).getDay() === parseInt(cell.dataset.day)
+    );
+}
+
+// مدیریت Drag & Drop
+function handleDragStart(e) {
+    e.dataTransfer.setData('text/plain', e.target.dataset.time);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    const startTime = e.dataTransfer.getData('text/plain');
+    const endTime = e.target.dataset.time;
+    
+    // محاسبه مدت زمان جدید
+    const start = new Date(`2000-01-01 ${startTime}`);
+    const end = new Date(`2000-01-01 ${endTime}`);
+    const duration = (end - start) / (1000 * 60);
+    
+    document.getElementById('visit_duration').value = duration;
+    generateTimeSlots();
+}
+
+// دکمه اضطراری برای باز کردن مودال
+function showEmergencyModal() {
+    openAppointmentModal(null, true);
+}
+
+// آپدیت تابع openAppointmentModal
+function openAppointmentModal(cell, isEmergency = false) {
+    const modal = document.getElementById('appointment-modal');
+    selectedTimeSlot = cell;
+
+    if(!isEmergency && cell) {
+        const date = new Date();
+        date.setDate(date.getDate() + parseInt(cell.dataset.day));
+        document.getElementById('visit_appointment_date').value = date.toISOString().split('T')[0];
+        document.getElementById('visit_time_from').value = cell.dataset.time;
+    }
+
+    modal.style.display = 'block';
+}
+
+// اضافه کردن Event Listener برای تغییر مدت زمان ویزیت
+document.getElementById('visit_duration').addEventListener('change', function() {
+    appointmentDuration = parseInt(this.value);
+    generateTimeSlots();
+});
+
+// تغییر وضعیت نمایش اطلاعات بیمار
+document.getElementById('show_patient_info').addEventListener('change', function() {
+    showPatientInfo = this.checked;
+    showTestAppointments();
+});
+
+</script>
+

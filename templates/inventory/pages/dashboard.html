@@ -1,0 +1,298 @@
+<!-- templates/inventory/pages/dashboard.html -->
+{% extends 'inventory/base/base.html' %}
+
+{% block title %}داشبورد - سیستم مدیریت انبار{% endblock %}
+
+{% block page_title %}
+<i class="fas fa-tachometer-alt me-2"></i>
+داشبورد
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                تعداد کالاها
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalItems">
+                                {{ total_items|default:0 }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-boxes fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                ارزش موجودی (ریال)
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalValue">
+                                {{ total_inventory_value|floatformat:0 }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                تعداد انبارها
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalWarehouses">
+                                {{ total_warehouses|default:0 }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-building fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-right-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                کالاهای کم موجودی
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="lowStockItems">
+                                {{ low_stock_items|length }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Stock Movement Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">نمودار حرکات انبار</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="stockMovementChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Distribution -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">توزیع دسته‌بندی‌ها</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row">
+        <!-- Low Stock Items -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">کالاهای کم موجودی</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="lowStockTable">
+                            <thead>
+                                <tr>
+                                    <th>نام کالا</th>
+                                    <th>موجودی فعلی</th>
+                                    <th>حد آلارم</th>
+                                    <th>وضعیت</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in low_stock_items %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.current_stock|floatformat:0 }}</td>
+                                    <td>{{ item.alert_threshold|floatformat:0 }}</td>
+                                    <td>
+                                        <span class="badge bg-warning">کم موجودی</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        کالای کم موجودی وجود ندارد
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expiring Items -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">کالاهای نزدیک به انقضا</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="expiringTable">
+                            <thead>
+                                <tr>
+                                    <th>نام کالا</th>
+                                    <th>شماره بچ</th>
+                                    <th>تاریخ انقضا</th>
+                                    <th>وضعیت</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in expiring_items %}
+                                <tr>
+                                    <td>{{ item.item.name }}</td>
+                                    <td>{{ item.batch_number }}</td>
+                                    <td>{{ item.expiry_date|date:"Y/m/d" }}</td>
+                                    <td>
+                                        <span class="badge bg-danger">نزدیک انقضا</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        کالای نزدیک به انقضا وجود ندارد
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row">
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">آخرین ورودی‌ها</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>شماره ورودی</th>
+                                    <th>کالا</th>
+                                    <th>مقدار</th>
+                                    <th>تاریخ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in recent_entries %}
+                                <tr>
+                                    <td>{{ entry.entry_number }}</td>
+                                    <td>{{ entry.item.name }}</td>
+                                    <td>{{ entry.quantity|floatformat:0 }}</td>
+                                    <td>{{ entry.entry_date|date:"Y/m/d" }}</td>
+                                 </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        ورودی اخیری وجود ندارد
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">آخرین خروجی‌ها</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>شماره خروجی</th>
+                                    <th>کالا</th>
+                                    <th>مقدار</th>
+                                    <th>تاریخ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for exit in recent_exits %}
+                                <tr>
+                                    <td>{{ exit.exit_number }}</td>
+                                    <td>{{ exit.item.name }}</td>
+                                    <td>{{ exit.quantity|floatformat:0 }}</td>
+                                    <td>{{ exit.exit_date|date:"Y/m/d" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">
+                                        خروجی اخیری وجود ندارد
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Dashboard will be handled by inventory-dashboard.js
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof InventoryDashboard !== 'undefined') {
+        InventoryDashboard.init();
+    }
+});
+</script>
+{% endblock %}

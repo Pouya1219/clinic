@@ -1,0 +1,170 @@
+<form class="treatment-form" id="treatment-form">
+    <input type="hidden" name="patient_id" value="{{ patient.id }}">
+    <input type="hidden" name="treatment_id" id="treatment-id" value="">
+    
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">نواحی انتخاب شده</label>
+            <input type="text" class="treatment-input" id="selected-areas" name="treatment_areas" readonly>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">تعداد نواحی</label>
+            <input type="text" class="treatment-input" id="areas-count" readonly>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">نوع درمان</label>
+            <select class="treatment-select" name="treatment_type" id="treatment-type" required>
+                <option value="">انتخاب کنید</option>
+                {% for type in treatment_types %}
+                <option value="{{ type.id }}">{{ type.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">شرح درمان</label>
+            <select class="treatment-select" name="treatment_detail" id="treatment-detail" required>
+                <option value="">ابتدا نوع درمان را انتخاب کنید</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">تعرفه عمومی</label>
+            <input type="text" class="treatment-input" id="general-fee" name="general_fee" readonly>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">تعرفه تخصصی</label>
+            <input type="text" class="treatment-input" id="special-fee" name="special_fee" readonly>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">پزشک معالج</label>
+            <select class="treatment-select" name="doctor" required>
+                <option value="">انتخاب کنید</option>
+                {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.get_full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">دستیار پزشک</label>
+            <select class="treatment-select" name="assistant">
+                <option value="">انتخاب کنید</option>
+                {% for assistant in assistants %}
+                <option value="{{ assistant.id }}">{{ assistant.get_full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label" for="Visit-date">تاریخ مراجعه</label>
+            <input class="treatment-input" type="date" id="Visit-date" name="treatment_date" required>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label" for="next-Visit-date">تاریخ مراجعه بعدی</label>
+            <input class="treatment-input" type="date" id="next-Visit-date" name="next_visit_date">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">نوع بیمه</label>
+            <select class="treatment-select" name="insurance_provider" id="insurance-provider">
+                <option value="">انتخاب کنید</option>
+                {% for provider in insurance_providers %}
+                <option value="{{ provider.id }}">{{ provider.name }} ({{ provider.insurance_type.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">درصد بیمه</label>
+            <input type="number" class="treatment-input" name="insurance_percentage" id="insurance-percentage" min="0" max="100" value="0">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">تخفیف</label>
+            <input type="number" class="treatment-input" name="discount" id="discount" value="0">
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">نوع تخفیف</label>
+            <select class="treatment-select" name="discount_type">
+                <option value="both">از پزشک و کلینیک</option>
+                <option value="doctor">پزشک</option>
+                <option value="clinic">کلینیک</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-label">هزینه مواد</label>
+            <input type="number" class="treatment-input" name="material_cost" id="material-cost" value="0">
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-label">هزینه لابراتوار</label>
+            <input type="number" class="treatment-input" name="lab_cost" id="lab-cost" value="0">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group full-width">
+            <label class="treatment-label">مبلغ قابل پرداخت</label>
+            <input type="number" class="treatment-input highlight-input" name="payable_amount" id="payable-amount" readonly>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="insurance_sent" id="insurance-sent">
+                <span class="checkmark"></span>
+                ارسال شده به بیمه
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="is_completed" id="is-completed">
+                <span class="checkmark"></span>
+                درمان انجام شده
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="insurance_paid" id="insurance-paid">
+                <span class="checkmark"></span>
+                از بیمه مبلغ دریافت شده
+            </label>
+        </div>
+        <div class="treatment-group">
+            <label class="treatment-checkbox">
+                <input type="checkbox" name="is_treatment_plan" id="is-treatment-plan">
+                <span class="checkmark"></span>
+                ثبت به عنوان طرح درمان
+            </label>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="treatment-group full-width">
+            <label class="treatment-label">توضیحات</label>
+            <textarea class="treatment-textarea" name="description" id="description"></textarea>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="button" class="treatment-submit" id="save-treatment">ثبت درمان</button>
+        <button type="button" class="treatment-payment" id="show-payment">ثبت پرداخت</button>
+        <button type="button" class="treatment-installment" id="show-installment">پرداخت اقساطی</button>
+        <button type="reset" class="treatment-reset">پاک کردن فرم</button>
+    </div>
+</form>

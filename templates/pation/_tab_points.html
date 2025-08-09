@@ -1,0 +1,68 @@
+{% load static %}
+<div class="points-container">
+        <!-- Points Summary -->
+        <div class="points-summary">
+            <div class="points-card">
+                <div class="points-card-title">امتیاز کل</div>
+                <div class="points-card-value">1,250</div>
+            </div>
+            <div class="points-card">
+                <div class="points-card-title">امتیاز قابل استفاده</div>
+                <div class="points-card-value">850</div>
+            </div>
+            <div class="points-card">
+                <div class="points-card-title">امتیاز استفاده شده</div>
+                <div class="points-card-value">400</div>
+            </div>
+        </div>
+
+        <!-- Points Filters -->
+        <div class="points-filters">
+            <button class="points-filter active">همه</button>
+            <button class="points-filter">امتیازات دریافتی</button>
+            <button class="points-filter">امتیازات مصرف شده</button>
+            <button class="points-filter">تخفیف‌های فعال</button>
+        </div>
+
+        <!-- Points History -->
+        <div class="points-history">
+            <table class="points-table">
+                <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>شرح</th>
+                        <th>نوع</th>
+                        <th>امتیاز</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1402/08/15</td>
+                        <td>ویزیت دندانپزشکی</td>
+                        <td>
+                            <span class="points-badge points-earned">
+                                <i class="fas fa-plus"></i>
+                                دریافت
+                            </span>
+                        </td>
+                        <td>100</td>
+                        <td>تایید شده</td>
+                    </tr>
+                    <tr>
+                        <td>1402/08/10</td>
+                        <td>استفاده از تخفیف</td>
+                        <td>
+                            <span class="points-badge points-spent">
+                                <i class="fas fa-minus"></i>
+                                مصرف
+                            </span>
+                        </td>
+                        <td>200</td>
+                        <td>اعمال شده</td>
+                    </tr>
+                    <!-- More rows can be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>

@@ -1,0 +1,79 @@
+<!-- templates/settings/index.html -->
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block content %}
+ <section class="main-content">
+<div class="settings_container">
+    <div class="settings_sidebar">
+        <div class="settings_nav">
+            <a href="#" class="settings_nav_item active" data-tab="clinic-info">
+                <i class="fas fa-clinic-medical"></i>
+                <span>اطلاعات کلینیک</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="appointments">
+                <i class="fas fa-calendar-alt"></i>
+                <span>تنظیمات نوبت‌دهی</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="appearance">
+                <i class="fas fa-paint-brush"></i>
+                <span>ظاهر سیستم</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="notifications">
+                <i class="fas fa-bell"></i>
+                <span>اعلان‌ها</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="security">
+                <i class="fas fa-shield-alt"></i>
+                <span>امنیت</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="backup">
+                <i class="fas fa-database"></i>
+                <span>پشتیبان‌گیری</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="reports">
+                <i class="fas fa-chart-bar"></i>
+                <span>گزارشات</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="integrations">
+                <i class="fas fa-plug"></i>
+                <span>اتصالات</span>
+            </a>
+            <a href="#" class="settings_nav_item" data-tab="about">
+                <i class="fas fa-info-circle"></i>
+                <span>درباره سیستم</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="settings_content">
+         <div class="settings_tab_content active" id="clinic-info">
+            {% include 'settings/tabs/clinic_info.html' %}
+        </div>
+        <div class="settings_tab_content" id="appointments">
+            {% include 'settings/tabs/appointments.html' %}
+        </div>
+        <div class="settings_tab_content" id="appearance">
+            {% include 'settings/tabs/appearance.html' %}
+        </div>
+        <div class="settings_tab_content" id="notifications">
+            {% include 'settings/tabs/notifications.html' %}
+        </div>
+        <div class="settings_tab_content" id="security">
+            {% include 'settings/tabs/security.html' %}
+        </div>
+        <div class="settings_tab_content" id="backup">
+            {% include 'settings/tabs/backup.html' %}
+        </div>
+        <div class="settings_tab_content" id="reports">
+            {% include 'settings/tabs/reports.html' %}
+        </div>
+        <div class="settings_tab_content" id="integrations">
+            {% include 'settings/tabs/integrations.html' %}
+        </div>
+        <div class="settings_tab_content" id="about">
+            {% include 'settings/tabs/about.html' %}
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}
