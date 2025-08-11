@@ -2,9 +2,30 @@
 # clinic
 
 ## License
-
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License, with additional restrictions on governmental and commercial use.  
 See the [LICENSE](LICENSE) file for full details.
+
+
+Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)
+
+You are free to:
+- Share — copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+- NonCommercial — You may not use the material for commercial purposes.
+
+Additional Restrictions:
+- This software may not be used by any governmental organization, military entity, or for any purpose involving surveillance, profiling, or commercial exploitation of personal data without explicit written permission from the author.
+- Use of this software in systems that collect, store, or analyze sensitive personal data must include clear user consent and data protection mechanisms.
+
+Author: Pooya  
+Date: August 2025  
+License URL: https://creativecommons.org/licenses/by-nc/4.0/
+
+For full legal code, see: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
 
 مجوز: Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 
@@ -26,3 +47,4 @@ See the [LICENSE](LICENSE) file for full details.
 
 برای متن کامل حقوقی، به لینک زیر مراجعه کنید:  
 https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
